@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "134007697741",
+    "project_id": "apiary-hive",
+    "storage_bucket": "apiary-hive.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:134007697741:android:52ec4e14dda5f02076c704",
+        "android_client_info": {
+          "package_name": "com.example.hive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbJRdG0L357zPIZj2IzxuMhSMgO1BpgJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
