@@ -14,7 +14,10 @@ package com.example.hive;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,6 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private Button editProfileButton;
     private ImageView backArrow;
+    private ImageView profilePicture;  // You missed initializing the profile picture in your earlier code.
     private TextView personNameText, userNameText, emailText, phoneText;
 
     /**
@@ -41,10 +45,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        // Initialize the views
         editProfileButton = findViewById(R.id.editProfileButton);
-
         backArrow = findViewById(R.id.backArrow);
-
+        profilePicture = findViewById(R.id.profilePicture); // Make sure you have this defined in your layout XML file
         personNameText = findViewById(R.id.personName);
         userNameText = findViewById(R.id.userName);
         emailText = findViewById(R.id.emailLabel);
@@ -75,6 +79,17 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     /**
+     * Converts a Base64 encoded string back to a Bitmap.
+     *
+     * @param base64Str The Base64 encoded string.
+     * @return The decoded Bitmap.
+     */
+    private Bitmap base64ToBitmap(String base64Str) {
+        byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
+    /**
      * Loads profile data from SharedPreferences and displays it in the corresponding TextViews.
      */
     private void loadProfileData() {
@@ -83,11 +98,21 @@ public class ProfileActivity extends AppCompatActivity {
         String userName = sharedPreferences.getString("userName", "User Name");
         String email = sharedPreferences.getString("email", "user@google.com");
         String phone = sharedPreferences.getString("phone", "(780) xxx - xxxx");
+        String profilePictureBase64 = sharedPreferences.getString("profilePicture", "");
 
         personNameText.setText(personName);
         userNameText.setText(userName);
         emailText.setText("E-mail: " + email);
         phoneText.setText("Phone: " + phone);
+
+        // Load profile picture if available
+        if (!profilePictureBase64.isEmpty()) {
+            Bitmap profileBitmap = base64ToBitmap(profilePictureBase64);
+            profilePicture.setImageBitmap(profileBitmap);
+        } else {
+            // Set default profile picture
+            profilePicture.setImageResource(R.drawable.ic_profile);
+        }
     }
 
     /**
@@ -107,4 +132,5 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 }
+
 
