@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#1A2232">
+
+    <!-- First Notification -->
+    <TextView
+        android:id="@+id/notification1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/acceptButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Accept"
+            android:backgroundTint="#136F63"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/declineButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Decline"
+            android:backgroundTint="#E74C3C"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- Second Notification -->
+    <TextView
+        android:id="@+id/notification2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/reRegisterButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Re-register"
+        android:backgroundTint="#136F63"
+        android:textColor="#FFFFFF" />
+
+    <!-- Third Notification -->
+    <TextView
+        android:id="@+id/notification3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/acceptButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Accept"
+            android:backgroundTint="#136F63"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/declineButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Decline"
+            android:backgroundTint="#E74C3C"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+</LinearLayout>
