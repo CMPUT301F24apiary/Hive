@@ -52,7 +52,7 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> {
         View view;
 
         if (convertView == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.event_list_item,
+            view = LayoutInflater.from(getContext()).inflate(R.layout.admin_event_list_item,
                     parent, false);
         } else {
             view = convertView;
