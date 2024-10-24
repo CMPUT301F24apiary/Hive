@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Hive</string>
+    <string name="event_title_default">Title</string>
+    <string name="event_date_default">Date</string>
+    <string name="event_time_default">Time</string>
+    <string name="event_cost_default">Cost</string>
+    <string name="event_details_button_text">Details</string>
+    <string name="loading_text">Loading...</string>
 </resources>
