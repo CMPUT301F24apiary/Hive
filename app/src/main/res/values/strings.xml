@@ -6,4 +6,8 @@
     <string name="event_cost_default">Cost</string>
     <string name="event_details_button_text">Details</string>
     <string name="loading_text">Loading...</string>
+    <string name="date_sort_icon_text" />
+    <string name="title_sort_icon_text" />
+    <string name="cost_sort_icon_text" />
+    <string name="sort_by_text">Sort:</string>
 </resources>

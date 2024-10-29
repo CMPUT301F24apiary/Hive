@@ -1,9 +1,12 @@
 package com.example.hive;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.SearchView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Activity to display the list of all events.
@@ -29,13 +33,33 @@ public class AdminEventListActivity extends AppCompatActivity {
      */
     private AdminEventListModel model;
     /**
+     * Lays out search view and list view
+     */
+    private LinearLayout eventLinearContainer;
+    /**
      * This activity's ListView that displays the events in list form
      */
     private ListView eventList;
     /**
+     * This activity's SearchView that displays the events in list form
+     */
+    private SearchView eventSearchView;
+    /**
      * This activity's adapter
      */
     private AdminEventListAdapter eventAdapter;
+    /**
+     * Sort
+     */
+    private TextView sortByDate;
+    private TextView sortByDateIcon;
+    private boolean sortByDateAsc;
+    private TextView sortByTitle;
+    private TextView sortByTitleIcon;
+    private boolean sortByTitleAsc;
+    private TextView sortByCost;
+    private TextView sortByCostIcon;
+    private boolean sortByCostAsc;
     /**
      * This activity's data list - holds all events
      */
@@ -49,11 +73,14 @@ public class AdminEventListActivity extends AppCompatActivity {
      * The list of events to display
      */
     public void updateList(ArrayList<TestEvent> data) {
+        Log.d("AdminEventListActivity", "updateList called with " + data.size() + " items");
         TextView loading = findViewById(R.id.event_list_loading_text);
         loading.setVisibility(View.GONE);
-        eventList.setVisibility(View.VISIBLE);
+        eventLinearContainer.setVisibility(View.VISIBLE);
         eventDataList.clear();
         eventDataList.addAll(data);
+        Log.d("AdminEventListActivity", "eventDataList size after update: " + eventDataList.size());
+        eventAdapter.updateData(eventDataList);
         eventAdapter.notifyDataSetChanged();
     }
 
@@ -79,12 +106,118 @@ public class AdminEventListActivity extends AppCompatActivity {
 
         eventDataList = new ArrayList<TestEvent>();
         eventAdapter = new AdminEventListAdapter(this, eventDataList);
-        eventList = findViewById(R.id.event_list_view);
+        eventLinearContainer = findViewById(R.id.admin_event_list_linear_layout);
+        eventList = findViewById(R.id.admin_event_list_view);
+        eventSearchView = findViewById(R.id.admin_event_list_search_view);
         eventList.setAdapter(eventAdapter);
 
         model = new AdminEventListModel();
         view = new AdminEventListView(model, this);
         model.addView(view);
+
+        sortByDate = findViewById(R.id.date_sort);
+        sortByDateIcon = findViewById(R.id.date_sort_icon);
+        sortByCost = findViewById(R.id.cost_sort);
+        sortByCostIcon = findViewById(R.id.cost_sort_icon);
+        sortByTitle = findViewById(R.id.title_sort);
+        sortByTitleIcon = findViewById(R.id.title_sort_icon);
+
+        sortByDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventDataList.sort(new Comparator<TestEvent>() {
+                    @Override
+                    public int compare(TestEvent o1, TestEvent o2) {
+                        long dateDiff = o1.getDateInMS() - o2.getDateInMS();
+                        int res = 0;
+                        if (dateDiff < 0) {
+                            res = -1;
+                        } else if (dateDiff > 0) {
+                            res = 1;
+                        }
+                        if (sortByDateAsc) {
+                            sortByDateAsc = false;
+                            sortByDateIcon.setText("⌃");
+                        } else {
+                            sortByDateAsc = true;
+                            sortByDateIcon.setText("⌄");
+                            res = -res;
+                        }
+                        return res;
+                    }
+                });
+                eventAdapter.updateData(eventDataList);
+                eventAdapter.notifyDataSetChanged();
+            }
+        });
+
+        sortByTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventDataList.sort(new Comparator<TestEvent>() {
+                    @Override
+                    public int compare(TestEvent o1, TestEvent o2) {
+                        int res = o1.getTitle().compareTo(o2.getTitle());
+                        if (sortByTitleAsc) {
+                            sortByTitleAsc = false;
+                            sortByTitleIcon.setText("⌃");
+                        } else {
+                            sortByTitleAsc = true;
+                            sortByTitleIcon.setText("⌄");
+                            res = -res;
+                        }
+                        return res;
+                    }
+                });
+                eventAdapter.updateData(eventDataList);
+                eventAdapter.notifyDataSetChanged();
+            }
+        });
+
+        sortByCost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventDataList.sort(new Comparator<TestEvent>() {
+                    @Override
+                    public int compare(TestEvent o1, TestEvent o2) {
+                        float cost1 = Float.parseFloat(o1.getCost());
+                        float cost2 = Float.parseFloat(o2.getCost());
+                        float diff = cost1 - cost2;
+                        int res = 0;
+                        if (diff < 0) {
+                            res = -1;
+                        } else if (diff > 0) {
+                            res = 1;
+                        }
+                        if (sortByCostAsc) {
+                            sortByCostAsc = false;
+                            sortByCostIcon.setText("⌃");
+                        } else {
+                            sortByCostAsc = true;
+                            sortByCostIcon.setText("⌄");
+                            res = -res;
+                        }
+                        return res;
+                    }
+                });
+                eventAdapter.updateData(eventDataList);
+                eventAdapter.notifyDataSetChanged();
+            }
+        });
+
+        eventSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                eventAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                eventAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
 
     }
 }

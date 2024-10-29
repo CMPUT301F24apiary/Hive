@@ -61,7 +61,7 @@ public class AdminEventListModel extends AbstractModel<TestEvent> {
                 String time = formatted.split("-")[1];
                 String cost = (String) doc.get("cost");
 
-                TestEvent newEvent = new TestEvent(title, date, time, cost);
+                TestEvent newEvent = new TestEvent(title, date, time, cost, dateAsLong);
                 data.add(newEvent);
             }
             // Notify the callback with the fetched data

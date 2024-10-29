@@ -1,10 +1,13 @@
 package com.example.hive;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,7 +20,20 @@ import java.util.ArrayList;
  *
  * @author Zach
  */
-public class AdminEventListAdapter extends ArrayAdapter<TestEvent> {
+public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Filterable {
+
+    /**
+     * Original list of events
+     */
+    private ArrayList<TestEvent> og;
+    /**
+     * Filtered list of events
+     */
+    private ArrayList<TestEvent> filtered;
+    /**
+     * Filter
+     */
+    private Filter filter;
 
     /**
      * Constructor for the adapter. Calls ArrayAdapter's instructor with given data
@@ -29,6 +45,50 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> {
      */
     public AdminEventListAdapter(Context context, ArrayList<TestEvent> events) {
         super(context, 0, events);
+        this.og = new ArrayList<TestEvent>(events);
+        this.filtered = new ArrayList<TestEvent>(events);
+    }
+
+    public void updateData(ArrayList<TestEvent> newEvents) {
+        og.clear();
+        og.addAll(newEvents);
+        filtered.clear();
+        filtered.addAll(newEvents);
+    }
+
+    /**
+     * Return the size of the filtered list
+     *
+     * @return
+     * int, size of the filtered list
+     */
+    @Override
+    public int getCount() {
+        return filtered.size();
+    }
+
+    /**
+     * Get item of filtered list at specified position
+     *
+     * @param position Position of the item whose data we want within the adapter's
+     * data set.
+     * @return
+     * The TestEvent object at provided position
+     */
+    @Nullable
+    @Override
+    public TestEvent getItem(int position) {
+        return filtered.get(position);
+    }
+
+    /**
+     * @param position The position of the item within the adapter's data set whose row id we want.
+     * @return
+     * The requested item's row id
+     */
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     /**
@@ -49,6 +109,7 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        Log.d("Adapter", "getView called for position: " + position + " with title " + getItem(position).getTitle());
         View view;
 
         if (convertView == null) {
@@ -71,6 +132,47 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> {
         eventCost.setText(String.format("$%s", event.getCost()));
 
         return view;
+    }
+
+    @NonNull
+    @Override
+    public Filter getFilter() {
+        if (filter == null) {
+            filter = new EventFilter();
+        }
+        return filter;
+    }
+
+    private class EventFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults filterResults = new FilterResults();
+            ArrayList<TestEvent> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                // No search query, return the original list
+                filteredList.addAll(og);
+            } else {
+                String query = constraint.toString().toLowerCase().trim();
+                for (TestEvent event : og) {
+                    if (event.getTitle().toLowerCase().contains(query)) {
+                        filteredList.add(event);
+                    }
+                }
+            }
+
+            filterResults.values = filteredList;
+            filterResults.count = filteredList.size();
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            // Update filtered data and refresh the list
+            filtered.clear();
+            filtered.addAll((ArrayList<TestEvent>) results.values);
+            notifyDataSetChanged();
+        }
     }
 
 }
