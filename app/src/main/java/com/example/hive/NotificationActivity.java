@@ -14,36 +14,38 @@ public class NotificationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notifications); // Ensure this matches your layout file
+        setContentView(R.layout.activity_notifications);
 
         // Sample notifications to display
         notifications.add("You have been chosen from the waiting list for Christmas Event.");
         notifications.add("You have not been chosen for Christmas Carol.");
         notifications.add("You have been chosen for Autumn Festival.");
+        notifications.add("You have not been chosen for Autumn U-Pick.");
 
-        // Get references to TextViews and Buttons from the XML layout
-        TextView notification1 = findViewById(R.id.notification1);
-        Button acceptButton1 = findViewById(R.id.acceptButton1);
-        Button declineButton1 = findViewById(R.id.declineButton1);
+        // Setup the notifications and buttons
+        setupNotification(R.id.notification1, R.id.acceptButton1, R.id.declineButton1, notifications.get(0));
+        setupNotification(R.id.notification2, R.id.reRegisterButton2, notifications.get(1));
+        setupNotification(R.id.notification3, R.id.acceptButton3, R.id.declineButton3, notifications.get(2));
+        setupNotification(R.id.notification4, R.id.reRegisterButton4, notifications.get(3));
+    }
 
-        TextView notification2 = findViewById(R.id.notification2);
-        Button reRegisterButton2 = findViewById(R.id.reRegisterButton2);
+    private void setupNotification(int notificationId, int acceptButtonId, int declineButtonId, String message) {
+        TextView notification = findViewById(notificationId);
+        notification.setText(message);
 
-        TextView notification3 = findViewById(R.id.notification3);
-        Button acceptButton3 = findViewById(R.id.acceptButton3);
-        Button declineButton3 = findViewById(R.id.declineButton3);
+        Button acceptButton = findViewById(acceptButtonId);
+        acceptButton.setOnClickListener(v -> acceptEvent(message));
 
-        // Set the text for each notification
-        notification1.setText(notifications.get(0));
-        notification2.setText(notifications.get(1));
-        notification3.setText(notifications.get(2));
+        Button declineButton = findViewById(declineButtonId);
+        declineButton.setOnClickListener(v -> declineEvent(message));
+    }
 
-        // Set click listeners for buttons
-        acceptButton1.setOnClickListener(v -> acceptEvent(notifications.get(0)));
-        declineButton1.setOnClickListener(v -> declineEvent(notifications.get(0)));
-        reRegisterButton2.setOnClickListener(v -> reRegisterEvent(notifications.get(1)));
-        acceptButton3.setOnClickListener(v -> acceptEvent(notifications.get(2)));
-        declineButton3.setOnClickListener(v -> declineEvent(notifications.get(2)));
+    private void setupNotification(int notificationId, int reRegisterButtonId, String message) {
+        TextView notification = findViewById(notificationId);
+        notification.setText(message);
+
+        Button reRegisterButton = findViewById(reRegisterButtonId);
+        reRegisterButton.setOnClickListener(v -> reRegisterEvent(message));
     }
 
     private void acceptEvent(String eventName) {
