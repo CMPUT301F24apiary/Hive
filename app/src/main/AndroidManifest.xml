@@ -13,9 +13,9 @@
         android:theme="@style/Theme.Hive"
         tools:targetApi="31">
 
-        <!-- Set NotificationsActivity as the launcher activity temporarily -->
+        <!-- Set RoleSelectionActivity as the launcher activity for testing -->
         <activity
-            android:name=".NotificationActivity"
+            android:name=".RoleSelectionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>
 
-        <!-- EventListActivity without launcher intent for now -->
+        <!-- NotificationActivity and EventListActivity without launcher intent for now -->
+        <activity android:name=".NotificationActivity" android:exported="true" />
         <activity android:name=".EventListActivity" android:exported="true" />
 
         <!-- Keep MainActivity for navigation, but no launcher intent -->
