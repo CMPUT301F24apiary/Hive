@@ -2,6 +2,9 @@ package com.example.hive;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -52,6 +55,7 @@ public class AdminEventListModel extends AbstractModel<TestEvent> {
 
         eventsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                String id = doc.getId();
                 String title = (String) doc.get("title");
                 long dateAsLong = (long) doc.get("date");
                 Date dateAsDate = new Date(dateAsLong);
@@ -61,7 +65,7 @@ public class AdminEventListModel extends AbstractModel<TestEvent> {
                 String time = formatted.split("-")[1];
                 String cost = (String) doc.get("cost");
 
-                TestEvent newEvent = new TestEvent(title, date, time, cost, dateAsLong);
+                TestEvent newEvent = new TestEvent(title, date, time, cost, dateAsLong, id);
                 data.add(newEvent);
             }
             // Notify the callback with the fetched data
@@ -69,4 +73,24 @@ public class AdminEventListModel extends AbstractModel<TestEvent> {
         }).addOnFailureListener(e -> Log.e("ModelGetAll", "Error fetching data", e));
     }
 
+    @Override
+    public void getSingleFromDB(String id, OnSuccessListener<TestEvent> callback) {
+
+    }
+
+    @Override
+    public void deleteSingleFromDB(String id, OnSuccessListener<Boolean> callback) {
+        CollectionReference eventsCollection = db.collection("events");
+        eventsCollection.document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                callback.onSuccess(Boolean.TRUE);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                callback.onSuccess(Boolean.FALSE);
+            }
+        });
+    }
 }

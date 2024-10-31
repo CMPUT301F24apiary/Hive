@@ -100,4 +100,8 @@ public abstract class AbstractModel<T> {
      */
     public abstract void getAllFromDB(OnSuccessListener<ArrayList<T>> callback);
 
+    public abstract void getSingleFromDB(String id, OnSuccessListener<T> callback);
+
+    public abstract void deleteSingleFromDB(String id, OnSuccessListener<Boolean> callback);
+
 }

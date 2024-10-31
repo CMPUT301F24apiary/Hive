@@ -1,15 +1,21 @@
 package com.example.hive;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -35,6 +41,7 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
      */
     private Filter filter;
 
+    private ActivityResultLauncher<Intent> deleteItemLauncher;
     /**
      * Constructor for the adapter. Calls ArrayAdapter's instructor with given data
      *
@@ -43,10 +50,11 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
      * @param events
      * The list of events to display.
      */
-    public AdminEventListAdapter(Context context, ArrayList<TestEvent> events) {
+    public AdminEventListAdapter(Context context, ArrayList<TestEvent> events, ActivityResultLauncher<Intent> deleteItemLauncher) {
         super(context, 0, events);
         this.og = new ArrayList<TestEvent>(events);
         this.filtered = new ArrayList<TestEvent>(events);
+        this.deleteItemLauncher = deleteItemLauncher;
     }
 
     public void updateData(ArrayList<TestEvent> newEvents) {
@@ -109,7 +117,6 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Log.d("Adapter", "getView called for position: " + position + " with title " + getItem(position).getTitle());
         View view;
 
         if (convertView == null) {
@@ -130,6 +137,18 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
         eventDate.setText(event.getDate());
         eventTime.setText(event.getTime());
         eventCost.setText(String.format("$%s", event.getCost()));
+
+        Button detailsBtn = view.findViewById(R.id.event_details_button);
+
+        detailsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(), AdminEventDetailActivity.class);
+                i.putExtra("event", event);
+                i.putExtra("position", String.valueOf(position));
+                deleteItemLauncher.launch(i);
+            }
+        });
 
         return view;
     }

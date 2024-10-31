@@ -10,4 +10,5 @@
     <string name="title_sort_icon_text" />
     <string name="cost_sort_icon_text" />
     <string name="sort_by_text">Sort:</string>
+    <string name="delete_event_text">Delete Event</string>
 </resources>

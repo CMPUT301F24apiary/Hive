@@ -1,5 +1,6 @@
 package com.example.hive;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 import android.widget.SearchView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -65,6 +68,8 @@ public class AdminEventListActivity extends AppCompatActivity {
      */
     private ArrayList<TestEvent> eventDataList;
 
+    private ActivityResultLauncher<Intent> deleteItemLauncher;
+
     /**
      * Updates the ListView by removing loading screen, clearing current list, adding the new items
      * and notifying the adapter.
@@ -104,8 +109,24 @@ public class AdminEventListActivity extends AppCompatActivity {
             return insets;
         });
 
+        deleteItemLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == 1) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            String deletedItemId = data.getStringExtra("item_id");
+                            int deletedPos = Integer.parseInt(data.getStringExtra("position"));
+                            eventDataList.remove(deletedPos);
+                            eventAdapter.updateData(eventDataList);
+                            eventAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+        );
+
         eventDataList = new ArrayList<TestEvent>();
-        eventAdapter = new AdminEventListAdapter(this, eventDataList);
+        eventAdapter = new AdminEventListAdapter(this, eventDataList, deleteItemLauncher);
         eventLinearContainer = findViewById(R.id.admin_event_list_linear_layout);
         eventList = findViewById(R.id.admin_event_list_view);
         eventSearchView = findViewById(R.id.admin_event_list_search_view);
