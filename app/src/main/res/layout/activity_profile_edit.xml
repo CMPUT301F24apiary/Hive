@@ -1,0 +1,134 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1A2232"
+    tools:context=".ProfileEditActivity">
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#136F63"
+        android:text="Save"
+        android:textColor="#FFFFFF" />
+
+    <!-- Cancel Button -->
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/saveButton"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-49dp"
+        android:layout_marginEnd="302dp"
+        android:backgroundTint="#136F63"
+        android:text="Cancel"
+        android:textColor="#FFFFFF" />
+
+    <!-- Name Label -->
+    <TextView
+        android:id="@+id/nameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="250dp"
+        android:text="Name"
+        android:textColor="#136F63"
+        android:textSize="18sp" />
+
+    <!-- Name Input -->
+
+    <!-- Username Label -->
+    <EditText
+        android:id="@+id/personNameInput"
+        android:layout_width="276dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/nameLabel"
+        android:layout_marginStart="42dp"
+        android:layout_toEndOf="@id/nameLabel"
+        android:hint="Enter your name"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/usernameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nameLabel"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:text="Username"
+        android:textColor="#136F63"
+        android:textSize="18sp" />
+
+    <!-- Username Input -->
+
+    <!-- Email Label -->
+    <EditText
+        android:id="@+id/userNameInput"
+        android:layout_width="276dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/usernameLabel"
+        android:layout_marginStart="9dp"
+        android:layout_toEndOf="@id/usernameLabel"
+        android:hint="Enter your username"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/emailLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/usernameLabel"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:text="Email"
+        android:textColor="#136F63"
+        android:textSize="18sp" />
+
+    <!-- Email Input -->
+    <EditText
+        android:id="@+id/emailInput"
+        android:layout_width="276dp"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/emailLabel"
+        android:layout_alignBaseline="@id/emailLabel"
+        android:layout_marginStart="42dp"
+        android:hint="Enter your email"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textSize="18sp" />
+
+    <!-- Phone Label -->
+    <TextView
+        android:id="@+id/phoneLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emailLabel"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:text="Phone"
+        android:textColor="#136F63"
+        android:textSize="18sp" />
+
+    <!-- Phone Input -->
+    <EditText
+        android:id="@+id/phoneInput"
+        android:layout_width="276dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/phoneLabel"
+        android:layout_marginStart="34dp"
+        android:layout_toEndOf="@id/phoneLabel"
+        android:hint="Enter your phone number"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textSize="18sp" />
+
+</RelativeLayout>
