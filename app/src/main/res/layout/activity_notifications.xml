@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#1A2232">
+
+    <!-- Main Header Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notifications"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:paddingBottom="16dp"
+        android:layout_gravity="center" />
+
+    <!-- First Notification Layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/notification1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You have been chosen from the waiting list for Christmas Event."
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:background="#344055"
+            android:padding="8dp"
+            android:layout_gravity="center_horizontal" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingTop="8dp">
+
+            <Button
+                android:id="@+id/acceptButton1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Accept"
+                android:backgroundTint="#136F63"
+                android:textColor="#FFFFFF"
+                android:layout_marginEnd="8dp"
+                android:padding="12dp" />
+
+            <Button
+                android:id="@+id/declineButton1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Decline"
+                android:backgroundTint="#E74C3C"
+                android:textColor="#FFFFFF"
+                android:padding="12dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Second Notification Layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/notification2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You have not been chosen from the waiting list for Christmas Carol."
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:background="#344055"
+            android:padding="8dp"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:id="@+id/reRegisterButton2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#136F63"
+            android:text="Re-register"
+            android:textColor="#FFFFFF"
+            android:padding="12dp" />
+    </LinearLayout>
+
+    <!-- Third Notification Layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/notification3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You have been chosen from the waiting list for Autumn Festival."
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:background="#344055"
+            android:padding="8dp"
+            android:layout_gravity="center_horizontal" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingTop="8dp">
+
+            <Button
+                android:id="@+id/acceptButton3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Accept"
+                android:backgroundTint="#136F63"
+                android:textColor="#FFFFFF"
+                android:layout_marginEnd="8dp"
+                android:padding="12dp" />
+
+            <Button
+                android:id="@+id/declineButton3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Decline"
+                android:backgroundTint="#E74C3C"
+                android:textColor="#FFFFFF"
+                android:padding="12dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Fourth Notification Layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/notification4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You have not been chosen from the waiting list for Autumn U-Pick."
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:background="#344055"
+            android:padding="8dp"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:id="@+id/reRegisterButton4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#136F63"
+            android:text="Re-register"
+            android:textColor="#FFFFFF"
+            android:padding="12dp" />
+    </LinearLayout>
+
+</LinearLayout>
