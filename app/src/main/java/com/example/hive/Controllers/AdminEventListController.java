@@ -1,9 +1,10 @@
-package com.example.hive;
+package com.example.hive.Controllers;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.hive.TestEvent;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -15,30 +16,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Model for the event list view.
- *
- * @author Zach
- */
-public class AdminEventListModel extends AbstractModel<TestEvent> {
+public class AdminEventListController {
 
-    /**
-     * Instance of <code>FirebaseManager</code>
-     */
-    private FirebaseManager dbManager;
-    /**
-     * The reference to Firestore database.
-     */
-    FirebaseFirestore db;
+    private FirebaseController dbController;
+    private FirebaseFirestore db;
 
-    /**
-     * Constructor. Call <code>AbstractModel</code>'s constructor, and get the
-     * <code>FirebaseManager</code> and firestore reference.
-     */
-    public AdminEventListModel() {
-        super();
-        this.dbManager = super.getManager();
-        this.db = dbManager.getDB();
+    public AdminEventListController() {
+        this.dbController = new FirebaseController();
+        this.db = dbController.getDb();
     }
 
     /**
@@ -48,8 +33,7 @@ public class AdminEventListModel extends AbstractModel<TestEvent> {
      * @param callback
      * The function to run after all data has been retrieved.
      */
-    @Override
-    public void getAllFromDB(OnSuccessListener<ArrayList<TestEvent>> callback) {
+    public void getAllEventsFromDB(OnSuccessListener<ArrayList<TestEvent>> callback) {
         ArrayList<TestEvent> data = new ArrayList<>();
         CollectionReference eventsCollection = db.collection("events");
 
@@ -73,13 +57,11 @@ public class AdminEventListModel extends AbstractModel<TestEvent> {
         }).addOnFailureListener(e -> Log.e("ModelGetAll", "Error fetching data", e));
     }
 
-    @Override
-    public void getSingleFromDB(String id, OnSuccessListener<TestEvent> callback) {
+    public void getSingleEventFromDB(String id, OnSuccessListener<TestEvent> callback) {
 
     }
 
-    @Override
-    public void deleteSingleFromDB(String id, OnSuccessListener<Boolean> callback) {
+    public void deleteSingleEventFromDB(String id, OnSuccessListener<Boolean> callback) {
         CollectionReference eventsCollection = db.collection("events");
         eventsCollection.document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -93,4 +75,5 @@ public class AdminEventListModel extends AbstractModel<TestEvent> {
             }
         });
     }
+
 }

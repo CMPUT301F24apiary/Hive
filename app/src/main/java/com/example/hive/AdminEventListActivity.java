@@ -17,6 +17,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.hive.Controllers.AdminEventListController;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -27,14 +29,6 @@ import java.util.Comparator;
  */
 public class AdminEventListActivity extends AppCompatActivity {
 
-    /**
-     * This activity's view
-     */
-    private AdminEventListView view;
-    /**
-     * This activity's model
-     */
-    private AdminEventListModel model;
     /**
      * Lays out search view and list view
      */
@@ -69,6 +63,8 @@ public class AdminEventListActivity extends AppCompatActivity {
     private ArrayList<TestEvent> eventDataList;
 
     private ActivityResultLauncher<Intent> deleteItemLauncher;
+
+    private AdminEventListController controller;
 
     /**
      * Updates the ListView by removing loading screen, clearing current list, adding the new items
@@ -132,9 +128,9 @@ public class AdminEventListActivity extends AppCompatActivity {
         eventSearchView = findViewById(R.id.admin_event_list_search_view);
         eventList.setAdapter(eventAdapter);
 
-        model = new AdminEventListModel();
-        view = new AdminEventListView(model, this);
-        model.addView(view);
+//        model = new AdminEventListModel();
+//        view = new AdminEventListView(model, this);
+//        model.addView(view);
 
         sortByDate = findViewById(R.id.date_sort);
         sortByDateIcon = findViewById(R.id.date_sort_icon);
@@ -142,6 +138,10 @@ public class AdminEventListActivity extends AppCompatActivity {
         sortByCostIcon = findViewById(R.id.cost_sort_icon);
         sortByTitle = findViewById(R.id.title_sort);
         sortByTitleIcon = findViewById(R.id.title_sort_icon);
+
+        controller = new AdminEventListController();
+
+        controller.getAllEventsFromDB(this::updateList);
 
         sortByDate.setOnClickListener(new View.OnClickListener() {
             @Override

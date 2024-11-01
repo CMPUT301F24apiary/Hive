@@ -35,6 +35,17 @@ public class FirebaseController {
     }
 
     /**
+     * Empty constructor for FirebaseController
+     * Uses the boolean to avoid multiple instances
+     */
+    public FirebaseController() {
+        if (!is_initialized) {
+            db = FirebaseFirestore.getInstance();
+            is_initialized = true;
+        }
+    }
+
+    /**
      * this gets the database if it has been initialized
      * otherwise it initializes it so that db is not null.
      * @return the database

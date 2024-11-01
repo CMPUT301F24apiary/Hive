@@ -13,9 +13,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.hive.Controllers.AdminEventListController;
+
 public class AdminEventDetailActivity extends AppCompatActivity {
 
-    private AdminEventController controller;
+    private AdminEventListController controller;
 
     private Button deleteEvent;
 
@@ -48,7 +50,7 @@ public class AdminEventDetailActivity extends AppCompatActivity {
         });
 
         deleteEvent = findViewById(R.id.delete_event_button);
-        controller = new AdminEventController(new AdminEventListModel(), this);
+        controller = new AdminEventListController();
 
         TestEvent event = (TestEvent) getIntent().getParcelableExtra("event");
 
@@ -59,7 +61,7 @@ public class AdminEventDetailActivity extends AppCompatActivity {
         deleteEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                controller.handleEventDeletion(event.getFirebaseID());
+                controller.deleteSingleEventFromDB(event.getFirebaseID(), (res) -> onDelete(res));
             }
         });
 
