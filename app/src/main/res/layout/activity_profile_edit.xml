@@ -5,32 +5,74 @@
     android:background="#1A2232"
     tools:context=".ProfileEditActivity">
 
-    <!-- Save Button -->
+
+    <ImageView
+        android:id="@+id/profilePicture"
+        android:layout_width="145dp"
+        android:layout_height="127dp"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="3dp"
+        android:layout_toStartOf="@+id/removePictureButton"
+        android:contentDescription="Profile Picture"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_profile" />
+
+    <Button
+        android:id="@+id/editPictureButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profilePicture"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-107dp"
+        android:layout_marginEnd="82dp"
+        android:backgroundTint="#136F63"
+        android:text="Edit Picture"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/removePictureButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editPictureButton"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="82dp"
+        android:backgroundTint="#136F63"
+        android:text="Remove Picture"
+        android:textColor="#FFFFFF" />
+
+    <!-- Cancel Button -->
+
+    <!-- Name Label -->
+
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
+        android:layout_width="98dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="6dp"
         android:backgroundTint="#136F63"
         android:text="Save"
         android:textColor="#FFFFFF" />
 
-    <!-- Cancel Button -->
     <Button
         android:id="@+id/cancelButton"
-        android:layout_width="wrap_content"
+        android:layout_width="98dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/saveButton"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="-49dp"
-        android:layout_marginEnd="302dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="206dp"
+        android:layout_toStartOf="@+id/saveButton"
         android:backgroundTint="#136F63"
         android:text="Cancel"
         android:textColor="#FFFFFF" />
 
-    <!-- Name Label -->
     <TextView
         android:id="@+id/nameLabel"
         android:layout_width="wrap_content"
@@ -41,9 +83,7 @@
         android:textColor="#136F63"
         android:textSize="18sp" />
 
-    <!-- Name Input -->
 
-    <!-- Username Label -->
     <EditText
         android:id="@+id/personNameInput"
         android:layout_width="276dp"
