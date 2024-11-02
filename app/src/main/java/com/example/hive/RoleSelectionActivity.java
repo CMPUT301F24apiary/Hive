@@ -25,11 +25,11 @@ public class RoleSelectionActivity extends AppCompatActivity {
             }
         });
 
-        // Organizer button currently does nothing
         organizerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // No action for Organizer button as of now
+                Intent intent = new Intent(RoleSelectionActivity.this, OrganizerEventListActivity.class);
+                startActivity(intent);
             }
         });
     }

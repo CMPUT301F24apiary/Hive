@@ -33,6 +33,9 @@
         <!-- Profile Activities -->
         <activity android:name=".ProfileActivity" />
         <activity android:name=".ProfileEditActivity" />
+        <activity android:name=".FacilityActivity" />
+        <activity android:name=".EditFacilityProfileActivity" />
+        <activity android:name=".OrganizerEventListActivity" />
 
     </application>
 </manifest>
