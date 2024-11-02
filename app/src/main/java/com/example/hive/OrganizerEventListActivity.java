@@ -6,6 +6,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * This shows the eventlist to the organizer
+ */
 public class OrganizerEventListActivity extends AppCompatActivity {
 
     private ImageButton facilityprofileButton;
