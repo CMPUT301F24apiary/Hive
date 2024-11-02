@@ -63,16 +63,25 @@ public class AdminEventListController {
 
     public void deleteSingleEventFromDB(String id, OnSuccessListener<Boolean> callback) {
         CollectionReference eventsCollection = db.collection("events");
-        eventsCollection.document(id).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                callback.onSuccess(Boolean.TRUE);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+
+        // First, check if the document exists
+        eventsCollection.document(id).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // Document exists, proceed to delete
+                eventsCollection.document(id).delete().addOnSuccessListener(unused -> {
+                    callback.onSuccess(Boolean.TRUE);
+                }).addOnFailureListener(e -> {
+                    Log.e("ControllerDeleteEvent", "Error deleting document", e);
+                    callback.onSuccess(Boolean.FALSE);
+                });
+            } else {
+                Log.d("ControllerDeleteEvent", "Doc does not exist");
+                // Document does not exist, notify callback with FALSE
                 callback.onSuccess(Boolean.FALSE);
             }
+        }).addOnFailureListener(e -> {
+            Log.e("ControllerDeleteEvent", "Error fetching document", e);
+            callback.onSuccess(Boolean.FALSE);
         });
     }
 

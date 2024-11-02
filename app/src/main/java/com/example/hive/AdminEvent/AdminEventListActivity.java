@@ -1,4 +1,4 @@
-package com.example.hive;
+package com.example.hive.AdminEvent;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,9 +18,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.hive.Controllers.AdminEventListController;
+import com.example.hive.R;
+import com.example.hive.TestEvent;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 /**
  * Activity to display the list of all events.
@@ -128,10 +129,6 @@ public class AdminEventListActivity extends AppCompatActivity {
         eventSearchView = findViewById(R.id.admin_event_list_search_view);
         eventList.setAdapter(eventAdapter);
 
-//        model = new AdminEventListModel();
-//        view = new AdminEventListView(model, this);
-//        model.addView(view);
-
         sortByDate = findViewById(R.id.date_sort);
         sortByDateIcon = findViewById(R.id.date_sort_icon);
         sortByCost = findViewById(R.id.cost_sort);
@@ -146,27 +143,15 @@ public class AdminEventListActivity extends AppCompatActivity {
         sortByDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventDataList.sort(new Comparator<TestEvent>() {
-                    @Override
-                    public int compare(TestEvent o1, TestEvent o2) {
-                        long dateDiff = o1.getDateInMS() - o2.getDateInMS();
-                        int res = 0;
-                        if (dateDiff < 0) {
-                            res = -1;
-                        } else if (dateDiff > 0) {
-                            res = 1;
-                        }
-                        if (sortByDateAsc) {
-                            sortByDateAsc = false;
-                            sortByDateIcon.setText("⌃");
-                        } else {
-                            sortByDateAsc = true;
-                            sortByDateIcon.setText("⌄");
-                            res = -res;
-                        }
-                        return res;
-                    }
+                eventDataList.sort((o1, o2) -> {
+                    int res = Long.compare(o1.getDateInMS(), o2.getDateInMS());
+                    return sortByDateAsc ? res : -res;
                 });
+
+                // Toggle the sort direction and update the icon
+                sortByDateAsc = !sortByDateAsc;
+                sortByDateIcon.setText(sortByDateAsc ? "⌄" : "⌃");
+
                 eventAdapter.updateData(eventDataList);
                 eventAdapter.notifyDataSetChanged();
             }
@@ -175,21 +160,14 @@ public class AdminEventListActivity extends AppCompatActivity {
         sortByTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventDataList.sort(new Comparator<TestEvent>() {
-                    @Override
-                    public int compare(TestEvent o1, TestEvent o2) {
-                        int res = o1.getTitle().compareTo(o2.getTitle());
-                        if (sortByTitleAsc) {
-                            sortByTitleAsc = false;
-                            sortByTitleIcon.setText("⌃");
-                        } else {
-                            sortByTitleAsc = true;
-                            sortByTitleIcon.setText("⌄");
-                            res = -res;
-                        }
-                        return res;
-                    }
+                eventDataList.sort((o1, o2) -> {
+                    int res = o1.getTitle().compareTo(o2.getTitle());
+                    return sortByTitleAsc ? res : -res;
                 });
+
+                sortByTitleAsc = !sortByTitleAsc;
+                sortByTitleIcon.setText(sortByTitleAsc ? "⌄" : "⌃");
+
                 eventAdapter.updateData(eventDataList);
                 eventAdapter.notifyDataSetChanged();
             }
@@ -198,29 +176,16 @@ public class AdminEventListActivity extends AppCompatActivity {
         sortByCost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventDataList.sort(new Comparator<TestEvent>() {
-                    @Override
-                    public int compare(TestEvent o1, TestEvent o2) {
-                        float cost1 = Float.parseFloat(o1.getCost());
-                        float cost2 = Float.parseFloat(o2.getCost());
-                        float diff = cost1 - cost2;
-                        int res = 0;
-                        if (diff < 0) {
-                            res = -1;
-                        } else if (diff > 0) {
-                            res = 1;
-                        }
-                        if (sortByCostAsc) {
-                            sortByCostAsc = false;
-                            sortByCostIcon.setText("⌃");
-                        } else {
-                            sortByCostAsc = true;
-                            sortByCostIcon.setText("⌄");
-                            res = -res;
-                        }
-                        return res;
-                    }
+                eventDataList.sort((o1, o2) -> {
+                    float cost1 = Float.parseFloat(o1.getCost());
+                    float cost2 = Float.parseFloat(o2.getCost());
+                    int res = Float.compare(cost1, cost2);
+                    return sortByCostAsc ? res : -res;
                 });
+
+                sortByCostAsc = !sortByCostAsc;
+                sortByCostIcon.setText(sortByCostAsc ? "⌄" : "⌃");
+
                 eventAdapter.updateData(eventDataList);
                 eventAdapter.notifyDataSetChanged();
             }

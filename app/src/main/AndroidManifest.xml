@@ -35,8 +35,8 @@
         <activity android:name=".ProfileEditActivity" />
 
         <!-- Admin Event Activities -->
-        <activity android:name=".AdminEventListActivity" />
-        <activity android:name=".AdminEventDetailActivity" />
+        <activity android:name=".AdminEvent.AdminEventListActivity" />
+        <activity android:name=".AdminEvent.AdminEventDetailActivity" />
 
 
     </application>
