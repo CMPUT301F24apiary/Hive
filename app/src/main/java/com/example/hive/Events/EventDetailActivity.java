@@ -1,4 +1,4 @@
-package com.example.hive.AdminEvent;
+package com.example.hive.Events;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,13 +8,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentResultListener;
 
+import com.example.hive.AdminEvent.ConfirmEventDelete;
+import com.example.hive.AdminEvent.DeleteEventListener;
 import com.example.hive.Controllers.AdminEventListController;
 import com.example.hive.R;
 import com.example.hive.TestEvent;
@@ -26,7 +26,7 @@ import com.example.hive.TestEvent;
  *
  * @author Zach
  */
-public class AdminEventDetailActivity extends AppCompatActivity implements DeleteEventListener {
+public class EventDetailActivity extends AppCompatActivity implements DeleteEventListener {
 
     /**
      * Controller that communicates with firebase
@@ -86,7 +86,7 @@ public class AdminEventDetailActivity extends AppCompatActivity implements Delet
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_admin_event_detail);
+        setContentView(R.layout.activity_event_detail);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

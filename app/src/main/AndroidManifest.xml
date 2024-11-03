@@ -39,7 +39,7 @@
 
         <!-- Admin Event Activities -->
         <activity android:name=".AdminEvent.AdminEventListActivity" />
-        <activity android:name=".AdminEvent.AdminEventDetailActivity" />
+        <activity android:name=".Events.EventDetailActivity" />
 
 
     </application>
