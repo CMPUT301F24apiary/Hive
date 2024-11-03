@@ -37,5 +37,10 @@
         <activity android:name=".EditFacilityProfileActivity" />
         <activity android:name=".OrganizerEventListActivity" />
 
+        <!-- Admin Event Activities -->
+        <activity android:name=".AdminEvent.AdminEventListActivity" />
+        <activity android:name=".AdminEvent.AdminEventDetailActivity" />
+
+
     </application>
 </manifest>

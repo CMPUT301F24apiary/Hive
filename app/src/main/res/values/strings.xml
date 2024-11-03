@@ -1,5 +1,21 @@
 <resources>
     <string name="app_name">Hive</string>
+    <string name="event_title_default">Title</string>
+    <string name="event_date_default">Date</string>
+    <string name="event_time_default">Time</string>
+    <string name="event_cost_default">Cost</string>
+    <string name="event_details_button_text">Details</string>
+    <string name="loading_text">Loading...</string>
+    <string name="date_sort_icon_text" />
+    <string name="title_sort_icon_text" />
+    <string name="cost_sort_icon_text" />
+    <string name="sort_by_text">Sort:</string>
+    <string name="delete_event_text">Delete Event</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="button_confirm_text">Confirm</string>
+    <string name="button_cancel_text">Cancel</string>
+    <string name="confirm_delete_event_text">Are you sure you want to delete this event?</string>
     <string name="facility_name">Facility Name</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="contact_information">CONTACT INFORMATION</string>
