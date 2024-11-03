@@ -35,37 +35,37 @@ public class AdminEventListActivity extends AppCompatActivity {
      */
     private LinearLayout eventLinearContainer;
     /**
-     * This activity's ListView that displays the events in list form
-     */
-    private ListView eventList;
-    /**
-     * This activity's SearchView that displays the events in list form
-     */
-    private SearchView eventSearchView;
-    /**
      * This activity's adapter
      */
     private AdminEventListAdapter eventAdapter;
     /**
-     * Sort
+     * Reference to icon indicating sort direction for event date
      */
-    private TextView sortByDate;
     private TextView sortByDateIcon;
+    /**
+     * Boolean value to represent direction in which we are sorting for event date
+     */
     private boolean sortByDateAsc;
-    private TextView sortByTitle;
+    /**
+     * Reference to icon indicating sort direction for event title
+     */
     private TextView sortByTitleIcon;
+    /**
+     * Boolean value to represent direction in which we are sorting for event title
+     */
     private boolean sortByTitleAsc;
-    private TextView sortByCost;
+    /**
+     * Reference to icon indicating sort direction for event cost
+     */
     private TextView sortByCostIcon;
+    /**
+     * Boolean value to represent direction in which we are sorting for event cost
+     */
     private boolean sortByCostAsc;
     /**
      * This activity's data list - holds all events
      */
     private ArrayList<TestEvent> eventDataList;
-
-    private ActivityResultLauncher<Intent> deleteItemLauncher;
-
-    private AdminEventListController controller;
 
     /**
      * Updates the ListView by removing loading screen, clearing current list, adding the new items
@@ -75,26 +75,19 @@ public class AdminEventListActivity extends AppCompatActivity {
      * The list of events to display
      */
     public void updateList(ArrayList<TestEvent> data) {
-        Log.d("AdminEventListActivity", "updateList called with " + data.size() + " items");
+        // Get reference to TextView that displays loading text and hide it
         TextView loading = findViewById(R.id.event_list_loading_text);
         loading.setVisibility(View.GONE);
+        // Un-hide the container that displays the list, search, and sort
         eventLinearContainer.setVisibility(View.VISIBLE);
+        // Update the array in this activity and call the adapter's update method
         eventDataList.clear();
         eventDataList.addAll(data);
-        Log.d("AdminEventListActivity", "eventDataList size after update: " + eventDataList.size());
         eventAdapter.updateData(eventDataList);
+        // Notify the adapter that the dataset has changed, so it can update the ListView
         eventAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * onCreate method for EventList activity.
-     *
-     *
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,14 +99,18 @@ public class AdminEventListActivity extends AppCompatActivity {
             return insets;
         });
 
-        deleteItemLauncher = registerForActivityResult(
+        // Create activity result launcher for item deletion - adds ability to get result from the
+        // detail activity. If the result indicates deletion was performed, remove the event from
+        // arrays and notify the adapter
+        ActivityResultLauncher<Intent> deleteItemLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == 1) {
                         Intent data = result.getData();
                         if (data != null) {
                             String deletedItemId = data.getStringExtra("item_id");
-                            int deletedPos = Integer.parseInt(data.getStringExtra("position"));
+                            int deletedPos = Integer
+                                    .parseInt(data.getStringExtra("position"));
                             eventDataList.remove(deletedPos);
                             eventAdapter.updateData(eventDataList);
                             eventAdapter.notifyDataSetChanged();
@@ -122,24 +119,33 @@ public class AdminEventListActivity extends AppCompatActivity {
                 }
         );
 
+        // Create new list to hold all events, and provide it to the adapter
         eventDataList = new ArrayList<TestEvent>();
         eventAdapter = new AdminEventListAdapter(this, eventDataList, deleteItemLauncher);
+
+        // Container that holds the list, search bar, and sort options
         eventLinearContainer = findViewById(R.id.admin_event_list_linear_layout);
-        eventList = findViewById(R.id.admin_event_list_view);
-        eventSearchView = findViewById(R.id.admin_event_list_search_view);
+        ListView eventList = findViewById(R.id.admin_event_list_view);
+        SearchView eventSearchView = findViewById(R.id.admin_event_list_search_view);
+        // Set the adapter for the event list view
         eventList.setAdapter(eventAdapter);
 
-        sortByDate = findViewById(R.id.date_sort);
+        // Get references to all sort texts and arrows
+        TextView sortByDate = findViewById(R.id.date_sort);
         sortByDateIcon = findViewById(R.id.date_sort_icon);
-        sortByCost = findViewById(R.id.cost_sort);
+        TextView sortByCost = findViewById(R.id.cost_sort);
         sortByCostIcon = findViewById(R.id.cost_sort_icon);
-        sortByTitle = findViewById(R.id.title_sort);
+        TextView sortByTitle = findViewById(R.id.title_sort);
         sortByTitleIcon = findViewById(R.id.title_sort_icon);
 
-        controller = new AdminEventListController();
+        // Define controller that communicates with firebase
+        AdminEventListController controller = new AdminEventListController();
 
+        // Use the getAllEventsFromDB method from the controller to get all the events in the
+        // database. Use this activity's updateList method to display all the events in the app
         controller.getAllEventsFromDB(this::updateList);
 
+        // Logic to sort list by date
         sortByDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,6 +163,7 @@ public class AdminEventListActivity extends AppCompatActivity {
             }
         });
 
+        // Logic to sort list by title
         sortByTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,6 +180,7 @@ public class AdminEventListActivity extends AppCompatActivity {
             }
         });
 
+        // Logic to sort list by cost
         sortByCost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,6 +199,7 @@ public class AdminEventListActivity extends AppCompatActivity {
             }
         });
 
+        // Logic to search for an event - currently supports only searching event title
         eventSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

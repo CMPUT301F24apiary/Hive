@@ -34,11 +34,6 @@ public class AdminEventDetailActivity extends AppCompatActivity implements Delet
     private AdminEventListController controller;
 
     /**
-     * Button to initiate event deletion
-     */
-    private Button deleteEvent;
-
-    /**
      * Firebase ID of the event displayed in this activity
      */
     private String id;
@@ -57,7 +52,7 @@ public class AdminEventDetailActivity extends AppCompatActivity implements Delet
      * Calls on the controller to delete this event from firebase
      */
     public void deleteEvent() {
-        controller.deleteSingleEventFromDB("", this::onDelete);
+        controller.deleteSingleEventFromDB(event.getFirebaseID(), this::onDelete);
     }
 
     /**
@@ -98,25 +93,28 @@ public class AdminEventDetailActivity extends AppCompatActivity implements Delet
             return insets;
         });
 
-        deleteEvent = findViewById(R.id.delete_event_button);
+        // Get reference to deleteEvent button
+        Button deleteEvent = findViewById(R.id.delete_event_button);
+
+        // Create new instance of AdminEventListController to communicate with firebase
         controller = new AdminEventListController();
 
+        // Get event object from the intent
         event = (TestEvent) getIntent().getParcelableExtra("event");
 
-        id = event.getFirebaseID();
+        // Get firebase ID of event - if event is null, then there was an issue getting the event
+        // from intent, so report to error log and finish activity
+        if (event != null) {
+            id = event.getFirebaseID();
+        } else {
+            Log.e("Event Detail Activity", "Error getting event from intent");
+            finish();
+        }
 
+        // Get the position of the event in the list activity's array from the intent
         position = getIntent().getStringExtra("position");
 
-        getSupportFragmentManager().setFragmentResultListener("confirmation", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                boolean isConfirmed = result.getBoolean("confirmed");
-                if (isConfirmed) {
-                    controller.deleteSingleEventFromDB(event.getFirebaseID(), (res) -> onDelete(res));
-                }
-            }
-        });
-
+        // Logic for when delete button is clicked - show confirmation fragment
         deleteEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

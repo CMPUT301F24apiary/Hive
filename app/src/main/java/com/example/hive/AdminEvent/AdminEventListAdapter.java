@@ -2,6 +2,7 @@ package com.example.hive.AdminEvent;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import com.example.hive.TestEvent;
 import java.util.ArrayList;
 
 /**
- * Custom adapter for displaying Events
+ * Custom adapter for displaying Events. Implements Filterable to support searching.
  *
  * @author Zach
  */
@@ -30,17 +31,23 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
     /**
      * Original list of events
      */
-    private ArrayList<TestEvent> og;
+    private final ArrayList<TestEvent> og;
+
     /**
      * Filtered list of events
      */
-    private ArrayList<TestEvent> filtered;
+    private final ArrayList<TestEvent> filtered;
+
     /**
-     * Filter
+     * Filter object for searching
      */
     private Filter filter;
 
-    private ActivityResultLauncher<Intent> deleteItemLauncher;
+    /**
+     * The delete item launcher that is defined in the list activity
+     */
+    private final ActivityResultLauncher<Intent> deleteItemLauncher;
+
     /**
      * Constructor for the adapter. Calls ArrayAdapter's instructor with given data
      *
@@ -48,14 +55,25 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
      * The context from which this adapter is being created.
      * @param events
      * The list of events to display.
+     * @param deleteItemLauncher
+     * The launcher for the event view activity, as defined in list activity
      */
-    public AdminEventListAdapter(Context context, ArrayList<TestEvent> events, ActivityResultLauncher<Intent> deleteItemLauncher) {
+    public AdminEventListAdapter(Context context,
+                                 ArrayList<TestEvent> events,
+                                 ActivityResultLauncher<Intent> deleteItemLauncher) {
         super(context, 0, events);
         this.og = new ArrayList<TestEvent>(events);
         this.filtered = new ArrayList<TestEvent>(events);
         this.deleteItemLauncher = deleteItemLauncher;
     }
 
+    /**
+     * Updates the two arrays needed for searching. Should be called before
+     * <code>notifyDataSetChanged</code> whenever it is used
+     *
+     * @param newEvents
+     * The array of event objects to update this adapter's arrays with
+     */
     public void updateData(ArrayList<TestEvent> newEvents) {
         og.clear();
         og.addAll(newEvents);
@@ -132,6 +150,12 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
         TextView eventTime = view.findViewById(R.id.event_time);
         TextView eventCost = view.findViewById(R.id.event_cost);
 
+        if (event == null) {
+            Log.e("EventListAdapter getView",
+                    "Event object was null. Return default view");
+            return view;
+        }
+
         eventTitle.setText(event.getTitle());
         eventDate.setText(event.getDate());
         eventTime.setText(event.getTime());
@@ -161,6 +185,9 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
         return filter;
     }
 
+    /**
+     * Custom Filter class to handle searching of events
+     */
     private class EventFilter extends Filter {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
@@ -184,6 +211,7 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
             return filterResults;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             // Update filtered data and refresh the list

@@ -16,14 +16,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class AdminEventListController {
+/**
+ * Controller to handle retrieving all events from the firestore database. Extends
+ * <code>FirebaseController</code> and implements additional methods relating to events.
+ *
+ * @author Zach
+ */
+public class AdminEventListController extends FirebaseController {
 
-    private FirebaseController dbController;
-    private FirebaseFirestore db;
+    // Database reference
+    private final FirebaseFirestore db;
 
+    /**
+     * Constructor - call <code>FirebaseController</code>'s constructor and initialize the database
+     * reference
+     */
     public AdminEventListController() {
-        this.dbController = new FirebaseController();
-        this.db = dbController.getDb();
+        super();
+        this.db = super.getDb();
     }
 
     /**
@@ -57,10 +67,15 @@ public class AdminEventListController {
         }).addOnFailureListener(e -> Log.e("ModelGetAll", "Error fetching data", e));
     }
 
-    public void getSingleEventFromDB(String id, OnSuccessListener<TestEvent> callback) {
-
-    }
-
+    /**
+     * Deletes a single event from the database with provided id. Handles the case in which the
+     * document does not exist, or the deletion fails.
+     *
+     * @param id
+     * The id number created in firebase that refers to the event that is to be deleted.
+     * @param callback
+     * The callback function to call on either success or failure. Must have a Boolean parameter.
+     */
     public void deleteSingleEventFromDB(String id, OnSuccessListener<Boolean> callback) {
         CollectionReference eventsCollection = db.collection("events");
 
