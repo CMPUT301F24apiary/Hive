@@ -16,8 +16,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.hive.Event;
 import com.example.hive.R;
-import com.example.hive.TestEvent;
 
 import java.util.ArrayList;
 
@@ -26,17 +26,17 @@ import java.util.ArrayList;
  *
  * @author Zach
  */
-public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Filterable {
+public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filterable {
 
     /**
      * Original list of events
      */
-    private final ArrayList<TestEvent> og;
+    private final ArrayList<Event> og;
 
     /**
      * Filtered list of events
      */
-    private final ArrayList<TestEvent> filtered;
+    private final ArrayList<Event> filtered;
 
     /**
      * Filter object for searching
@@ -59,11 +59,11 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
      * The launcher for the event view activity, as defined in list activity
      */
     public AdminEventListAdapter(Context context,
-                                 ArrayList<TestEvent> events,
+                                 ArrayList<Event> events,
                                  ActivityResultLauncher<Intent> deleteItemLauncher) {
         super(context, 0, events);
-        this.og = new ArrayList<TestEvent>(events);
-        this.filtered = new ArrayList<TestEvent>(events);
+        this.og = new ArrayList<Event>(events);
+        this.filtered = new ArrayList<Event>(events);
         this.deleteItemLauncher = deleteItemLauncher;
     }
 
@@ -74,7 +74,7 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
      * @param newEvents
      * The array of event objects to update this adapter's arrays with
      */
-    public void updateData(ArrayList<TestEvent> newEvents) {
+    public void updateData(ArrayList<Event> newEvents) {
         og.clear();
         og.addAll(newEvents);
         filtered.clear();
@@ -98,11 +98,11 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
      * @param position Position of the item whose data we want within the adapter's
      * data set.
      * @return
-     * The TestEvent object at provided position
+     * The Event object at provided position
      */
     @Nullable
     @Override
-    public TestEvent getItem(int position) {
+    public Event getItem(int position) {
         return filtered.get(position);
     }
 
@@ -137,13 +137,13 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
         View view;
 
         if (convertView == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.admin_event_list_item,
+            view = LayoutInflater.from(getContext()).inflate(R.layout.event_list_item,
                     parent, false);
         } else {
             view = convertView;
         }
 
-        TestEvent event = getItem(position);
+        Event event = getItem(position);
 
         TextView eventTitle = view.findViewById(R.id.event_title);
         TextView eventDate = view.findViewById(R.id.event_date);
@@ -157,8 +157,8 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
         }
 
         eventTitle.setText(event.getTitle());
-        eventDate.setText(event.getDate());
-        eventTime.setText(event.getTime());
+        eventDate.setText(event.getStartDate());
+        eventTime.setText(event.getStartTime());
         eventCost.setText(String.format("$%s", event.getCost()));
 
         Button detailsBtn = view.findViewById(R.id.event_details_button);
@@ -192,14 +192,14 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults filterResults = new FilterResults();
-            ArrayList<TestEvent> filteredList = new ArrayList<>();
+            ArrayList<Event> filteredList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
                 // No search query, return the original list
                 filteredList.addAll(og);
             } else {
                 String query = constraint.toString().toLowerCase().trim();
-                for (TestEvent event : og) {
+                for (Event event : og) {
                     if (event.getTitle().toLowerCase().contains(query)) {
                         filteredList.add(event);
                     }
@@ -216,7 +216,7 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
         protected void publishResults(CharSequence constraint, FilterResults results) {
             // Update filtered data and refresh the list
             filtered.clear();
-            filtered.addAll((ArrayList<TestEvent>) results.values);
+            filtered.addAll((ArrayList<Event>) results.values);
             notifyDataSetChanged();
         }
     }

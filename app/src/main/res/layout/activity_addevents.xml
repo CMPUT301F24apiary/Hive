@@ -85,6 +85,7 @@
         </LinearLayout>
 
         <!-- New Event Time field -->
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -107,6 +108,33 @@
                 android:hint="Enter event time"
                 android:inputType="time"
                 android:backgroundTint="@color/white"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="Duration"
+                android:textColor="@color/mainGreen"
+                android:textSize="22sp" />
+
+            <EditText
+                android:id="@+id/eventDuration"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:hint="Enter event duration in hh:mm"
+                android:inputType="time"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
