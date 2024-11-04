@@ -1,11 +1,10 @@
 package com.example.hive.Controllers;
 
+import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
+
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.example.hive.TestEvent;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.example.hive.Events.TestEvent;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -15,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Controller to handle retrieving all events from the firestore database. Extends
@@ -51,15 +51,15 @@ public class AdminEventListController extends FirebaseController {
             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                 String id = doc.getId();
                 String title = (String) doc.get("title");
-                long dateAsLong = (long) doc.get("date");
-                Date dateAsDate = new Date(dateAsLong);
-                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd-HH:mm", Locale.ENGLISH);
-                String formatted = sdf.format(dateAsDate);
-                String date = formatted.split("-")[0];
-                String time = formatted.split("-")[1];
+                long startDate = (long) doc.get("start_date_time");
+                long endDate = (long) doc.get("end_date_time");
                 String cost = (String) doc.get("cost");
-
-                TestEvent newEvent = new TestEvent(title, date, time, cost, dateAsLong, id);
+                String description = (String) doc.get("description");
+                String location = (String) doc.get("location");
+                String posterTemp = (String) doc.get("poster");
+                String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
+                TestEvent newEvent = new TestEvent(title, cost, startDate, endDate, id, description,
+                        location, posterURL);
                 data.add(newEvent);
             }
             // Notify the callback with the fetched data

@@ -14,7 +14,7 @@
         android:text="@string/loading_text"
         android:textColor="@color/white"
         android:textSize="34sp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,11 +25,68 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="match_parent"
+                android:layout_height="41dp"
+                android:layout_marginBottom="8dp"
+                app:srcCompat="@drawable/hivelogo_white" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainGreen"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="View Facilities" />
+
+                <Space
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainGreen"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="View Images" />
+
+                <Space
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/button3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainGreen"
+                    android:paddingLeft="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="View Profiles" />
+            </LinearLayout>
+
+        </LinearLayout>
 
         <SearchView
             android:id="@+id/admin_event_list_search_view"
@@ -37,7 +94,9 @@
             android:layout_height="wrap_content"
             android:iconifiedByDefault="false"
             android:queryHint="Event title"
-            android:searchIcon="@drawable/ic_white_search" />
+            android:searchIcon="@drawable/ic_white_search" >
+
+        </SearchView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,8 +113,8 @@
 
             <Space
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/date_sort"
@@ -74,8 +133,8 @@
 
             <Space
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/title_sort"
@@ -94,8 +153,8 @@
 
             <Space
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/cost_sort"
@@ -117,6 +176,7 @@
             android:id="@+id/admin_event_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
         <!--            android:visibility="visible" -->
     </LinearLayout>
 

@@ -2,7 +2,6 @@ package com.example.hive.AdminEvent;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -19,7 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.hive.Controllers.AdminEventListController;
 import com.example.hive.R;
-import com.example.hive.TestEvent;
+import com.example.hive.Events.TestEvent;
 
 import java.util.ArrayList;
 
@@ -150,7 +149,7 @@ public class AdminEventListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eventDataList.sort((o1, o2) -> {
-                    int res = Long.compare(o1.getDateInMS(), o2.getDateInMS());
+                    int res = Long.compare(o1.getStartDateInMS(), o2.getStartDateInMS());
                     return sortByDateAsc ? res : -res;
                 });
 

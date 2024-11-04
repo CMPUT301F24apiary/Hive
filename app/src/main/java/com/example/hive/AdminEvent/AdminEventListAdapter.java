@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 
 import com.example.hive.Events.EventDetailActivity;
 import com.example.hive.R;
-import com.example.hive.TestEvent;
+import com.example.hive.Events.TestEvent;
 
 import java.util.ArrayList;
 
@@ -158,8 +158,8 @@ public class AdminEventListAdapter extends ArrayAdapter<TestEvent> implements Fi
         }
 
         eventTitle.setText(event.getTitle());
-        eventDate.setText(event.getDate());
-        eventTime.setText(event.getTime());
+        eventDate.setText(event.getStartDate());
+        eventTime.setText(event.getStartTime());
         eventCost.setText(String.format("$%s", event.getCost()));
 
         Button detailsBtn = view.findViewById(R.id.event_details_button);
