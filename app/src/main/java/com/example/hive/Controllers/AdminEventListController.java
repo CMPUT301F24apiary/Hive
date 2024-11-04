@@ -36,6 +36,17 @@ public class AdminEventListController extends FirebaseController {
         this.db = super.getDb();
     }
 
+    public void addEvent(TestEvent event, OnSuccessListener<Void> listener) {
+        String documentId = event.getTitle();
+
+        db.collection("events").document(documentId)
+                .set(event)
+                .addOnSuccessListener(listener)
+                .addOnFailureListener(e -> {
+                    Log.w("AdminEventListController", "Error adding event", e);
+                });
+    }
+
     /**
      * Gets all event information from events collection of database. Once all data is retrieved,
      * callback function is called.
@@ -44,27 +55,27 @@ public class AdminEventListController extends FirebaseController {
      * The function to run after all data has been retrieved.
      */
     public void getAllEventsFromDB(OnSuccessListener<ArrayList<TestEvent>> callback) {
-        ArrayList<TestEvent> data = new ArrayList<>();
-        CollectionReference eventsCollection = db.collection("events");
-
-        eventsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                String id = doc.getId();
-                String title = (String) doc.get("title");
-                long dateAsLong = (long) doc.get("date");
-                Date dateAsDate = new Date(dateAsLong);
-                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd-HH:mm", Locale.ENGLISH);
-                String formatted = sdf.format(dateAsDate);
-                String date = formatted.split("-")[0];
-                String time = formatted.split("-")[1];
-                String cost = (String) doc.get("cost");
-
-                TestEvent newEvent = new TestEvent(title, date, time, cost, dateAsLong, id);
-                data.add(newEvent);
-            }
-            // Notify the callback with the fetched data
-            callback.onSuccess(data);
-        }).addOnFailureListener(e -> Log.e("ModelGetAll", "Error fetching data", e));
+//        ArrayList<TestEvent> data = new ArrayList<>();
+//        CollectionReference eventsCollection = db.collection("events");
+//
+//        eventsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+//            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+//                String id = doc.getId();
+//                String title = (String) doc.get("title");
+//                long dateAsLong = (long) doc.get("date");
+//                Date dateAsDate = new Date(dateAsLong);
+//                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd-HH:mm", Locale.ENGLISH);
+//                String formatted = sdf.format(dateAsDate);
+//                String date = formatted.split("-")[0];
+//                String time = formatted.split("-")[1];
+//                String cost = (String) doc.get("cost");
+//
+//                TestEvent newEvent = new TestEvent(title, date, time, cost, dateAsLong, id);
+//                data.add(newEvent);
+//            }
+//            // Notify the callback with the fetched data
+//            callback.onSuccess(data);
+//        }).addOnFailureListener(e -> Log.e("ModelGetAll", "Error fetching data", e));
     }
 
     /**

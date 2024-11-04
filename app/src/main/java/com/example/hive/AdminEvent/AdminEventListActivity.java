@@ -149,10 +149,10 @@ public class AdminEventListActivity extends AppCompatActivity {
         sortByDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventDataList.sort((o1, o2) -> {
-                    int res = Long.compare(o1.getDateInMS(), o2.getDateInMS());
-                    return sortByDateAsc ? res : -res;
-                });
+//                eventDataList.sort((o1, o2) -> {
+//                   // int res = Long.compare(o1.getDateInMS(), o2.getDateInMS());
+//                   // return sortByDateAsc ? res : -res;
+//                });
 
                 // Toggle the sort direction and update the icon
                 sortByDateAsc = !sortByDateAsc;
