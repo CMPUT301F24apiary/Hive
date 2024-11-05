@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "134007697741",
     "project_id": "apiary-hive",
-    "storage_bucket": "apiary-hive.appspot.com"
+    "storage_bucket": "apiary-hive.firebasestorage.app"
   },
   "client": [
     {
