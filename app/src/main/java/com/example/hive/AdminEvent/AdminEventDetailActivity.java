@@ -8,16 +8,14 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentResultListener;
 
-import com.example.hive.Controllers.AdminEventListController;
+import com.example.hive.Controllers.EventController;
 import com.example.hive.R;
-import com.example.hive.TestEvent;
+import com.example.hive.Event;
 
 /**
  * Display event information and delete button for admin.
@@ -31,7 +29,7 @@ public class AdminEventDetailActivity extends AppCompatActivity implements Delet
     /**
      * Controller that communicates with firebase
      */
-    private AdminEventListController controller;
+    private EventController controller;
 
     /**
      * Firebase ID of the event displayed in this activity
@@ -46,7 +44,7 @@ public class AdminEventDetailActivity extends AppCompatActivity implements Delet
     /**
      * The event object that is displayed in this activity
      */
-    private TestEvent event;
+    private Event event;
 
     /**
      * Calls on the controller to delete this event from firebase
@@ -96,11 +94,11 @@ public class AdminEventDetailActivity extends AppCompatActivity implements Delet
         // Get reference to deleteEvent button
         Button deleteEvent = findViewById(R.id.delete_event_button);
 
-        // Create new instance of AdminEventListController to communicate with firebase
-        controller = new AdminEventListController();
+        // Create new instance of EventController to communicate with firebase
+        controller = new EventController();
 
         // Get event object from the intent
-        event = (TestEvent) getIntent().getParcelableExtra("event");
+        event = (Event) getIntent().getParcelableExtra("event");
 
         // Get firebase ID of event - if event is null, then there was an issue getting the event
         // from intent, so report to error log and finish activity

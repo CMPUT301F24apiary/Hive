@@ -1,4 +1,4 @@
-package com.example.hive.AdminEvent;
+package com.example.hive;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,17 +16,17 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.hive.Event;
-import com.example.hive.R;
+import com.example.hive.AdminEvent.AdminEventDetailActivity;
 
 import java.util.ArrayList;
 
 /**
- * Custom adapter for displaying Events. Implements Filterable to support searching.
+ * Custom adapter to display organizer events in a ListView. Currently identical to
+ * <code>AdminEventListAdapter</code> - changes may be made once users can be distinguished.
  *
  * @author Zach
  */
-public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filterable {
+public class OrganizerEventAdapter extends ArrayAdapter<Event> implements Filterable {
 
     /**
      * Original list of events
@@ -58,7 +58,7 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filter
      * @param deleteItemLauncher
      * The launcher for the event view activity, as defined in list activity
      */
-    public AdminEventListAdapter(Context context,
+    public OrganizerEventAdapter(Context context,
                                  ArrayList<Event> events,
                                  ActivityResultLauncher<Intent> deleteItemLauncher) {
         super(context, 0, events);
@@ -180,7 +180,7 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filter
     @Override
     public Filter getFilter() {
         if (filter == null) {
-            filter = new EventFilter();
+            filter = new OrganizerEventAdapter.EventFilter();
         }
         return filter;
     }
