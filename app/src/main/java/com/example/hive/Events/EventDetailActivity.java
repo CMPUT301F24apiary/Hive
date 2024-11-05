@@ -21,12 +21,14 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.hive.AdminEvent.ConfirmEventDelete;
 import com.example.hive.AdminEvent.DeleteEventListener;
 import com.example.hive.Controllers.AdminEventListController;
+import com.example.hive.Controllers.EventController;
 import com.example.hive.R;
 
 import java.util.Date;
 import java.util.Objects;
 
 import com.squareup.picasso.Picasso;
+import com.example.hive.Event;
 
 /**
  * Display event information and delete button for admin.
@@ -40,7 +42,7 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
     /**
      * Controller that communicates with firebase
      */
-    private AdminEventListController controller;
+    private EventController controller;
 
     /**
      * Firebase ID of the event displayed in this activity
@@ -55,7 +57,7 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
     /**
      * The event object that is displayed in this activity
      */
-    private TestEvent event;
+    private Event event;
 
     /**
      * Calls on the controller to delete this event from firebase
@@ -122,11 +124,11 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
         TextView eventDescriptionView = findViewById(R.id.event_detail_description);
         TextView eventNumParticipantsView = findViewById(R.id.event_detail_number_participants);
 
-        // Create new instance of AdminEventListController to communicate with firebase
-        controller = new AdminEventListController();
+        // Create new instance of EventController to communicate with firebase
+        controller = new EventController();
 
         // Get event object from the intent
-        event = (TestEvent) getIntent().getParcelableExtra("event");
+        event = (Event) getIntent().getParcelableExtra("event");
 
         // Get firebase ID of event - if event is null, then there was an issue getting the event
         // from intent, so report to error log and finish activity

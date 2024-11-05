@@ -16,7 +16,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.hive.Controllers.AdminEventListController;
+import com.example.hive.Controllers.EventController;
+import com.example.hive.Event;
 import com.example.hive.R;
 import com.example.hive.Events.TestEvent;
 
@@ -64,7 +65,7 @@ public class AdminEventListActivity extends AppCompatActivity {
     /**
      * This activity's data list - holds all events
      */
-    private ArrayList<TestEvent> eventDataList;
+    private ArrayList<Event> eventDataList;
 
     /**
      * Updates the ListView by removing loading screen, clearing current list, adding the new items
@@ -73,7 +74,7 @@ public class AdminEventListActivity extends AppCompatActivity {
      * @param data
      * The list of events to display
      */
-    public void updateList(ArrayList<TestEvent> data) {
+    public void updateList(ArrayList<Event> data) {
         // Get reference to TextView that displays loading text and hide it
         TextView loading = findViewById(R.id.event_list_loading_text);
         loading.setVisibility(View.GONE);
@@ -119,7 +120,7 @@ public class AdminEventListActivity extends AppCompatActivity {
         );
 
         // Create new list to hold all events, and provide it to the adapter
-        eventDataList = new ArrayList<TestEvent>();
+        eventDataList = new ArrayList<Event>();
         eventAdapter = new AdminEventListAdapter(this, eventDataList, deleteItemLauncher);
 
         // Container that holds the list, search bar, and sort options
@@ -138,7 +139,7 @@ public class AdminEventListActivity extends AppCompatActivity {
         sortByTitleIcon = findViewById(R.id.title_sort_icon);
 
         // Define controller that communicates with firebase
-        AdminEventListController controller = new AdminEventListController();
+        EventController controller = new EventController();
 
         // Use the getAllEventsFromDB method from the controller to get all the events in the
         // database. Use this activity's updateList method to display all the events in the app

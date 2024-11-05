@@ -25,19 +25,25 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- NotificationActivity and EventListActivity without launcher intent for now -->
-        <activity
-            android:name=".NotificationActivity"
-            android:exported="true" />
-        <activity
-            android:name=".EventListActivity"
-            android:exported="true" /> <!-- Keep MainActivity for navigation, but no launcher intent -->
-        <activity android:name=".MainActivity" /> <!-- Profile Activities -->
+        </activity>
+
+        <!-- NotificationActivity and EventListActivity without launcher intent for now -->
+        <activity android:name=".NotificationActivity" android:exported="true" />
+        <activity android:name=".EventListActivity" android:exported="true" />
+
+        <!-- Keep MainActivity for navigation, but no launcher intent -->
+        <activity android:name=".MainActivity" />
+
+        <!-- Profile Activities -->
         <activity android:name=".ProfileActivity" />
         <activity android:name=".ProfileEditActivity" />
         <activity android:name=".FacilityActivity" />
         <activity android:name=".EditFacilityProfileActivity" />
-        <activity android:name=".OrganizerEventListActivity" /> <!-- Admin Event Activities -->
+        <activity android:name=".OrganizerEventListActivity" />
+        <activity android:name=".AddEventActivity" />
+
+
+        <!-- Admin Event Activities -->
         <activity android:name=".AdminEvent.AdminEventListActivity" />
         <activity android:name=".Events.EventDetailActivity" />
     </application>
