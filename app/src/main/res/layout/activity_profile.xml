@@ -22,14 +22,14 @@
 
     <ImageView
         android:id="@+id/profilePicture"
-        android:layout_width="176dp"
-        android:layout_height="184dp"
+        android:layout_width="165dp"
+        android:layout_height="165dp"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="40dp"
-        android:layout_marginEnd="123dp"
+        android:layout_marginEnd="127dp"
+        android:gravity="center"
         android:scaleType="centerCrop"
-        android:src= "@drawable/ic_profile"
-        android:gravity="center"/>
+        android:src="@drawable/ic_profile" />
 
     <TextView
         android:id="@+id/personName"

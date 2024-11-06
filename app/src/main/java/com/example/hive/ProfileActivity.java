@@ -120,8 +120,8 @@ public class ProfileActivity extends AppCompatActivity {
      * Reloads the profile data to reflect any changes.
      *
      * @param requestCode The request code used to start the activity.
-     * @param resultCode The result code returned by the child activity.
-     * @param data Any additional data returned by the child activity.
+     * @param resultCode  The result code returned by the child activity.
+     * @param data        Any additional data returned by the child activity.
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -131,10 +131,4 @@ public class ProfileActivity extends AppCompatActivity {
             loadProfileData();
         }
     }
-<<<<<<< HEAD
 }
-
-
-=======
-}
->>>>>>> 8c5e6da2a75318ebf90f28343b740a281dc795ef

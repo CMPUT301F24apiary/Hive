@@ -8,12 +8,12 @@
 
     <ImageView
         android:id="@+id/profilePicture"
-        android:layout_width="145dp"
-        android:layout_height="127dp"
+        android:layout_width="123dp"
+        android:layout_height="121dp"
         android:layout_alignParentTop="true"
         android:layout_gravity="center"
-        android:layout_marginTop="76dp"
-        android:layout_marginEnd="3dp"
+        android:layout_marginTop="82dp"
+        android:layout_marginEnd="32dp"
         android:layout_toStartOf="@+id/removePictureButton"
         android:contentDescription="Profile Picture"
         android:scaleType="centerCrop"
