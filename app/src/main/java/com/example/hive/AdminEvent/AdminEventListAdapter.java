@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.hive.Events.EventDetailActivity;
-import com.example.hive.Event;
+import com.example.hive.Events.Event;
 import com.example.hive.R;
 
 import java.util.ArrayList;

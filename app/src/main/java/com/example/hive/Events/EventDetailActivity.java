@@ -1,7 +1,5 @@
 package com.example.hive.Events;
 
-import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,20 +18,19 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.hive.AdminEvent.ConfirmEventDelete;
 import com.example.hive.AdminEvent.DeleteEventListener;
-import com.example.hive.Controllers.AdminEventListController;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.R;
 
-import java.util.Date;
-import java.util.Objects;
-
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
-import com.example.hive.Event;
+
+import java.net.URI;
 
 /**
  * Display event information and delete button for admin.
- * NOTE - This is mostly just a dev activity. Once actual event page is created, that will replace
- * this.
+ *
+ * TODO Display different options for different roles
  *
  * @author Zach
  */
@@ -144,7 +141,7 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             String endTime = event.getEndTime();
             long startInMS = event.getStartDateInMS();
             long endInMS = event.getEndDateInMS();
-            boolean useEndDate = (startInMS / 86400000) != (endInMS / 86400000);
+            boolean useEndDate = (startInMS / 86400000) == (endInMS / 86400000);
             String finalDatesAndTimes;
             if (useEndDate) {
                 finalDatesAndTimes = String.format("%s, %s - %s, %s", startDate, startTime, endDate,
@@ -159,6 +156,7 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             eventDescriptionView.setText(description);
             String posterURL = event.getPosterURL();
             if (posterURL != null) {
+//                StorageReference ref = FirebaseStorage.getInstance().getReference(posterURL);
                 Picasso.get().load(posterURL).into(eventPosterView);
             } else {
                 eventPosterView.setVisibility(View.GONE);

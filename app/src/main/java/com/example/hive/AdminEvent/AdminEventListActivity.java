@@ -17,9 +17,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.hive.Controllers.EventController;
-import com.example.hive.Event;
+import com.example.hive.Events.Event;
 import com.example.hive.R;
-import com.example.hive.Events.TestEvent;
 
 import java.util.ArrayList;
 
