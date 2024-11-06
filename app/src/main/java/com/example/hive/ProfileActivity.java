@@ -131,6 +131,10 @@ public class ProfileActivity extends AppCompatActivity {
             loadProfileData();
         }
     }
+<<<<<<< HEAD
 }
 
 
+=======
+}
+>>>>>>> 8c5e6da2a75318ebf90f28343b740a281dc795ef

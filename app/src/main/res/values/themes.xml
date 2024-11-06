@@ -3,6 +3,9 @@
     <style name="Base.Theme.Hive" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:windowBackground">@color/mainDark</item>
+        <item name="android:editTextColor">@android:color/white</item>
+        <item name="android:textColorHint">#74ADADAD</item>
     </style>
 
     <style name="Theme.Hive" parent="Base.Theme.Hive" />
