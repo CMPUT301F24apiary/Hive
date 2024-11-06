@@ -21,6 +21,7 @@ import com.example.hive.Controllers.ImageController;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.example.hive.Events.Event;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

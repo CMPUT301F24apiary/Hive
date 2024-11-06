@@ -140,6 +140,7 @@ public class FirebaseController {
      * @return CompletableFuture<List<Users>> aka a list of users (in the future, when the operation is complete)
      */
     public CompletableFuture<List<User>> fetchAllUsers() {
+        db = getDb();
         CollectionReference userRef = db.collection("users");
         CompletableFuture<List<User>> completableFuture = new CompletableFuture<>();
 

@@ -5,12 +5,12 @@
     <string name="event_time_default">Time</string>
     <string name="event_cost_default">Cost</string>
     <string name="event_details_button_text">Details</string>
-    <string name="loading_text">Loading...</string>
+    <string name="loading_text">Loading…</string>
     <string name="date_sort_icon_text" />
     <string name="title_sort_icon_text" />
     <string name="cost_sort_icon_text" />
     <string name="sort_by_text">Sort:</string>
-    <string name="delete_event_text">Delete Event</string>
+    <string name="delete_event_text">Remove Event</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="button_confirm_text">Confirm</string>
@@ -21,4 +21,10 @@
     <string name="contact_information">CONTACT INFORMATION</string>
     <string name="email_email_example_com">Email: email@example.com</string>
     <string name="phone_123_456_7890">Phone: (123) 456-7890</string>
+    <string name="event_num_participants_default">20</string>
+    <string name="event_description_default">Description</string>
+    <string name="event_location_default">Location</string>
+    <string name="back_button_content_description">Go back to previous screen</string>
+    <string name="event_poster_content_description">Poster containing event information</string>
+    <string name="group_icon_content_description">Icon depicting a group of people</string>
 </resources>

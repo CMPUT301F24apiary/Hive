@@ -33,9 +33,10 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.google.firebase.bom))
+    implementation(libs.firebase.storage)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
     implementation(libs.glide.v4110)
     annotationProcessor(libs.compiler)
     implementation(libs.appcompat)

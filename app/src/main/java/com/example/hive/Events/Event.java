@@ -1,4 +1,4 @@
-package com.example.hive;
+package com.example.hive.Events;
 
 import android.os.Parcel;
 import android.os.Parcelable;

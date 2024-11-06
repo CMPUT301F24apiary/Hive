@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Controllers.EventController;
+import com.example.hive.Events.Event;
 
 import java.util.ArrayList;
 
