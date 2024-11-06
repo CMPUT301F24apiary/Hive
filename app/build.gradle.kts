@@ -52,7 +52,13 @@ dependencies {
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
     androidTestImplementation(libs.espresso.core.v340)
+    androidTestImplementation(libs.espresso.intents)
+    androidTestImplementation(libs.rules)
+    androidTestImplementation(libs.truth)
 
     // (firebase) was getting gms error
     implementation(libs.play.services.auth)
+
+    // Glide (for profile images)
+    implementation(libs.glide)
 }

@@ -7,14 +7,17 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.hive.Models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +54,13 @@ public class FirebaseController {
         return this.db;
     }
 
+    /**
+     * Check if a user exists in db based on the device id
+     * completable future is async programming thus multiple ops can run concurrently w/o
+     * blocking each other or having to wait for tasks in the queue to finish first
+     * @param deviceId assume one per user
+     * @return boolean to indicate true if deviceId is found else false
+     */
     public CompletableFuture<Boolean> checkUserByDeviceId(String deviceId) {
         CollectionReference userRef = db.collection("users");
         Query query = userRef.whereEqualTo("deviceId", deviceId);
@@ -64,7 +74,7 @@ public class FirebaseController {
     }
 
     /**
-     * Check if a user exists in db based on the device id
+     * Check if a user exists in db based on the email
      * completable future is async programming thus multiple ops can run concurrently w/o
      * blocking each other or having to wait for tasks in the queue to finish first
      * @param email email; assume one per user
@@ -93,15 +103,21 @@ public class FirebaseController {
      * @param phoneNumber optional, can be null
      * @return Task<Void> note: successful return indicates that addUser was successful.
      */
-    public Task<Void> addUser(String deviceId, String userName, String email, List<String> roleSet, @Nullable String phoneNumber) {
+    public Task<Void> addUser(String deviceId, String userName, String email, String role,
+                              List<String> roleSet, @Nullable String phoneNumber,
+                              @Nullable String profileImageUrl) {
         Map<String, Object> userData = new HashMap<>();
         userData.put("deviceId", deviceId);
         userData.put("username", userName);
         userData.put("email", email);
-        userData.put("role", roleSet);
-        if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            userData.put("phoneNumber", phoneNumber);
-        }
+        userData.put("role", role);
+        userData.put("roleSet", roleSet);  // this is actually a list
+        userData.put("phoneNumber", phoneNumber);
+        userData.put("profileImageUrl", profileImageUrl);
+        //if (phoneNumber != null && !phoneNumber.isEmpty()) {
+        //    userData.put("phoneNumber", phoneNumber);
+        //}
+
 
         return db.collection("users").document(deviceId)
                 .set(userData)
@@ -119,5 +135,90 @@ public class FirebaseController {
                 });
     }
 
+    /**
+     * Fetch all users from db
+     * @return CompletableFuture<List<Users>> aka a list of users (in the future, when the operation is complete)
+     */
+    public CompletableFuture<List<User>> fetchAllUsers() {
+        CollectionReference userRef = db.collection("users");
+        CompletableFuture<List<User>> completableFuture = new CompletableFuture<>();
+
+        userRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            List<User> userList = new ArrayList<>();
+            for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                User user = document.toObject(User.class);
+                if (user != null) {
+                    String userName = document.getString("username");
+                    String profileImageUrl = document.getString("profileImageUrl");
+
+                    user.setDeviceId(document.getString("deviceId"));
+                    user.setUserName(userName);
+                    user.setProfileImageUrl(profileImageUrl);
+
+                    Log.d(TAG, "Username from Firestore: " + userName); // Log the username field
+                    Log.d(TAG, "Profile Image URL from Firestore: " + profileImageUrl); // Log the profile image URL
+
+                    userList.add(user);
+                }
+            }
+            completableFuture.complete(userList);
+        }).addOnFailureListener(completableFuture::completeExceptionally);
+        return completableFuture;
+    }
+
+    /**
+     * fetch user object using deviceId. Used in AdminProfileViewActivity
+     * @param deviceId
+     * @param listener
+     */
+    public void fetchUserByDeviceId(String deviceId, OnUserFetchedListener listener) {
+        db.collection("users").whereEqualTo("deviceId", deviceId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0); // get first queried object that is returned
+                        User user = document.toObject(User.class);
+                        user.setDeviceId(document.getString("deviceId"));
+                        listener.onUserFetched(user);
+                    } else {
+                        listener.onUserFetched(null);
+                    }
+                }).addOnFailureListener(listener::onError);
+    }
+
+    /**
+     * interface; listener for user fetching
+     */
+    public interface OnUserFetchedListener {
+        void onUserFetched(User user);
+        void onError(Exception e);
+    }
+
+
+    /**
+     * Interface; listener for deletion callbacks
+     */
+
+    public interface OnUserDeletedListener {
+        void onUserDeleted();
+        void onError(Exception e);
+    }
+
+    public void deleteUserByDeviceId(String deviceId, OnUserDeletedListener listener) {
+        Log.d(TAG, "Deleting user with deviceId: " + deviceId);
+        db.collection("users")
+                .whereEqualTo("deviceId", deviceId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        String docId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                        db.collection("users").document(docId).delete()
+                                .addOnSuccessListener(a->listener.onUserDeleted())
+                                .addOnFailureListener(listener::onError);
+                    } else {
+                        Log.e(TAG, "No user found with deviceId: " + deviceId);
+                        listener.onError(new Exception("No user found with the given deviceId."));
+                    }
+                })
+                .addOnFailureListener(listener::onError);
+    }
 
 }
