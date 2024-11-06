@@ -17,6 +17,7 @@ public class User {
     private String phoneNumber = null;  // optional param
     private String role;
     private List<String> roleList;
+    private String profileImageUrl;
     FirebaseFirestore db;
 
     public static User getInstance() {
@@ -35,8 +36,10 @@ public class User {
      * @param role current role of user
      * @param roleList all roles user can have
      * @param db database instance
+     * @param profileImageUrl uses Glide
      */
-    public User(String deviceId, String userName, String email, String phoneNumber, String role, List<String> roleList, FirebaseFirestore db) {
+    public User(String deviceId, String userName, String email, String phoneNumber,
+                String role, List<String> roleList, FirebaseFirestore db, String profileImageUrl) {
         this.deviceId = deviceId;
         this.userName = userName;
         this.email = email;
@@ -44,6 +47,7 @@ public class User {
         this.role = role;
         this.roleList = roleList != null ? new ArrayList<>(roleList) : new ArrayList<>();
         this.roleList.add("entrant");  // default role
+        this.profileImageUrl = profileImageUrl;
 
     }
 
@@ -55,6 +59,7 @@ public class User {
         this.role = "entrant";
         this.roleList = new ArrayList<>();
         roleList.add("entrant");// default role
+        this.profileImageUrl = ""; // this is the default profile image
     }
 
     public String getDeviceId() {
@@ -103,5 +108,13 @@ public class User {
 
     public void setRoleList(List<String> roleList) {
         this.roleList = roleList;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }
