@@ -16,6 +16,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.hive.AdminEvent.ConfirmEventDelete;
 import com.example.hive.AdminEvent.DeleteEventListener;
 import com.example.hive.Controllers.EventController;
@@ -23,7 +24,6 @@ import com.example.hive.R;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 
 import java.net.URI;
 
@@ -156,8 +156,7 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             eventDescriptionView.setText(description);
             String posterURL = event.getPosterURL();
             if (posterURL != null) {
-//                StorageReference ref = FirebaseStorage.getInstance().getReference(posterURL);
-                Picasso.get().load(posterURL).into(eventPosterView);
+                Glide.with(this).load(posterURL).into(eventPosterView);
             } else {
                 eventPosterView.setVisibility(View.GONE);
             }

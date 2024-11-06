@@ -40,15 +40,15 @@
 
 
         <!-- Admin Event Activities -->
-        <activity android:name=".AdminEvent.AdminEventListActivity" />
-        <activity android:name=".Events.EventDetailActivity" />
         <activity android:name=".AdminEvent.AdminEventListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".AdminEvent.AdminEventDetailActivity"
+
+        <!-- Event Detail Activity -->
+        <activity android:name=".Events.EventDetailActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
