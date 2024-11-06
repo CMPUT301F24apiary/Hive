@@ -42,8 +42,18 @@
 
 
         <!-- Admin Event Activities -->
-        <activity android:name=".AdminEvent.AdminEventListActivity" />
-        <activity android:name=".AdminEvent.AdminEventDetailActivity" />
+        <activity android:name=".AdminEvent.AdminEventListActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".AdminEvent.AdminEventDetailActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
 
         <!--first time activity -->
         <activity
@@ -56,6 +66,24 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- admin profile list activity -->
+        <activity
+            android:name=".Views.AdminProfileListActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <!-- admin profile view activity -->
+        <activity
+            android:name=".Views.AdminProfileViewActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
 

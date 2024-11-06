@@ -109,7 +109,7 @@ public class FirstTimeActivity extends AppCompatActivity {
         List<String> roles = new ArrayList<>(); // can add organizer later if organizer wishes to be one; entrant is the default role
         roles.add("entrant");
 
-        firebaseController.addUser(deviceId, userName, email, roles, phoneNumber);
+        firebaseController.addUser(deviceId, userName, email, "entrant", roles, phoneNumber, "");
         Toast.makeText(this, "Entering app", Toast.LENGTH_LONG).show();
         completeFirstTimeActivity();
     }
@@ -117,7 +117,7 @@ public class FirstTimeActivity extends AppCompatActivity {
     /**
      * This leads to the next activity after the 'enter' button is pressed.
      */
-    private void completeFirstTimeActivity() {
+    public void completeFirstTimeActivity() {
         Intent roleSelectionIntent = new Intent(this, RoleSelectionActivity.class);
         startActivity(roleSelectionIntent);
     }
