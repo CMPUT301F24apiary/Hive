@@ -14,7 +14,7 @@ import com.example.hive.Models.User;
 import java.util.ArrayList;
 
 /**
- * Example local unit test, which will execute on the development machine (host).
+ * User model tests.
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
@@ -30,6 +30,7 @@ public class UserModelTests {
                 "1234567899",
                 "entrant",
                 roleList,
+                null,
                 null);
     }
 
@@ -58,5 +59,6 @@ public class UserModelTests {
     public void testAddRole() {
         user.getRoleList().add("organizer");
         assertTrue(user.getRoleList().contains("organizer"));
+        assertTrue(user.getRoleList().contains("entrant"));
     }
 }

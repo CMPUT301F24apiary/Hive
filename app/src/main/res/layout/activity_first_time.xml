@@ -24,7 +24,7 @@
         android:id="@+id/textViewUserName"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:text="Name (Required)"
+        android:text="Name (required)"
         android:textSize="22sp"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
