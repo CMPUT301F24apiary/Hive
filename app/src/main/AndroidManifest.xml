@@ -22,8 +22,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
 
@@ -31,8 +30,9 @@
         <activity android:name=".NotificationActivity" android:exported="true" />
         <activity android:name=".EventListActivity" android:exported="true" />
 
-        <!-- Keep MainActivity for navigation, but no launcher intent -->
-        <activity android:name=".MainActivity" />
+        <!-- Keep MainActivity for navigation, but no launcher intent
+        <activity android:name=".MainActivity" /> -->
+
 
         <!-- Profile Activities -->
         <activity android:name=".ProfileActivity" />
@@ -46,6 +46,22 @@
         <!-- Admin Event Activities -->
         <activity android:name=".AdminEvent.AdminEventListActivity" />
         <activity android:name=".Events.EventDetailActivity" />
+        <activity android:name=".AdminEvent.AdminEventDetailActivity" />
+
+        <!--first time activity -->
+        <activity
+            android:name=".Views.FirstTimeActivity"
+            android:exported="true" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

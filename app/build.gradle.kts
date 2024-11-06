@@ -38,6 +38,8 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.71828")
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.firebase.storage)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -45,4 +47,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // (for testing)
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    androidTestImplementation(libs.espresso.core.v340)
+
+    // (firebase) was getting gms error
+    implementation(libs.play.services.auth)
 }
