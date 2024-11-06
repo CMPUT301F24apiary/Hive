@@ -3,6 +3,7 @@ package com.example.hive.AdminEvent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,8 +18,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.hive.Controllers.EventController;
-import com.example.hive.Event;
+import com.example.hive.Events.Event;
 import com.example.hive.R;
+import com.example.hive.Views.AdminProfileListActivity;
 
 import java.util.ArrayList;
 
@@ -143,6 +145,20 @@ public class AdminEventListActivity extends AppCompatActivity {
         // Use the getAllEventsFromDB method from the controller to get all the events in the
         // database. Use this activity's updateList method to display all the events in the app
         controller.getAllEventsFromDB(this::updateList);
+
+        // Get references to the three buttons to switch list views
+        Button viewProfiles = findViewById(R.id.view_profiles_btn);
+        Button viewFacilities = findViewById(R.id.view_facilities_btn);
+        Button viewImages = findViewById(R.id.view_images_btn);
+
+        // Logic to switch list activities on button presses
+        viewProfiles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(AdminEventListActivity.this, AdminProfileListActivity.class);
+                startActivity(i);
+            }
+        });
 
         // Logic to sort list by date
         sortByDate.setOnClickListener(new View.OnClickListener() {

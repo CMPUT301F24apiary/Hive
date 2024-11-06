@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Controllers.EventController;
+import com.example.hive.Events.Event;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
