@@ -30,6 +30,9 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -109,13 +112,13 @@ public class ProfileEditActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri imageUri = data.getData();
-            try {
-                // Get the selected image as a bitmap and set it to the ImageView
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                profilePicture.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+            // Use Glide to load and crop the selected image as a circle
+            // From https://github.com/bumptech/glide/issues/3839, downloaded 2024-11-06
+            Glide.with(this)
+                    .load(imageUri)
+                    .transform(new CircleCrop())
+                    .into(profilePicture);
         }
     }
 
