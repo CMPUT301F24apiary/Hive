@@ -33,7 +33,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.espresso.intents)
     implementation(libs.ext.junit)
     // Unit testing dependencies
