@@ -7,20 +7,34 @@
     tools:context=".EventListActivity"
     tools:ignore="ExtraText">
 
+<<<<<<< HEAD
     <!-- Notification Bell Icon -->
+=======
+    // Notification Bell Icon
+
+    // Profile picture
+
+>>>>>>> d63ed745cd8058d1407dd878ad4046852f2053a5
     <ImageButton
         android:id="@+id/notificationBellButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+<<<<<<< HEAD
+=======
+        android:layout_centerHorizontal="true"
+>>>>>>> d63ed745cd8058d1407dd878ad4046852f2053a5
         android:layout_marginStart="15dp"
         android:layout_marginTop="38dp"
         android:background="@android:color/transparent"
         android:contentDescription="Notification Bell"
         android:src="@drawable/bell" />
 
+<<<<<<< HEAD
     <!-- Profile Picture -->
+=======
+>>>>>>> d63ed745cd8058d1407dd878ad4046852f2053a5
     <ImageButton
         android:id="@+id/profileButton"
         android:layout_width="82dp"
@@ -34,7 +48,11 @@
         android:scaleType="centerCrop"
         android:src="@drawable/ic_profile" />
 
+<<<<<<< HEAD
     <!-- App Logo -->
+=======
+    //App logo
+>>>>>>> d63ed745cd8058d1407dd878ad4046852f2053a5
     <ImageView
         android:id="@+id/appLogo"
         android:layout_width="104dp"
@@ -46,6 +64,7 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_app_logo" />
 
+<<<<<<< HEAD
     <!-- Admin Event List Button -->
     <Button
         android:id="@+id/admin_view_event_list"
@@ -56,5 +75,19 @@
         android:layout_marginTop="69dp"
         android:layout_marginEnd="124dp"
         android:text="Admin Event List" />
+=======
+    // Switch Roles Button
+    <Button
+        android:id="@+id/switchRolesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:text="Switch Roles"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#136F63"
+        android:padding="12dp" />
+>>>>>>> d63ed745cd8058d1407dd878ad4046852f2053a5
 
 </RelativeLayout>
