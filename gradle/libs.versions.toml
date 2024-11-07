@@ -1,11 +1,7 @@
 [versions]
-<<<<<<< HEAD
-agp = "8.6.1"
-=======
-agp = "8.7.2"
+agp = "8.6.0"
 compiler = "4.11.0"
 firebaseBomVersion = "33.5.1"
->>>>>>> b98655d889a89d609db595126c5fde5bda95f787
 espressoCoreVersion = "3.4.0"
 espressoIntents = "3.6.1"
 firebaseBom = "33.5.1"
@@ -52,4 +48,3 @@ testng = { group = "org.testng", name = "testng", version.ref = "testng" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-
