@@ -142,7 +142,7 @@ public class ProfileEditActivity extends AppCompatActivity {
     /**
      * Sets up the click listeners for notification bell buttons to open the NotificationActivity.
      */
-    private void setupNotificationButtons() {
+    void setupNotificationButtons() {
         View.OnClickListener openNotificationActivity = new View.OnClickListener() {
             @Override
             public void onClick(View v) {

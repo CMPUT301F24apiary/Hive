@@ -48,7 +48,7 @@ public class NotificationActivity extends AppCompatActivity {
      * @param declineButtonId The ID of the decline button for the notification.
      * @param message         The notification message to display.
      */
-    private void setupNotification(int notificationId, int acceptButtonId, int declineButtonId, String message) {
+    protected void setupNotification(int notificationId, int acceptButtonId, int declineButtonId, String message) {
         TextView notification = findViewById(notificationId);
         notification.setText(message);
 
@@ -66,7 +66,7 @@ public class NotificationActivity extends AppCompatActivity {
      * @param reRegisterButtonId The ID of the re-register button for the notification.
      * @param message            The notification message to display.
      */
-    private void setupNotification(int notificationId, int reRegisterButtonId, String message) {
+    protected void setupNotification(int notificationId, int reRegisterButtonId, String message) {
         TextView notification = findViewById(notificationId);
         notification.setText(message);
 
@@ -79,7 +79,7 @@ public class NotificationActivity extends AppCompatActivity {
      *
      * @param eventName The name of the event being accepted.
      */
-    private void acceptEvent(String eventName) {
+    protected void acceptEvent(String eventName) {
         Intent intent = new Intent(NotificationActivity.this, RegistrationActivity.class);
         intent.putExtra("eventName", eventName);
         startActivity(intent);
@@ -90,7 +90,7 @@ public class NotificationActivity extends AppCompatActivity {
      *
      * @param eventName The name of the event being declined.
      */
-    private void declineEvent(String eventName) {
+    protected void declineEvent(String eventName) {
         // Handle event decline logic
     }
 
@@ -99,7 +99,7 @@ public class NotificationActivity extends AppCompatActivity {
      *
      * @param eventName The name of the event for which the user wants to re-register.
      */
-    private void reRegisterEvent(String eventName) {
+    protected void reRegisterEvent(String eventName) {
         // Handle re-registration logic
     }
 }
