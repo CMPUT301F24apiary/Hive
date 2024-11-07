@@ -2,10 +2,9 @@ package com.example.hive.Controllers;
 
 import android.util.Log;
 
-import com.example.hive.Event;
+import com.example.hive.Events.Event;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -63,13 +62,14 @@ public class EventController extends FirebaseController {
             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                 String id = doc.getId();
                 String title = (String) doc.get("title");
-                long startDate = (long) doc.get("start_date_time");
-                long endDate = (long) doc.get("end_date_time");
+                long startDate = (long) doc.get("startDateInMS");
+                long endDate = (long) doc.get("endDateInMS");
                 String cost = (String) doc.get("cost");
                 String description = (String) doc.get("description");
                 String location = (String) doc.get("location");
                 String posterTemp = (String) doc.get("poster");
-                int numParticipants = (int) doc.get("num_participants");
+                Long numParticipantsLong = (Long) doc.get("numParticipants");
+                int numParticipants = numParticipantsLong.intValue();
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
                 Event newEvent = new Event(title, cost, startDate, endDate, id, description,
                         numParticipants, location, posterURL);

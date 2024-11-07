@@ -16,7 +16,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.hive.Event;
+import com.example.hive.Events.EventDetailActivity;
+import com.example.hive.Events.Event;
 import com.example.hive.R;
 
 import java.util.ArrayList;
@@ -166,7 +167,7 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filter
         detailsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getContext(), AdminEventDetailActivity.class);
+                Intent i = new Intent(getContext(), EventDetailActivity.class);
                 i.putExtra("event", event);
                 i.putExtra("position", String.valueOf(position));
                 deleteItemLauncher.launch(i);

@@ -1,9 +1,16 @@
 [versions]
+<<<<<<< HEAD
 agp = "8.6.1"
+=======
+agp = "8.7.2"
+compiler = "4.11.0"
+firebaseBomVersion = "33.5.1"
+>>>>>>> b98655d889a89d609db595126c5fde5bda95f787
 espressoCoreVersion = "3.4.0"
 espressoIntents = "3.6.1"
 firebaseBom = "33.5.1"
 glide = "4.16.0"
+glideVersion = "4.11.0"
 junit = "4.13.2"
 junitJupiterApi = "5.0.1"
 junitVersion = "1.2.1"
@@ -19,6 +26,10 @@ junitJupiter = "5.8.1"
 testng = "6.9.6"
 
 [libraries]
+compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
+firebase-storage = { module = "com.google.firebase:firebase-storage" }
+glide-v4110 = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
+google-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
 espresso-core-v340 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
 espresso-intents = { module = "androidx.test.espresso:espresso-intents", version.ref = "espressoIntents" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
