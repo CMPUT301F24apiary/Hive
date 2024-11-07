@@ -22,28 +22,28 @@
 
     <ImageView
         android:id="@+id/profilePicture"
-        android:layout_width="176dp"
-        android:layout_height="184dp"
+        android:layout_width="165dp"
+        android:layout_height="165dp"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="40dp"
-        android:layout_marginEnd="123dp"
+        android:layout_marginEnd="127dp"
+        android:gravity="center"
         android:scaleType="centerCrop"
-        android:src= "@drawable/ic_profile"
-        android:gravity="center"/>
+        android:src="@drawable/ic_profile" />
 
     <TextView
         android:id="@+id/personName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="118dp"
+        android:layout_height="57dp"
         android:layout_below="@+id/profilePicture"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="136dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="149dp"
+        android:gravity="center"
         android:text="Person Name"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/userName"
@@ -52,7 +52,7 @@
         android:layout_below="@+id/personName"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="6dp"
-        android:layout_marginEnd="175dp"
+        android:layout_marginEnd="167dp"
         android:gravity="center"
         android:text="User Name"
         android:textColor="#6C7A89"

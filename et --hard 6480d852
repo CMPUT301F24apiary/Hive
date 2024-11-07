@@ -1,0 +1,123 @@
+[33mcommit 5f9fbd6c4c9806c2764facb422e233a603eef05c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mUS-01.03.01/US-01.03.02[m[33m)[m
+Author: djawdat <djawdat@ualberta.ca>
+Date:   Mon Oct 28 10:31:50 2024 -0600
+
+    Temporary commit to switch branches
+
+[33mcommit e9d235b1d39509bb263d8fb9b5fe28927ebbf323[m[33m ([m[1;31morigin/US-01.03.01/US-01.03.02[m[33m, [m[1;31morigin/Profile-picture-add/remove[m[33m)[m
+Author: djawdat <djawdat@ualberta.ca>
+Date:   Wed Oct 23 20:45:16 2024 -0600
+
+    Implement new feature for US-01.03.01/US-01.03.02
+
+[33mcommit 5471599e8ff24d92803fb347a99a78f90e853aae[m
+Merge: 6480d85 0a6add8
+Author: Dina <156402361+djawdat@users.noreply.github.com>
+Date:   Tue Oct 22 20:12:44 2024 -0600
+
+    Merge branch 'main' into US-01.03.01/US-01.03.02
+
+[33mcommit 0a6add8502e5e1bd78d2677533059c8ceff15cdd[m[33m ([m[1;31morigin/createfacility[m[33m)[m
+Merge: 0a34317 f736c1f
+Author: aleena467 <157165742+aleena467@users.noreply.github.com>
+Date:   Tue Oct 22 20:07:02 2024 -0600
+
+    Merge pull request #48 from CMPUT301F24apiary/zach
+    
+    Added colours & app logo
+
+[33mcommit 6480d852bb9d3816667e357ebe98039839782a41[m
+Author: djawdat <djawdat@ualberta.ca>
+Date:   Mon Oct 21 15:31:11 2024 -0600
+
+    adding the UI for removing and adding profile picture as well picture conversion
+
+[33mcommit 24705658da7c85d7b13af824b34b5a13e9c84128[m[33m ([m[1;32mUS-01.02.01/US-01.02.02[m[33m)[m
+Author: djawdat <djawdat@ualberta.ca>
+Date:   Sun Oct 20 20:43:59 2024 -0600
+
+    Added all features required for 1.02.01 and 1.02.02, including code documentatio
+
+[33mcommit f736c1f8e35ebd9ba593c4012b7075cb61d0f5ea[m[33m ([m[1;31morigin/zach[m[33m)[m
+Author: Zach Irving <zirving@live.com>
+Date:   Thu Oct 17 17:58:49 2024 -0600
+
+    Added app icon and colours
+
+[33mcommit 7726ed17fc20de7b07640b327b7fcfd18f2b76da[m
+Author: Zach Irving <zirving@live.com>
+Date:   Thu Oct 17 17:56:09 2024 -0600
+
+    Added icon and app colours
+
+[33mcommit 0a34317bc63ada785c2f937a0751def1aaf5f40f[m
+Author: Zach Irving <zirving@live.com>
+Date:   Mon Oct 14 15:43:28 2024 -0600
+
+    Initital commit - set up new project and added firebase to it
+
+[33mcommit a8732271395e2c5cd7be25358812a890094abf49[m
+Author: Hrittija <156500079+Hrittija@users.noreply.github.com>
+Date:   Tue Oct 1 11:08:29 2024 -0600
+
+    Update team.txt
+
+[33mcommit 1f0137867b46879639e9c058d866432274cd65c2[m
+Author: aleena467 <157165742+aleena467@users.noreply.github.com>
+Date:   Sun Sep 29 22:01:58 2024 -0600
+
+    Updates team.txt with name
+
+[33mcommit ca4f7a57debd3fa699e24568aa35a78528cc7697[m
+Author: Dina <156402361+djawdat@users.noreply.github.com>
+Date:   Sun Sep 29 18:11:41 2024 -0600
+
+    Update team.txt by adding my name on a new line
+
+[33mcommit 20e572e16899ed27fafd8a2573a5e0398670f409[m
+Author: Vidhi Patel <89752776+kxiovi@users.noreply.github.com>
+Date:   Sun Sep 29 17:07:12 2024 -0600
+
+    Update team.txt
+
+[33mcommit 4e622acdfd77b2a9e68c5f992812635548c335ef[m
+Author: Hrittija <156500079+Hrittija@users.noreply.github.com>
+Date:   Thu Sep 26 21:37:37 2024 -0600
+
+    Update team.txt
+
+[33mcommit 8daa9557c770bd8fd67b60a6d814e3395eac9dfa[m
+Author: Vidhi Patel <vpatel2@ualberta.ca>
+Date:   Thu Sep 26 21:37:05 2024 -0600
+
+    update git username
+
+[33mcommit 926dbc33cb74ca1147329b5154c53a3b62df5740[m
+Author: aleena467 <157165742+aleena467@users.noreply.github.com>
+Date:   Thu Sep 26 21:36:22 2024 -0600
+
+    Update team.txt
+
+[33mcommit 51ebfef33a97bfe5e66de2f8ebbc8db9c1aabb03[m
+Author: Z-irving <122587481+Z-irving@users.noreply.github.com>
+Date:   Thu Sep 26 21:35:47 2024 -0600
+
+    Update team.txt - zach
+
+[33mcommit da7119dc617c8e42751a097479d8fd7f012fa18a[m
+Author: Dina <156402361+djawdat@users.noreply.github.com>
+Date:   Thu Sep 26 21:35:22 2024 -0600
+
+    Update name dina
+
+[33mcommit 166f59d49dcbeabba6b02f89f2435bca7379dc8a[m
+Author: djawdat <djawdat@ualberta.ca>
+Date:   Thu Sep 26 21:25:25 2024 -0600
+
+    git add team.txt
+
+[33mcommit abebc4cd545e7b9322e4225e312140a283ae8dc6[m
+Author: Vidhi Patel <89752776+kxiovi@users.noreply.github.com>
+Date:   Thu Sep 26 21:11:51 2024 -0600
+
+    Initial commit
