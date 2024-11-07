@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,9 +39,13 @@ import java.io.IOException;
 
 public class ProfileEditActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
-    private ImageView profilePicture;
-    private EditText personNameInput, userNameInput, emailInput, phoneInput;
+    ImageView profilePicture;
+    public EditText personNameInput;
+    public EditText userNameInput;
+    public EditText emailInput;
+    public EditText phoneInput;
     private Button editPictureButton, removePictureButton, saveButton, cancelButton;
+    private SharedPreferences sharedPreferences;
 
     /**
      * Called when the activity is starting. This is where most initialization should be done.
@@ -92,9 +97,11 @@ public class ProfileEditActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveProfileData();
-                setResult(RESULT_OK);
-                finish();
+                if (isValidInput()) {
+                    saveProfileData();
+                    setResult(RESULT_OK);
+                    finish();
+                }
             }
         });
 
@@ -121,6 +128,45 @@ public class ProfileEditActivity extends AppCompatActivity {
                     .into(profilePicture);
         }
     }
+    // Validation methods
+    private boolean isValidInput() {
+        boolean isValid = true;
+
+        String email = emailInput.getText().toString();
+        String phone = phoneInput.getText().toString();
+
+        // Check email format
+        if (!isValidEmail(email)) {
+            emailInput.setError("Invalid email: must contain '@'");
+            isValid = false;
+        } else {
+            emailInput.setError(null);  // Clear any previous error
+        }
+
+        // Check phone format
+        if (!isValidPhoneNumber(phone)) {
+            phoneInput.setError("Invalid phone: must be digits only");
+            isValid = false;
+        } else {
+            phoneInput.setError(null);  // Clear any previous error
+        }
+
+        return isValid;
+    }
+
+    private boolean isValidEmail(String email) {
+        return email.contains("@") && email.indexOf("@") > 0 && email.indexOf("@") < email.length() - 1;
+    }
+
+    private boolean isValidPhoneNumber(String phone) {
+        if (phone.isEmpty()) return true; // Phone number is optional
+        for (char c : phone.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * Converts the bitmap image to a Base64 encoded string.
@@ -128,7 +174,7 @@ public class ProfileEditActivity extends AppCompatActivity {
      * @param bitmap The Bitmap to convert.
      * @return The Base64 encoded string of the bitmap.
      */
-    private String bitmapToBase64(Bitmap bitmap) {
+    String bitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
@@ -141,7 +187,7 @@ public class ProfileEditActivity extends AppCompatActivity {
      * @param base64Str The Base64 encoded string.
      * @return The decoded Bitmap.
      */
-    private Bitmap base64ToBitmap(String base64Str) {
+    Bitmap base64ToBitmap(String base64Str) {
         byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
@@ -150,7 +196,7 @@ public class ProfileEditActivity extends AppCompatActivity {
      * Loads the profile data from SharedPreferences and populates the input fields.
      * Also loads the profile picture if available.
      */
-    private void loadProfileData() {
+    public void loadProfileData() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
         String personName = sharedPreferences.getString("personName", "");
         String userName = sharedPreferences.getString("userName", "");
@@ -178,7 +224,7 @@ public class ProfileEditActivity extends AppCompatActivity {
      * Saves the profile data entered by the user into SharedPreferences.
      * Also saves the profile picture as a Base64 string.
      */
-    private void saveProfileData() {
+    public void saveProfileData() {
         String personName = personNameInput.getText().toString();
         String userName = userNameInput.getText().toString();
         String email = emailInput.getText().toString();
@@ -198,6 +244,10 @@ public class ProfileEditActivity extends AppCompatActivity {
         editor.putString("profilePicture", profilePictureBase64);
         editor.apply();  // Apply the changes
     }
+    public void setSharedPreferencesForTesting(SharedPreferences sharedPreferences) {
+        this.sharedPreferences = sharedPreferences;
+    }
+
 }
 
 

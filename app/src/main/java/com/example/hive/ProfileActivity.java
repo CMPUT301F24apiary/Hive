@@ -92,7 +92,7 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * Loads profile data from SharedPreferences and displays it in the corresponding TextViews.
      */
-    private void loadProfileData() {
+    public void loadProfileData() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
         String personName = sharedPreferences.getString("personName", "Person Name");
         String userName = sharedPreferences.getString("userName", "User Name");
@@ -114,6 +114,7 @@ public class ProfileActivity extends AppCompatActivity {
             profilePicture.setImageResource(R.drawable.ic_profile);
         }
     }
+    
 
     /**
      * Called when returning from the ProfileEditActivity.
