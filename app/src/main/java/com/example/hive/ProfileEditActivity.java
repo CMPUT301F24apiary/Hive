@@ -1,11 +1,27 @@
+/**
+ * ProfileEditActivity.java
+ *
+ * This activity allows users to edit their profile information such as name, username,
+ * email, and phone number. Changes are saved to SharedPreferences and can be applied to
+ * update the user's profile.
+ *
+ * <p>Outstanding Issues:
+ * - None at this time.</p>
+ *
+ * @author Dina
+ * @version 1.0
+ */
 package com.example.hive;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,12 +36,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Base64;
+import java.io.IOException;
+//import java.util.Base64;
 
-/**
- * ProfileEditActivity is responsible for allowing the user to edit their profile details,
- * including name, username, email, phone number, and profile picture.
- */
 public class ProfileEditActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
 
@@ -39,10 +52,10 @@ public class ProfileEditActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
     /**
-     * Called when the activity is first created. Initializes UI components and sets up click listeners for buttons.
+     * Called when the activity is starting. This is where most initialization should be done.
+     * It sets up the UI and initializes input fields and buttons.
      *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
-     *                           this Bundle contains the most recent data.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in onSaveInstanceState. Otherwise, it is null.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +107,6 @@ public class ProfileEditActivity extends AppCompatActivity {
             }
         });
 
-        // Save button logic
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,7 +118,7 @@ public class ProfileEditActivity extends AppCompatActivity {
             }
         });
 
-        // Cancel button logic
+        // Set the logic for the Cancel button
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,13 +127,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Handles the result from selecting an image from the gallery.
-     *
-     * @param requestCode The request code used to start the activity.
-     * @param resultCode  The result code returned from the activity.
-     * @param data        The intent data containing the selected image URI.
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -153,17 +158,14 @@ public class ProfileEditActivity extends AppCompatActivity {
         notificationOrganizerBellButton.setOnClickListener(openNotificationActivity);
     }
 
-    /**
-     * Validates the input fields to ensure correct email and phone number format.
-     *
-     * @return True if all inputs are valid, otherwise false.
-     */
+    // Validation methods
     private boolean isValidInput() {
         boolean isValid = true;
 
         String email = emailInput.getText().toString();
         String phone = phoneInput.getText().toString();
 
+        // Check email format
         if (!isValidEmail(email)) {
             emailInput.setError("Invalid email: must contain '@'");
             isValid = false;
@@ -171,6 +173,7 @@ public class ProfileEditActivity extends AppCompatActivity {
             emailInput.setError(null);  // Clear any previous error
         }
 
+        // Check phone format
         if (!isValidPhoneNumber(phone)) {
             phoneInput.setError("Invalid phone: must be digits only");
             isValid = false;
@@ -181,22 +184,10 @@ public class ProfileEditActivity extends AppCompatActivity {
         return isValid;
     }
 
-    /**
-     * Checks if the provided email is valid.
-     *
-     * @param email The email address to validate.
-     * @return True if the email contains "@" and has correct format, otherwise false.
-     */
     private boolean isValidEmail(String email) {
         return email.contains("@") && email.indexOf("@") > 0 && email.indexOf("@") < email.length() - 1;
     }
 
-    /**
-     * Checks if the provided phone number is valid.
-     *
-     * @param phone The phone number to validate.
-     * @return True if the phone number contains only digits or is empty, otherwise false.
-     */
     private boolean isValidPhoneNumber(String phone) {
         if (phone.isEmpty()) return true; // Phone number is optional
         for (char c : phone.toCharArray()) {
@@ -207,8 +198,35 @@ public class ProfileEditActivity extends AppCompatActivity {
         return true;
     }
 
+
     /**
-     * Loads the profile data from SharedPreferences and displays it in the input fields.
+     * Converts the bitmap image to a Base64 encoded string.
+     *
+     * @param bitmap The Bitmap to convert.
+     * @return The Base64 encoded string of the bitmap.
+     */
+    String bitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+    /**
+     * Converts a Base64 encoded string back to a Bitmap.
+     *
+     * @param base64Str The Base64 encoded string.
+     * @return The decoded Bitmap.
+     */
+    Bitmap base64ToBitmap(String base64Str) {
+        byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
+
+    /**
+     * Loads the profile data from SharedPreferences and populates the input fields.
+     * Also loads the profile picture if available.
      */
     public void loadProfileData() {
         sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
@@ -216,16 +234,27 @@ public class ProfileEditActivity extends AppCompatActivity {
         String userName = sharedPreferences.getString("userName", "");
         String email = sharedPreferences.getString("email", "");
         String phone = sharedPreferences.getString("phone", "");
+        String profilePictureBase64 = sharedPreferences.getString("profilePicture", "");
 
         // Set the loaded data into the EditText fields
         personNameInput.setText(personName);
         userNameInput.setText(userName);
         emailInput.setText(email);
         phoneInput.setText(phone);
+
+        // Load profile picture if available
+        if (!profilePictureBase64.isEmpty()) {
+            Bitmap profileBitmap = base64ToBitmap(profilePictureBase64);
+            profilePicture.setImageBitmap(profileBitmap);
+        } else {
+            // Set default profile picture
+            profilePicture.setImageResource(R.drawable.ic_profile);
+        }
     }
 
     /**
-     * Saves the profile data to SharedPreferences for future use.
+     * Saves the profile data entered by the user into SharedPreferences.
+     * Also saves the profile picture as a Base64 string.
      */
     public void saveProfileData() {
         String personName = personNameInput.getText().toString();
@@ -233,11 +262,22 @@ public class ProfileEditActivity extends AppCompatActivity {
         String email = emailInput.getText().toString();
         String phone = phoneInput.getText().toString();
 
+        // Save profile picture
+        BitmapDrawable drawable = (BitmapDrawable) profilePicture.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+        String profilePictureBase64 = bitmapToBase64(bitmap);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("personName", personName);
         editor.putString("userName", userName);
         editor.putString("email", email);
         editor.putString("phone", phone);
-        editor.apply();
+        editor.putString("profilePicture", profilePictureBase64);
+        editor.apply();  // Apply the changes
     }
+    public void setSharedPreferencesForTesting(SharedPreferences sharedPreferences) {
+        this.sharedPreferences = sharedPreferences;
+    }
+
 }
