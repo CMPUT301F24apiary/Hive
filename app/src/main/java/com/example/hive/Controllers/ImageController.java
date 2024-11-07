@@ -22,20 +22,26 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 
 /**
- * Controller class to get and store events. Extends FirebaseController for db access, and utilizes
+ * Controller class to get and store images. Extends FirebaseController for db access, and utilizes
  * Firebase Storage reference to get and store images.
  *
  * @author Zach
+ * @see FirebaseController
  */
 public class ImageController extends FirebaseController {
 
-    // Database reference
+    /**
+     * Reference to firestore db
+     */
     private final FirebaseFirestore db;
+    /**
+     * Reference to firebase cloud storage
+     */
     private final FirebaseStorage store;
 
     /**
      * Constructor - call <code>FirebaseController</code>'s constructor and initialize the database
-     * reference
+     * reference and storage reference
      */
     public ImageController() {
         super();
@@ -63,11 +69,13 @@ public class ImageController extends FirebaseController {
      * event or profile document in firestore.
      */
     public Task<Pair<String, String>> saveImage(Context context, Uri path, String typeOfImage) {
+        // Ensure valid image type
         if (!typeOfImage.equals("event poster") && !typeOfImage.equals("profile picture")) {
             throw new IllegalArgumentException("Invalid image type: " + typeOfImage + ". " +
                     "Expected 'event poster' or 'profile picture'.");
         }
 
+        // Ensure image is less than 10MB
         long fileSize = 0;
         try (Cursor cursor = context.getContentResolver().query(path, null, null,
                 null, null)) {
@@ -119,6 +127,12 @@ public class ImageController extends FirebaseController {
         });
     }
 
+    /**
+     * Function to retrieve all images from firestore
+     *
+     * @param callback
+     * The function to be called once all data has been retrieved
+     */
     public void getAllImagesFromDB(OnSuccessListener<ArrayList<HashMap<String, String>>> callback) {
         ArrayList<HashMap<String, String>> data = new ArrayList<>();
         CollectionReference imagesCollection = db.collection("images");
@@ -175,12 +189,32 @@ public class ImageController extends FirebaseController {
     }
 
 
+    /**
+     * Update image document with ID imgID to store reference to whatever document this image is for
+     *
+     * @param imgID
+     * String: document ID of image
+     * @param otherID
+     * String: document ID of firebase document where this image is used
+     */
     public void updateImageRef(String imgID, String otherID) {
         CollectionReference imagesCollection = db.collection("images");
 
         imagesCollection.document(imgID).update("relatedDocID", otherID);
     }
 
+    /**
+     * Handle deletion of image. Utilizes multiple helper functions to do so.
+     *
+     * @param url
+     * String: the download URL of the image
+     * @param imgID
+     * String: the document ID of the image in firestore
+     * @param relatedDocID
+     * String: the document ID of the firestore document where this image is used
+     * @param callback
+     * OnSuccessListener: the function to be called once all deletion is performed
+     */
     public void deleteImageAndUpdateRelatedDoc(String url, String imgID, String relatedDocID,
                                                OnSuccessListener<Boolean> callback) {
         deleteImage(url, imgID)
@@ -194,6 +228,17 @@ public class ImageController extends FirebaseController {
                 });
     }
 
+    /**
+     * Private method to delete the image from cloud storage, and the reference document in
+     * firestore
+     *
+     * @param url
+     * String: the download URL of the image
+     * @param imgID
+     * String: the document ID of the firestore document that holds information about this image
+     * @return
+     * A Task to keep track of when deletion completes
+     */
     private Task<Void> deleteImage(String url, String imgID) {
         StorageReference photoRef = store.getReferenceFromUrl(url);
         CollectionReference imgCollection = db.collection("images");
@@ -208,6 +253,14 @@ public class ImageController extends FirebaseController {
         });
     }
 
+    /**
+     * Handles removal of the download URL from related document
+     *
+     * @param relatedDocID
+     * String: the document ID of the document that uses the iamge
+     * @param callback
+     * OnSuccessListener: the function to be called once deletion is done
+     */
     private void handleRelatedDocument(String relatedDocID, OnSuccessListener<Boolean> callback) {
         CollectionReference eventCollection = db.collection("events");
         // Check if the document exists in the event collection
@@ -229,6 +282,16 @@ public class ImageController extends FirebaseController {
                 });
     }
 
+    /**
+     * Removes the download URL from event document.
+     *
+     * @param docID
+     * String: the document ID of the event document
+     * @param eventCollection
+     * CollectionReference: the reference to the events collection in firestore
+     * @param callback
+     * OnSuccessListener: function to be called once deletion is complete
+     */
     private void updateEventDocument(String docID, CollectionReference eventCollection,
                                      OnSuccessListener<Boolean> callback) {
         eventCollection.document(docID)
@@ -244,6 +307,14 @@ public class ImageController extends FirebaseController {
                 });
     }
 
+    /**
+     * Removes the download URL from user document.
+     *
+     * @param docID
+     * String: the document ID of the user document
+     * @param callback
+     * OnSuccessListener: function to be called once deletion is complete
+     */
     private void updateUserDocument(String docID, OnSuccessListener<Boolean> callback) {
         CollectionReference userCollection = db.collection("user");
 

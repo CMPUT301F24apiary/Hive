@@ -17,18 +17,41 @@ import com.example.hive.R;
 /**
  * Fragment to display a confirmation message to the user, with a confirm and cancel button.
  * <br/><br/>
- * Selecting "confirm" will call listener method to delete the event. Selecting "cancel" will
+ * Selecting "confirm" will call listener method to delete the image. Selecting "cancel" will
  * dismiss the dialog and return user to detail activity.
  *
  * @author Zach
  */
 public class ConfirmImageDelete extends DialogFragment {
 
-
+    /**
+     * Position of the image in the array in list activity
+     */
     private int position;
+    /**
+     * String variables for download URL, id of image document in firebase, id of related document
+     * in firebase tha references this image
+     */
     private String imageUrl, id, relatedDocID;
+    /**
+     * Instance of the interface implemented in the list activity
+     */
     private DeleteImageListener listener;
 
+    /**
+     * Constructor for ConfirmImageDelete fragment. Creates a new instance and returns it.
+     *
+     * @param position
+     * int: position of the image in the array in list activity
+     * @param imageUrl
+     * String: image download URL
+     * @param id
+     * String: id of image document in firebase
+     * @param relatedDocID
+     * String: id of related document in firebase tha references this image
+     * @return
+     * The <code>ConfirmImageDelete</code> instance that was created.
+     */
     public static ConfirmImageDelete newInstance(int position, String imageUrl, String id,
                                                  String relatedDocID) {
         ConfirmImageDelete dialog = new ConfirmImageDelete();
@@ -85,7 +108,7 @@ public class ConfirmImageDelete extends DialogFragment {
                 dialog.dismiss();
             });
 
-            // If user selects "confirm" call the deleteEvent method from the listener, and dismiss
+            // If user selects "confirm" call the onDelete method from the listener, and dismiss
             // the dialog
             confirmBtn.setOnClickListener(v -> {
                 listener.onDelete(position, imageUrl, id, relatedDocID);

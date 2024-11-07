@@ -18,13 +18,27 @@ import com.example.hive.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Adapter for displaying Images in <code>RecyclerView</code>.
+ *
+ * @author Zach
+ */
 public class AdminImageAdapter extends RecyclerView.Adapter<AdminImageAdapter.AdminImageViewHolder> {
-    private final ArrayList<HashMap<String, String>> imageData;
-    private final DeleteImageListener listener;
 
-    public AdminImageAdapter(ArrayList<HashMap<String, String>> imageData, DeleteImageListener listener) {
+    /**
+     * The array of images. Each image stored as a <code>HashMap</code> with download URL and some
+     * info on the image.
+     */
+    private final ArrayList<HashMap<String, String>> imageData;
+
+    /**
+     * Constructor for adapter.
+     *
+     * @param imageData
+     * The array of images
+     */
+    public AdminImageAdapter(ArrayList<HashMap<String, String>> imageData) {
         this.imageData = imageData;
-        this.listener = listener;
     }
 
     @NonNull
@@ -50,7 +64,6 @@ public class AdminImageAdapter extends RecyclerView.Adapter<AdminImageAdapter.Ad
         // Set the image info text
         holder.infoTextView.setText(imageInfo);
 
-        int finalPosition = holder.getAdapterPosition();
         holder.deleteBtn.setOnClickListener(v -> {
             // Show confirmation dialog before deletion
             FragmentManager fragmentManager = ((AppCompatActivity) v.getContext())
@@ -69,9 +82,21 @@ public class AdminImageAdapter extends RecyclerView.Adapter<AdminImageAdapter.Ad
         return imageData.size();
     }
 
+    /**
+     * Inner class for the <code>ViewHolder</code>
+     */
     public static class AdminImageViewHolder extends RecyclerView.ViewHolder {
+        /**
+         * The <code>ImageView</code> to display the given image
+         */
         ImageView imageView;
+        /**
+         * The <code>TextView</code> to display image information
+         */
         TextView infoTextView;
+        /**
+         * The <code>ImageButton</code> that acts as a button to delete the image
+         */
         ImageButton deleteBtn;
 
         public AdminImageViewHolder(View itemView) {

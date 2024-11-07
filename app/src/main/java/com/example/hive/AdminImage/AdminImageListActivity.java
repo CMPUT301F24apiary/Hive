@@ -23,10 +23,22 @@ import com.example.hive.Views.AdminProfileListActivity;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Activity to display list of all images. Implements <code>DeleteImageListener</code>
+ *
+ * @see DeleteImageListener
+ * @author Zach
+ */
 public class AdminImageListActivity extends AppCompatActivity implements DeleteImageListener {
 
+    /**
+     * The <code>ArrayList</code> of image data
+     */
     private ArrayList<HashMap<String, String>> images;
 
+    /**
+     * The adapter for the recylcer view
+     */
     private AdminImageAdapter adapter;
 
     public void onDelete(int position, String url, String id, String relatedDocID) {
@@ -40,11 +52,26 @@ public class AdminImageListActivity extends AppCompatActivity implements DeleteI
         });
     }
 
+    /**
+     * Handle removal of the image data from the array, once firebase removal is complete. Notify
+     * adapter once complete.
+     *
+     * @param position
+     * int: position of the removed image in the array
+     */
     private void afterDelete(int position) {
         images.remove(position);
         adapter.notifyItemRemoved(position);
     }
 
+    /**
+     * Function that is called by <code>GetAllImagesFromDB</code> in the
+     * <code>ImageController</code> once all data is retrieved.
+     *
+     * @param data
+     * ArrayList: Members are HashMap with String key and value. The list of image data retrieved
+     * from fierbase.
+     */
     public void updateList(ArrayList<HashMap<String, String>> data) {
         // Get reference to TextView that displays loading text and hide it
         TextView loading = findViewById(R.id.image_list_loading_text);
@@ -71,7 +98,7 @@ public class AdminImageListActivity extends AppCompatActivity implements DeleteI
 
         images = new ArrayList<>();
 
-        adapter = new AdminImageAdapter(images, this);
+        adapter = new AdminImageAdapter(images);
 
         RecyclerView recyclerView = findViewById(R.id.admin_image_recycler);
 
