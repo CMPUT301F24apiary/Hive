@@ -106,6 +106,10 @@ public class Event implements Parcelable {
         return posterURL;
     }
 
+    public int getNumParticipants() {
+        return numParticipants;
+    }
+
     public void setFirebaseID(String firebaseID) {
         this.firebaseID = firebaseID;
     }
