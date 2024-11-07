@@ -33,8 +33,6 @@ android {
 }
 
 dependencies {
-<<<<<<< HEAD
-
     implementation(libs.espresso.intents)
     implementation(libs.ext.junit)
     // Unit testing dependencies
@@ -45,10 +43,8 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:4.0.0")
 
     // App dependencies
-=======
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.firebase.storage)
->>>>>>> b98655d889a89d609db595126c5fde5bda95f787
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
     implementation(libs.glide.v4110)
