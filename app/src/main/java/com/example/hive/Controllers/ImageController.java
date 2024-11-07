@@ -4,19 +4,20 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
+import android.util.Log;
+import android.util.Pair;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -60,7 +61,7 @@ public class ImageController extends FirebaseController {
      * Task that completes with a string which is the download URL of the image. Store this in the
      * event or profile document in firestore.
      */
-    public Task<String> saveImage(Context context, Uri path, String typeOfImage) {
+    public Task<Pair<String, String>> saveImage(Context context, Uri path, String typeOfImage) {
         if (!typeOfImage.equals("event poster") && !typeOfImage.equals("profile picture")) {
             throw new IllegalArgumentException("Invalid image type: " + typeOfImage + ". " +
                     "Expected 'event poster' or 'profile picture'.");
@@ -76,6 +77,7 @@ public class ImageController extends FirebaseController {
                 }
             }
         } catch (Exception e) {
+            Log.d("ERROR Checking File Size", e.toString());
             throw new RuntimeException("Failed to check file size", e);
         }
 
@@ -105,9 +107,136 @@ public class ImageController extends FirebaseController {
             data.put("type", typeOfImage);
             data.put("url", downloadURI.toString());
 
-            return collRef.add(data).continueWith(task -> downloadURI.toString());
+            return collRef.add(data).continueWith(task -> {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                String documentId = task.getResult().getId();
+                return new Pair<>(downloadURI.toString(), documentId);
+            });
         });
     }
+
+    public void getAllImagesFromDB(OnSuccessListener<ArrayList<HashMap<String, String>>> callback) {
+        ArrayList<HashMap<String, String>> data = new ArrayList<>();
+        CollectionReference imagesCollection = db.collection("images");
+
+        imagesCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                String id = doc.getId();
+                String url = (String) doc.get("url");
+                String imageType = (String) doc.get("type");
+                String relatedID = (String) doc.get("relatedDocID");
+                HashMap<String, String> newImg = new HashMap<String, String>();
+                newImg.put("url", url);
+                newImg.put("info", imageType.substring(0, 1).toUpperCase() +
+                        imageType.substring(1));
+                newImg.put("id", id);
+                newImg.put("relatedDocID", relatedID);
+                data.add(newImg);
+            }
+            // Notify the callback with the fetched data
+            callback.onSuccess(data);
+        }).addOnFailureListener(e -> Log.e("ImageControllerGetAll",
+                "Error fetching data", e));
+    }
+
+    public void updateImageRef(String imgID, String otherID) {
+        CollectionReference imagesCollection = db.collection("images");
+
+        imagesCollection.document(imgID).update("relatedDocID", otherID);
+    }
+
+    public void deleteImageAndUpdateRelatedDoc(String url, String imgID, String relatedDocID,
+                                               OnSuccessListener<Boolean> callback) {
+        deleteImage(url, imgID)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        handleRelatedDocument(relatedDocID, callback);
+                    } else {
+                        Log.e("Delete Image", "Failed to delete image",
+                                task.getException());
+                    }
+                });
+    }
+
+    private Task<Void> deleteImage(String url, String imgID) {
+        StorageReference photoRef = store.getReferenceFromUrl(url);
+        CollectionReference imgCollection = db.collection("images");
+        // Delete the image in Cloud Storage
+        return photoRef.delete().continueWithTask(task -> {
+            if (task.isSuccessful()) {
+                // Delete the document from imgCollection
+                return imgCollection.document(imgID).delete();
+            } else {
+                throw task.getException();
+            }
+        });
+    }
+
+    private void handleRelatedDocument(String relatedDocID, OnSuccessListener<Boolean> callback) {
+        CollectionReference eventCollection = db.collection("events");
+        // Check if the document exists in the event collection
+        eventCollection.document(relatedDocID).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        if (documentSnapshot.exists()) {
+                            // Update the field in the events collection document
+                            updateEventDocument(relatedDocID, eventCollection, callback);
+                        } else {
+                            // If not in events collection, try the images collection
+                            updateUserDocument(relatedDocID, callback);
+                        }
+                    } else {
+                        Log.e("Fetch Document", "Error fetching related document",
+                                task.getException());
+                    }
+                });
+    }
+
+    private void updateEventDocument(String docID, CollectionReference eventCollection,
+                                     OnSuccessListener<Boolean> callback) {
+        eventCollection.document(docID)
+                .update("poster", "")
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        callback.onSuccess(Boolean.TRUE);
+                        Log.d("Update Event", "Event document updated successfully");
+                    } else {
+                        Log.e("Update Event", "Failed to update event document",
+                                task.getException());
+                    }
+                });
+    }
+
+    private void updateUserDocument(String docID, OnSuccessListener<Boolean> callback) {
+        CollectionReference userCollection = db.collection("user");
+
+        userCollection.document(docID).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().exists()) {
+                        userCollection.document(docID)
+                                .update("profileImageUrl", "")
+                                .addOnCompleteListener(updateTask -> {
+                                    if (updateTask.isSuccessful()) {
+                                        callback.onSuccess(Boolean.TRUE);
+                                        Log.d("Update User",
+                                                "User document updated successfully");
+                                    } else {
+                                        callback.onSuccess(Boolean.FALSE);
+                                        Log.e("Update User",
+                                                "Failed to update user document",
+                                                updateTask.getException());
+                                    }
+                                });
+                    } else {
+                        Log.d("Update User", "Document not found in images collection");
+                    }
+                });
+    }
+
 
 
 }

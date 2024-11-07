@@ -17,6 +17,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.hive.AdminImage.AdminImageListActivity;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.Events.Event;
 import com.example.hive.R;
@@ -155,7 +156,17 @@ public class AdminEventListActivity extends AppCompatActivity {
         viewProfiles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(AdminEventListActivity.this, AdminProfileListActivity.class);
+                Intent i = new Intent(AdminEventListActivity.this,
+                        AdminProfileListActivity.class);
+                startActivity(i);
+            }
+        });
+
+        viewImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(AdminEventListActivity.this,
+                        AdminImageListActivity.class);
                 startActivity(i);
             }
         });

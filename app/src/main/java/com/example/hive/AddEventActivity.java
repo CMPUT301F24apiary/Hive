@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -129,10 +130,10 @@ public class AddEventActivity extends AppCompatActivity {
         ImageController imgControl = new ImageController();
         try {
             imgControl.saveImage(this, posterImageUri, "event poster")
-                    .addOnSuccessListener(downloadUrl -> {
+                    .addOnSuccessListener(urlAndID -> {
 
                         saveEvent(title, cost, startDateTime, endDateTime, description,
-                                numParticipantsCount, location, downloadUrl);
+                                numParticipantsCount, location, urlAndID);
 
                     }).addOnFailureListener(e -> {
                         // Handle the failure of the image upload
@@ -154,14 +155,17 @@ public class AddEventActivity extends AppCompatActivity {
 
     private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
                            String description, int numParticipantsCount, String location,
-                           @Nullable String downloadUrl) {
+                           @Nullable Pair<String, String> urlAndID) {
 
         Event event = new Event(title, cost, startDateTime, endDateTime, null, description,
-                numParticipantsCount, location, downloadUrl);
+                numParticipantsCount, location, urlAndID == null ? null : urlAndID.first);
 
         EventController controller = new EventController();
         controller.addEvent(event, id -> {
             event.setFirebaseID(id);
+            if (urlAndID != null) {
+                new ImageController().updateImageRef(urlAndID.first, urlAndID.second);
+            }
             Toast.makeText(this, "Event created: " + event.toString(),
                     Toast.LENGTH_SHORT).show();
 

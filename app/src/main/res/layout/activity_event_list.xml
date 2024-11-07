@@ -32,15 +32,5 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_app_logo" />
 
-    <Button
-        android:id="@+id/admin_view_event_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/appLogo"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="69dp"
-        android:layout_marginEnd="124dp"
-        android:text="Admin Event List" />
-
 
 </RelativeLayout>

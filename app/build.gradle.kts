@@ -57,6 +57,7 @@ dependencies {
 
     // (firebase) was getting gms error
     implementation(libs.play.services.auth)
+    implementation(libs.play.services.base)
 
     // Glide (for profile images)
     implementation(libs.glide)
