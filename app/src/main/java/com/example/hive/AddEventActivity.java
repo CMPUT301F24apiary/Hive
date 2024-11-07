@@ -35,8 +35,8 @@ import java.util.Locale;
 public class AddEventActivity extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST_CODE = 100;
-    private EditText eventName, eventDate,eventTime, eventDuration, eventCost, numParticipants, entrantLimit, selectionDate,eventLocation, eventDescription;
-    private ToggleButton toggleReplacementDraw, toggleGeolocation;
+    public EditText eventName, eventDate,eventTime, eventDuration, eventCost, numParticipants, entrantLimit, selectionDate,eventLocation, eventDescription;
+    public ToggleButton toggleReplacementDraw, toggleGeolocation;
     private ImageView addPosterImage;
     private Uri posterImageUri;
 
@@ -90,7 +90,7 @@ public class AddEventActivity extends AppCompatActivity {
     }
 
 
-    private void saveEventDetails() {
+    public void saveEventDetails() {
         String title = eventName.getText().toString().trim();
         String date = eventDate.getText().toString().trim();
         String location = eventLocation.getText().toString().trim();
@@ -131,7 +131,7 @@ public class AddEventActivity extends AppCompatActivity {
         });
     }
 
-    private long convertDateToMS(String date, String time) {
+    public long convertDateToMS(String date, String time) {
         String pattern = "dd-MM-yyyy HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.getDefault());
         try {
@@ -146,7 +146,7 @@ public class AddEventActivity extends AppCompatActivity {
         }
     }
 
-    private String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
+    public String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
         String endDate = startDate;
 
         // Split up start time and duration into hours/minutes

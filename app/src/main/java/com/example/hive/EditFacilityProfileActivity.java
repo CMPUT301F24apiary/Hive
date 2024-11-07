@@ -25,9 +25,9 @@ import java.io.IOException;
  * author : Hrittija
  */
 public class EditFacilityProfileActivity extends AppCompatActivity {
-    private static final int PICK_IMAGE = 1;
-    private ImageView facilityImageView;
-    private EditText facilityNameEditText, emailEditText, phoneEditText;
+    public static final int PICK_IMAGE = 1;
+    public ImageView facilityImageView;
+    public EditText facilityNameEditText, emailEditText, phoneEditText;
     private String base64Image = "";
 
     @Override
@@ -67,7 +67,7 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
     /**
      * To remove the facility poster.
      */
-    private void removePicture() {
+    public void removePicture() {
         facilityImageView.setImageResource(R.drawable.image1);
         base64Image = "";
     }
@@ -128,7 +128,7 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
      * This is to show the data that has been set by the user previously and that
      * is to be edited.
      */
-    private void facilityData() {
+    public void facilityData() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
         facilityNameEditText.setText(sharedPreferences.getString("facilityName", ""));
         emailEditText.setText(sharedPreferences.getString("facilityEmail", ""));
@@ -148,7 +148,7 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
      * Checks if the user inputs are valid or not.
      * @return
      */
-    private boolean validateInputs() {
+    public boolean validateInputs() {
         String facilityName = facilityNameEditText.getText().toString().trim();
         String email = emailEditText.getText().toString().trim();
         String phone = phoneEditText.getText().toString().trim();
@@ -175,7 +175,7 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
     /**
      *This saves the new edited information from the user(organizer)
      */
-    private void saveFacilityData() {
+    public void saveFacilityData() {
         if (validateInputs()) {
             String updatedName = facilityNameEditText.getText().toString();
             String updatedEmail = emailEditText.getText().toString();

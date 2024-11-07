@@ -2,6 +2,8 @@ package com.example.hive.Controllers;
 
 import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.example.hive.Events.Event;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -22,6 +24,7 @@ public class EventController extends FirebaseController {
 
     // Database reference
     private final FirebaseFirestore db;
+    private Event lastSavedEvent;
 
     /**
      * Constructor - call <code>FirebaseController</code>'s constructor and initialize the database
@@ -32,19 +35,21 @@ public class EventController extends FirebaseController {
         this.db = super.getDb();
     }
 
-    public void addEvent(Event event, OnSuccessListener<String> listener) {
-        HashMap<String, Object> data;
 
-        data = event.getAll();
+    @VisibleForTesting
+    public Event getLastSavedEvent() {
+        return lastSavedEvent;
+    }
+
+    public void addEvent(Event event, OnSuccessListener<String> listener) {
+        HashMap<String, Object> data = event.getAll();
 
         db.collection("events").add(data).addOnSuccessListener(documentReference -> {
             listener.onSuccess(documentReference.getId());
-        }
-        ).addOnFailureListener(e -> {
-                    Log.w("EventController", "Error adding event", e);
-        }
-        );
-
+            lastSavedEvent = event;  // Store event for testing purposes
+        }).addOnFailureListener(e -> {
+            Log.w("EventController", "Error adding event", e);
+        });
     }
 
     /**

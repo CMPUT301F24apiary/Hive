@@ -94,6 +94,10 @@ public class Event implements Parcelable {
 
     public String getFirebaseID() { return firebaseID; }
 
+    public int getNumParticipants() {
+        return numParticipants;
+    }
+
     public String getDescription() {
         return description;
     }
