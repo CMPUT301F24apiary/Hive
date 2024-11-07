@@ -33,6 +33,16 @@ android {
 }
 
 dependencies {
+    implementation(libs.espresso.intents)
+    implementation(libs.ext.junit)
+    // Unit testing dependencies
+    testImplementation ("org.junit.jupiter:junit-jupiter-api:5.0.1")
+    testImplementation(libs.testng)
+    testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.0.1")
+    testImplementation("org.mockito:mockito-core:4.0.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:4.0.0")
+
+    // App dependencies
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.firebase.storage)
     implementation(platform(libs.firebase.bom))
@@ -43,22 +53,16 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    implementation("com.github.bumptech.glide:glide:4.13.0")
+    androidTestImplementation(libs.testng) // Glide for image handling
+    annotationProcessor("com.github.bumptech.glide:compiler:4.13.0")
 
-    // (for testing)
-    testImplementation(libs.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.jupiter.engine)
-    androidTestImplementation(libs.espresso.core.v340)
-    androidTestImplementation(libs.espresso.intents)
-    androidTestImplementation(libs.rules)
-    androidTestImplementation(libs.truth)
-
-    // (firebase) was getting gms error
+    // Firebase authentication
     implementation(libs.play.services.auth)
     implementation(libs.play.services.base)
 
     // Glide (for profile images)
     implementation(libs.glide)
 }
+
+

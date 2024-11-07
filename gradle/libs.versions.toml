@@ -1,7 +1,7 @@
 [versions]
 agp = "8.7.2"
-compiler = "4.11.0"
 firebaseBomVersion = "33.5.1"
+compiler = "4.11.0"
 espressoCoreVersion = "3.4.0"
 espressoIntents = "3.6.1"
 firebaseBom = "33.5.1"
@@ -19,6 +19,8 @@ playServicesAuth = "21.2.0"
 playServicesBase = "18.5.0"
 rules = "1.6.1"
 truth = "1.6.0"
+junitJupiter = "5.8.1"
+testng = "6.9.6"
 
 [libraries]
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
@@ -43,6 +45,8 @@ play-services-auth = { module = "com.google.android.gms:play-services-auth", ver
 play-services-base = { module = "com.google.android.gms:play-services-base", version.ref = "playServicesBase" }
 rules = { module = "androidx.test:rules", version.ref = "rules" }
 truth = { module = "androidx.test.ext:truth", version.ref = "truth" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+testng = { group = "org.testng", name = "testng", version.ref = "testng" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -92,7 +92,7 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * Loads profile data from SharedPreferences and displays it in the corresponding TextViews.
      */
-    private void loadProfileData() {
+    public void loadProfileData() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
         String personName = sharedPreferences.getString("personName", "Person Name");
         String userName = sharedPreferences.getString("userName", "User Name");
@@ -114,14 +114,15 @@ public class ProfileActivity extends AppCompatActivity {
             profilePicture.setImageResource(R.drawable.ic_profile);
         }
     }
+    
 
     /**
      * Called when returning from the ProfileEditActivity.
      * Reloads the profile data to reflect any changes.
      *
      * @param requestCode The request code used to start the activity.
-     * @param resultCode The result code returned by the child activity.
-     * @param data Any additional data returned by the child activity.
+     * @param resultCode  The result code returned by the child activity.
+     * @param data        Any additional data returned by the child activity.
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
