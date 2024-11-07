@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -49,12 +51,16 @@ public class AdminImageAdapter extends RecyclerView.Adapter<AdminImageAdapter.Ad
         holder.infoTextView.setText(imageInfo);
 
         int finalPosition = holder.getAdapterPosition();
-        holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onDelete(finalPosition, imageUrl, currentItem.get("id"),
-                        currentItem.get("relatedDocID"));
-            }
+        holder.deleteBtn.setOnClickListener(v -> {
+            // Show confirmation dialog before deletion
+            FragmentManager fragmentManager = ((AppCompatActivity) v.getContext())
+                    .getSupportFragmentManager();
+            ConfirmImageDelete confirmDeleteDialog = ConfirmImageDelete.newInstance(
+                    holder.getAdapterPosition(),
+                    imageUrl,
+                    currentItem.get("id"),
+                    currentItem.get("relatedDocID"));
+            confirmDeleteDialog.show(fragmentManager, "ConfirmDeleteDialog");
         });
     }
 

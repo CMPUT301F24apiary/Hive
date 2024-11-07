@@ -1,8 +1,10 @@
 package com.example.hive.AdminImage;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -13,8 +15,10 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hive.AdminEvent.AdminEventListActivity;
 import com.example.hive.Controllers.ImageController;
 import com.example.hive.R;
+import com.example.hive.Views.AdminProfileListActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +55,7 @@ public class AdminImageListActivity extends AppCompatActivity implements DeleteI
         images.clear();
         images.addAll(data);
         // Notify the adapter that the dataset has changed, so it can update the ListView
-        adapter.notifyItemRangeChanged(0, images.size());
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -78,6 +82,32 @@ public class AdminImageListActivity extends AppCompatActivity implements DeleteI
         ImageController controller = new ImageController();
 
         controller.getAllImagesFromDB(this::updateList);
+
+        // Get references to the three buttons to switch list views
+        Button viewProfiles = findViewById(R.id.view_profiles_btn);
+        Button viewFacilities = findViewById(R.id.view_facilities_btn);
+        Button viewEvents = findViewById(R.id.view_events_btn);
+
+        // Logic to switch list activities on button presses
+        viewProfiles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(AdminImageListActivity.this,
+                        AdminProfileListActivity.class);
+                finish();
+                startActivity(i);
+            }
+        });
+
+        viewEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(AdminImageListActivity.this,
+                        AdminEventListActivity.class);
+                finish();
+                startActivity(i);
+            }
+        });
 
     }
 }

@@ -19,6 +19,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 /**
  * Controller class to get and store events. Extends FirebaseController for db access, and utilizes
@@ -123,24 +124,56 @@ public class ImageController extends FirebaseController {
         CollectionReference imagesCollection = db.collection("images");
 
         imagesCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            int totalDocs = queryDocumentSnapshots.size();
+            if (totalDocs == 0) {
+                callback.onSuccess(data);
+                return;
+            }
+
+            // Track completed tasks
+            final int[] completedCount = {0};
+
             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                 String id = doc.getId();
                 String url = (String) doc.get("url");
                 String imageType = (String) doc.get("type");
                 String relatedID = (String) doc.get("relatedDocID");
-                HashMap<String, String> newImg = new HashMap<String, String>();
+                HashMap<String, String> newImg = new HashMap<>();
                 newImg.put("url", url);
-                newImg.put("info", imageType.substring(0, 1).toUpperCase() +
-                        imageType.substring(1));
                 newImg.put("id", id);
                 newImg.put("relatedDocID", relatedID);
-                data.add(newImg);
+
+                OnSuccessListener<DocumentSnapshot> onRelatedDocSuccess = relatedDoc -> {
+                    if (imageType.equals("event poster")) {
+                        newImg.put("info", "Event poster - " + relatedDoc.get("title"));
+                    } else {
+                        newImg.put("info", "Profile picture - " + relatedDoc.get("username"));
+                    }
+
+                    synchronized (data) {
+                        data.add(newImg);
+                        completedCount[0]++;
+
+                        // Check if all tasks are complete
+                        if (completedCount[0] == totalDocs) {
+                            callback.onSuccess(data);
+                        }
+                    }
+                };
+
+                // Fetch related document based on type
+                if (imageType.equals("event poster")) {
+                    db.collection("events").document(relatedID).get()
+                            .addOnSuccessListener(onRelatedDocSuccess);
+                } else {
+                    db.collection("users").document(relatedID).get()
+                            .addOnSuccessListener(onRelatedDocSuccess);
+                }
             }
-            // Notify the callback with the fetched data
-            callback.onSuccess(data);
         }).addOnFailureListener(e -> Log.e("ImageControllerGetAll",
                 "Error fetching data", e));
     }
+
 
     public void updateImageRef(String imgID, String otherID) {
         CollectionReference imagesCollection = db.collection("images");

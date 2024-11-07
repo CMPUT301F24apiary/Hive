@@ -164,9 +164,9 @@ public class AddEventActivity extends AppCompatActivity {
         controller.addEvent(event, id -> {
             event.setFirebaseID(id);
             if (urlAndID != null) {
-                new ImageController().updateImageRef(urlAndID.first, urlAndID.second);
+                new ImageController().updateImageRef(urlAndID.second, id);
             }
-            Toast.makeText(this, "Event created: " + event.toString(),
+            Toast.makeText(this, "Event created: '" + event.getTitle() + "'",
                     Toast.LENGTH_SHORT).show();
 
             Intent resultIntent = new Intent();

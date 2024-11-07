@@ -158,6 +158,7 @@ public class AdminEventListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(AdminEventListActivity.this,
                         AdminProfileListActivity.class);
+                finish();
                 startActivity(i);
             }
         });
@@ -167,6 +168,7 @@ public class AdminEventListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(AdminEventListActivity.this,
                         AdminImageListActivity.class);
+                finish();
                 startActivity(i);
             }
         });
