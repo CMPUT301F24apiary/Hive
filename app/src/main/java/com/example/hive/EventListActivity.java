@@ -7,28 +7,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 
-/**
- * EventListActivity.java
- *
- * This activity displays a list of events to the user. It includes an ImageButton that allows
- * the user to navigate to their profile page.
- *
- * <p>Outstanding Issues:
- * - None at this time.</p>
- *
- * @author Dina
- * @version 1.0
- */
-
-package com.example.hive;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.hive.AdminEvent.AdminEventListActivity;
 
 public class EventListActivity extends AppCompatActivity {
@@ -38,9 +16,7 @@ public class EventListActivity extends AppCompatActivity {
 
     private ImageButton profileButton;
 
-    private ImageButton notificationBellButton;
-
-    private ImageButton notificationBellButton;  // New notification bell button
+    private ImageButton notificationBellButton;  // Only one declaration for notificationBellButton
     private Button switchRolesButton;  // New role switch button
 
     /**
@@ -55,9 +31,9 @@ public class EventListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_list);
 
         profileButton = findViewById(R.id.profileButton);
-
         eventsButton = findViewById(R.id.admin_view_event_list);
         notificationBellButton = findViewById(R.id.notificationBellButton);
+        switchRolesButton = findViewById(R.id.switchRolesButton);
 
         eventsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,9 +42,6 @@ public class EventListActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
-        notificationBellButton = findViewById(R.id.notificationBellButton);
-        switchRolesButton = findViewById(R.id.switchRolesButton);
 
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +58,6 @@ public class EventListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
 
         switchRolesButton.setOnClickListener(new View.OnClickListener() {
             @Override
