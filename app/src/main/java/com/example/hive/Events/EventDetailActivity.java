@@ -17,15 +17,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
-import com.example.hive.AdminEvent.ConfirmEventDelete;
-import com.example.hive.AdminEvent.DeleteEventListener;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.R;
-
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
-import java.net.URI;
 
 /**
  * Display event information and delete button for admin.

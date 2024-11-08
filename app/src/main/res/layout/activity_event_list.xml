@@ -61,18 +61,17 @@
         android:layout_marginEnd="124dp"
         android:text="Admin Event List" />
     // Switch Roles Button
-
     <Button
         android:id="@+id/switchRolesButton"
-        android:layout_width="243dp"
-        android:layout_height="61dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:backgroundTint="#136F63"
-        android:padding="12dp"
         android:text="Switch Roles"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#136F63"
+        android:padding="12dp" />
 
 
 </RelativeLayout>

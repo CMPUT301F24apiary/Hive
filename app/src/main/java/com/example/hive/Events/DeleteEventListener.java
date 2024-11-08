@@ -1,4 +1,4 @@
-package com.example.hive.AdminEvent;
+package com.example.hive.Events;
 
 /**
  * Interface that declares the <code>deleteEvent</code> method. Should be implemented in
