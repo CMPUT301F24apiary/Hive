@@ -78,7 +78,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
 
     public static class ProfileViewHolder extends RecyclerView.ViewHolder {
         ImageView imageViewProfile;
-        TextView textViewName;
+        public TextView textViewName;
         Button buttonViewDetails, deleteProfileButton;
 
         public ProfileViewHolder(@NonNull View itemView) {

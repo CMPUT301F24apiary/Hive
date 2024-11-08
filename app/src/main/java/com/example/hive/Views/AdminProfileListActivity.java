@@ -24,7 +24,7 @@ import java.util.List;
  * it uses the profile adapter
  */
 public class AdminProfileListActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
+    public RecyclerView recyclerView;
     private ProfileAdapter profileAdapter;
     private List<User> userList, users;
     public static final int REQUEST_CODE_PROFILE_VIEW = 1;
