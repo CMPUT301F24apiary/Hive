@@ -5,28 +5,39 @@
     android:background="#1A2232"
     tools:context=".ProfileEditActivity">
 
+    <!-- Notification Bell Icon -->
+    <ImageButton
+        android:id="@+id/notificationBellButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Notification Bell"
+        android:src="@drawable/bell" />
 
+    <!-- Profile Picture Section -->
     <ImageView
         android:id="@+id/profilePicture"
         android:layout_width="123dp"
         android:layout_height="121dp"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="82dp"
-        android:layout_marginEnd="32dp"
-        android:layout_toStartOf="@+id/removePictureButton"
+        android:layout_below="@id/notificationBellButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:contentDescription="Profile Picture"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_profile" />
 
+    <!-- Edit and Remove Picture Buttons -->
     <Button
         android:id="@+id/editPictureButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/profilePicture"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="-107dp"
-        android:layout_marginEnd="82dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
         android:backgroundTint="#136F63"
         android:text="Edit Picture"
         android:textColor="#FFFFFF" />
@@ -36,17 +47,212 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editPictureButton"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="82dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
         android:backgroundTint="#136F63"
         android:text="Remove Picture"
         android:textColor="#FFFFFF" />
 
-    <!-- Cancel Button -->
+    <!-- Name Section -->
+    <TextView
+        android:id="@+id/nameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/removePictureButton"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:text="Name"
+        android:textColor="#136F63"
+        android:textSize="18sp" />
 
-    <!-- Name Label -->
+    <EditText
+        android:id="@+id/personNameInput"
+        android:layout_width="276dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/nameLabel"
+        android:layout_marginStart="42dp"
+        android:layout_toEndOf="@id/nameLabel"
+        android:hint="Enter your name"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textSize="18sp" />
 
+    <!-- Username Section -->
+    <TextView
+        android:id="@+id/usernameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nameLabel"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:text="Username"
+        android:textColor="#136F63"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/userNameInput"
+        android:layout_width="276dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/usernameLabel"
+        android:layout_marginStart="42dp"
+        android:layout_toEndOf="@id/usernameLabel"
+        android:hint="Enter your username"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textSize="18sp" />
+
+    <!-- Email Section -->
+    <TextView
+        android:id="@+id/emailLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/usernameLabel"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:text="Email"
+        android:textColor="#136F63"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/emailInput"
+        android:layout_width="276dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/emailLabel"
+        android:layout_marginStart="42dp"
+        android:layout_toEndOf="@id/emailLabel"
+        android:hint="Enter your email"
+        android:inputType="textEmailAddress"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textSize="18sp" />
+
+    <!-- Phone Section -->
+    <TextView
+        android:id="@+id/phoneLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emailLabel"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:text="Phone"
+        android:textColor="#136F63"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/phoneInput"
+        android:layout_width="276dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/phoneLabel"
+        android:layout_marginStart="42dp"
+        android:layout_toEndOf="@id/phoneLabel"
+        android:hint="Enter your phone number"
+        android:inputType="phone"
+        android:maxLength="15"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:textSize="18sp" />
+
+    <!-- Notification Settings Section -->
+    <TextView
+        android:id="@+id/notificationSettingsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/phoneInput"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:text="Notification Settings"
+        android:textColor="#136F63"
+        android:textSize="18sp" />
+
+    <!-- LinearLayout for Notification Options -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/notificationSettingsLabel"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <!-- Receive notifications when chosen from waiting list -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/notificationChosenLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Receive notifications when chosen from waiting list"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/notificationChosenBellButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Notification Bell"
+                android:src="@drawable/bell" />
+        </LinearLayout>
+
+        <!-- Receive notifications when not chosen from waiting list -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/notificationNotChosenLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Receive notifications when not chosen from waiting list"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/notificationNotChosenBellButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Notification Bell"
+                android:src="@drawable/bell" />
+        </LinearLayout>
+
+        <!-- Receive notifications from Organizers and Admin -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/notificationOrganizerLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Receive notifications from Organizers and Admin"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/notificationOrganizerBellButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Notification Bell"
+                android:src="@drawable/bell" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Save and Cancel Buttons -->
     <Button
         android:id="@+id/saveButton"
         android:layout_width="98dp"
@@ -67,110 +273,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="6dp"
         android:layout_marginTop="15dp"
-        android:layout_marginEnd="206dp"
-        android:layout_toStartOf="@+id/saveButton"
         android:backgroundTint="#136F63"
         android:text="Cancel"
         android:textColor="#FFFFFF" />
 
-    <TextView
-        android:id="@+id/nameLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="250dp"
-        android:text="Name"
-        android:textColor="#136F63"
-        android:textSize="18sp" />
-
-
-    <EditText
-        android:id="@+id/personNameInput"
-        android:layout_width="276dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/nameLabel"
-        android:layout_marginStart="42dp"
-        android:layout_toEndOf="@id/nameLabel"
-        android:hint="Enter your name"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/usernameLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/nameLabel"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="20dp"
-        android:text="Username"
-        android:textColor="#136F63"
-        android:textSize="18sp" />
-
-    <!-- Username Input -->
-
-    <!-- Email Label -->
-    <EditText
-        android:id="@+id/userNameInput"
-        android:layout_width="276dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/usernameLabel"
-        android:layout_marginStart="9dp"
-        android:layout_toEndOf="@id/usernameLabel"
-        android:hint="Enter your username"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/emailLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/usernameLabel"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="20dp"
-        android:text="Email"
-        android:textColor="#136F63"
-        android:textSize="18sp" />
-
-    <EditText
-        android:id="@+id/emailInput"
-        android:layout_width="276dp"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/emailLabel"
-        android:layout_alignBaseline="@id/emailLabel"
-        android:layout_marginStart="42dp"
-        android:hint="Enter your email"
-        android:inputType="textEmailAddress"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:textSize="18sp" />
-
-    <!-- Phone Label -->
-    <TextView
-        android:id="@+id/phoneLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/emailLabel"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="20dp"
-        android:text="Phone"
-        android:textColor="#136F63"
-        android:textSize="18sp" />
-
-    <EditText
-        android:id="@+id/phoneInput"
-        android:layout_width="276dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/phoneLabel"
-        android:layout_marginStart="34dp"
-        android:layout_toEndOf="@id/phoneLabel"
-        android:hint="Enter your phone number"
-        android:inputType="phone"
-        android:maxLength="15"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:textSize="18sp" />
-
 </RelativeLayout>
-

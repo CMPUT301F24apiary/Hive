@@ -6,7 +6,26 @@
     android:background="#1A2232"
     tools:context=".EventListActivity"
     tools:ignore="ExtraText">
-    // profile picture
+
+    // Notification Bell Icon
+
+    // Profile picture
+
+    <ImageButton
+        android:id="@+id/notificationBellButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+
+
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="38dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Notification Bell"
+        android:src="@drawable/bell" />
+
     <ImageButton
         android:id="@+id/profileButton"
         android:layout_width="82dp"
@@ -19,7 +38,6 @@
         android:contentDescription="Profile Picture"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_profile" />
-    //app logo
 
     <ImageView
         android:id="@+id/appLogo"
@@ -31,6 +49,29 @@
         android:contentDescription="App Logo"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_app_logo" />
+
+    <!-- Admin Event List Button -->
+    <Button
+        android:id="@+id/admin_view_event_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/appLogo"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="69dp"
+        android:layout_marginEnd="124dp"
+        android:text="Admin Event List" />
+    // Switch Roles Button
+    <Button
+        android:id="@+id/switchRolesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:text="Switch Roles"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#136F63"
+        android:padding="12dp" />
 
 
 </RelativeLayout>
