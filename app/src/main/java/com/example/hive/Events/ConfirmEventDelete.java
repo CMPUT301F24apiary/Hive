@@ -1,4 +1,4 @@
-package com.example.hive.AdminEvent;
+package com.example.hive.Events;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
