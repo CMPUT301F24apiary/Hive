@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -52,7 +51,7 @@
         android:text="@string/loading_text"
         android:textColor="@color/white"
         android:textSize="34sp"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/organizer_event_list_linear_layout"
@@ -60,7 +59,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/organizer_event_list_top_section"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <SearchView
             android:id="@+id/organizer_event_list_search_view"
@@ -68,9 +67,7 @@
             android:layout_height="wrap_content"
             android:iconifiedByDefault="false"
             android:queryHint="Event title"
-            android:searchIcon="@drawable/ic_white_search">
-
-        </SearchView>
+            android:searchIcon="@drawable/ic_white_search" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -149,10 +146,16 @@
         <ListView
             android:id="@+id/organizer_event_list_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-        <!--            android:visibility="visible" -->
+        <Button
+            android:id="@+id/bottom_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#136F63"
+            android:text="Role selection"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
-
 
 </RelativeLayout>

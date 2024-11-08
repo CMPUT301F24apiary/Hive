@@ -105,12 +105,6 @@ public class Event implements Parcelable {
         }
     };
 
-    /**
-     * Title getter.
-     *
-     * @return
-     * Event title
-     */
     public String getTitle() {
         return title;
     }
