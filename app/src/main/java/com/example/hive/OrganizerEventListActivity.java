@@ -1,6 +1,7 @@
 package com.example.hive;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -20,12 +22,44 @@ import com.example.hive.Events.Event;
 import java.util.ArrayList;
 
 /**
- * This shows the event list to the organizer
+ * This shows the event list to the organizer.
  */
 public class OrganizerEventListActivity extends AppCompatActivity {
 
     private ImageButton facilityprofileButton;
     private Button addEventButton;
+    private Button roleSelection;
+
+    private boolean hasFacilityProfile() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        return sharedPreferences.getBoolean("profileComplete", false);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the profile status whenever the activity is resumed
+        updateProfileStatus();
+    }
+
+    public void updateProfileStatus() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String facilityName = sharedPreferences.getString("facilityName", "Facility Name");
+        String email = sharedPreferences.getString("facilityEmail", "facility@google.com");
+        String phone = sharedPreferences.getString("facilityPhone", "(780) xxx - xxxx");
+
+        if (!facilityName.equals("Facility Name") && !email.equals("facility@google.com") && !phone.equals("(780) xxx - xxxx")) {
+            editor.putBoolean("profileComplete", true);
+        } else {
+            editor.putBoolean("profileComplete", false);
+        }
+
+        editor.apply();
+    }
+
+
+
     /**
      * Lays out search view and list view
      */
@@ -91,6 +125,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
 
         facilityprofileButton = findViewById(R.id.facilityprofileButton);
         addEventButton= findViewById(R.id.addEventButton);
+        roleSelection=findViewById(R.id.bottom_button);
 
 
         // Create activity result launcher for item addition - adds ability to get result from the
@@ -169,8 +204,24 @@ public class OrganizerEventListActivity extends AppCompatActivity {
         addEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OrganizerEventListActivity.this, AddEventActivity.class);
-                addItemLauncher.launch(intent);
+                if (hasFacilityProfile()) {
+                    Intent intent = new Intent(OrganizerEventListActivity.this, AddEventActivity.class);
+                    addItemLauncher.launch(intent);
+                } else {
+                    Toast.makeText(OrganizerEventListActivity.this, "Please complete your facility profile first.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(OrganizerEventListActivity.this, FacilityActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+
+
+        roleSelection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OrganizerEventListActivity.this, RoleSelectionActivity.class);
+                finish();
+                startActivity(intent);
             }
         });
         sortByDate.setOnClickListener(new View.OnClickListener() {

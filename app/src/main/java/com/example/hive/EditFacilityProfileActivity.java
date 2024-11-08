@@ -17,11 +17,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * This activity is to edit a facility profile
+ * This activity is to edit a facility profile(Picture, name,email and phone)
  * author : Hrittija
  */
 public class EditFacilityProfileActivity extends AppCompatActivity {
@@ -29,6 +32,7 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
     public ImageView facilityImageView;
     public EditText facilityNameEditText, emailEditText, phoneEditText;
     private String base64Image = "";
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +87,11 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri imageUri = data.getData();
-            setImageFromUri(imageUri);
+            // From https://github.com/bumptech/glide/issues/3839, downloaded 2024-11-06
+            Glide.with(this)
+                    .load(imageUri)
+                    .transform(new CircleCrop())
+                    .into(facilityImageView);
         }
     }
 
@@ -107,7 +115,7 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
      * @param bitmap
      * @return
      */
-    private String bitmapToBase64(Bitmap bitmap) {
+    public String bitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
@@ -119,7 +127,7 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
      * @param base64Str
      * @return
      */
-    private Bitmap base64ToBitmap(String base64Str) {
+    public Bitmap base64ToBitmap(String base64Str) {
         byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
@@ -193,5 +201,9 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
             setResult(RESULT_OK);
             finish();
         }
+    }
+
+    public void setSharedPreferencesForTesting(SharedPreferences sharedPreferences) {
+        this.sharedPreferences = sharedPreferences;
     }
 }

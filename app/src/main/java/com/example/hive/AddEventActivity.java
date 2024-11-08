@@ -24,10 +24,10 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Few TODOs
- * - Limit events to only a few days in length, allowing unlimited requires a lot of processing
- *   for the end date
- * - Ensure all values are inputted in correct format - i.e. dates in dd-mm-yyyy, times in hh:mm
+ * This activity is to add new events by filling in the details(By an organizer)
+ * Saved on firebase.
+ * An organizer can upload a poster, event name, description, timings, geolocation and limit the number
+ * of participants in this activity.
  * - Store poster in cloud storage on google and save reference
  *
  * @author Hrittija
@@ -74,7 +74,10 @@ public class AddEventActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     *Allows the user to upload a picture from their gallery.
+     * @param view view that is clicked
+     */
     public void onAddPosterClick(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, GALLERY_REQUEST_CODE);
@@ -89,7 +92,9 @@ public class AddEventActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * This method is used to save the event details
+     */
     public void saveEventDetails() {
         String title = eventName.getText().toString().trim();
         String date = eventDate.getText().toString().trim();
@@ -131,6 +136,12 @@ public class AddEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method is used to convert the date to milliseconds
+     * @param date in form DD-MM-YY
+     * @param time in form HH:MM
+     * @return
+     */
     public long convertDateToMS(String date, String time) {
         String pattern = "dd-MM-yyyy HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.getDefault());
@@ -146,6 +157,14 @@ public class AddEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method takes the start time,date and duration to calculate the end time and change the
+     * date if it passes 24 hours.
+     * @param startDate the start date
+     * @param startTime the start time
+     * @param duration the duration that is to be added to the start time for the end time
+     * @return
+     */
     public String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
         String endDate = startDate;
 
