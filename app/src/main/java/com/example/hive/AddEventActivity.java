@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,19 +26,15 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * This activity is to add new events by filling in the details(By an organizer)
- * Saved on firebase.
- * An organizer can upload a poster, event name, description, timings, geolocation and limit the number
- * of participants in this activity.
- * - Store poster in cloud storage on google and save reference
+ * Activity to add an event by filling in all the event details(By an organizer)
  *
  * @author Hrittija
  */
 public class AddEventActivity extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST_CODE = 100;
-    public EditText eventName, eventDate,eventTime, eventDuration, eventCost, numParticipants, entrantLimit, selectionDate,eventLocation, eventDescription;
-    public ToggleButton toggleReplacementDraw, toggleGeolocation;
+    private EditText eventName, eventDate,eventTime, eventDuration, eventCost, numParticipants, entrantLimit, selectionDate,eventLocation, eventDescription;
+    private ToggleButton toggleReplacementDraw, toggleGeolocation;
     private ImageView addPosterImage;
     private Uri posterImageUri;
 
@@ -75,8 +73,8 @@ public class AddEventActivity extends AppCompatActivity {
 
 
     /**
-     *Allows the user to upload a picture from their gallery.
-     * @param view view that is clicked
+     * To open the gallery for facility profile picture uploading
+     * @param view
      */
     public void onAddPosterClick(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -93,9 +91,9 @@ public class AddEventActivity extends AppCompatActivity {
     }
 
     /**
-     * This method is used to save the event details
+     * The method to save the event details
      */
-    public void saveEventDetails() {
+    private void saveEventDetails() {
         String title = eventName.getText().toString().trim();
         String date = eventDate.getText().toString().trim();
         String location = eventLocation.getText().toString().trim();
@@ -137,12 +135,12 @@ public class AddEventActivity extends AppCompatActivity {
     }
 
     /**
-     * This method is used to convert the date to milliseconds
-     * @param date in form DD-MM-YY
+     * This method is used to convert the date in milliseconds
+     * @param date in form DD-MM-77
      * @param time in form HH:MM
-     * @return
+     * @return the date in ms
      */
-    public long convertDateToMS(String date, String time) {
+    private long convertDateToMS(String date, String time) {
         String pattern = "dd-MM-yyyy HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.getDefault());
         try {
@@ -158,14 +156,14 @@ public class AddEventActivity extends AppCompatActivity {
     }
 
     /**
-     * This method takes the start time,date and duration to calculate the end time and change the
-     * date if it passes 24 hours.
-     * @param startDate the start date
-     * @param startTime the start time
-     * @param duration the duration that is to be added to the start time for the end time
+     * This method adds the duration to the start time to find the end time and considers if
+     * it goes beyond 24 hours.
+     * @param startDate the event start date
+     * @param startTime the time
+     * @param duration the duration of event
      * @return
      */
-    public String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
+    private String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
         String endDate = startDate;
 
         // Split up start time and duration into hours/minutes

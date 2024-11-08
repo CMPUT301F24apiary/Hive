@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.2"
+agp = "8.6.1"
 firebaseBomVersion = "33.5.1"
 compiler = "4.11.0"
 espressoCoreVersion = "3.4.0"
@@ -16,6 +16,7 @@ material = "1.12.0"
 activity = "1.9.2"
 constraintlayout = "2.1.4"
 playServicesAuth = "21.2.0"
+playServicesBase = "18.5.0"
 rules = "1.6.1"
 truth = "1.6.0"
 junitJupiter = "5.8.1"
@@ -41,6 +42,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+play-services-base = { module = "com.google.android.gms:play-services-base", version.ref = "playServicesBase" }
 rules = { module = "androidx.test:rules", version.ref = "rules" }
 truth = { module = "androidx.test.ext:truth", version.ref = "truth" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }

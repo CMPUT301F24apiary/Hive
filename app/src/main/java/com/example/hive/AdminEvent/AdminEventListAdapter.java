@@ -32,7 +32,7 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filter
     /**
      * Original list of events
      */
-    private final ArrayList<Event> og;
+    private final ArrayList<Event> ogList;
 
     /**
      * Filtered list of events
@@ -63,7 +63,7 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filter
                                  ArrayList<Event> events,
                                  ActivityResultLauncher<Intent> deleteItemLauncher) {
         super(context, 0, events);
-        this.og = new ArrayList<Event>(events);
+        this.ogList = new ArrayList<Event>(events);
         this.filtered = new ArrayList<Event>(events);
         this.deleteItemLauncher = deleteItemLauncher;
     }
@@ -76,8 +76,8 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filter
      * The array of event objects to update this adapter's arrays with
      */
     public void updateData(ArrayList<Event> newEvents) {
-        og.clear();
-        og.addAll(newEvents);
+        ogList.clear();
+        ogList.addAll(newEvents);
         filtered.clear();
         filtered.addAll(newEvents);
     }
@@ -197,10 +197,10 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filter
 
             if (constraint == null || constraint.length() == 0) {
                 // No search query, return the original list
-                filteredList.addAll(og);
+                filteredList.addAll(ogList);
             } else {
                 String query = constraint.toString().toLowerCase().trim();
-                for (Event event : og) {
+                for (Event event : ogList) {
                     if (event.getTitle().toLowerCase().contains(query)) {
                         filteredList.add(event);
                     }

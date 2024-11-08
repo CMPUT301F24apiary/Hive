@@ -28,9 +28,12 @@ public class EventListActivity extends AppCompatActivity {
 
     private ImageButton profileButton;
 
+    private ImageButton notificationBellButton;  // Only one declaration for notificationBellButton
+    private Button switchRolesButton;  // New role switch button
+
     /**
      * Called when the activity is starting. This is where most initialization should be done.
-     * It sets up the UI and initializes the profile button.
+     * It sets up the UI and initializes the profile button and notification bell button.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in onSaveInstanceState. Otherwise, it is null.
      */
@@ -40,8 +43,9 @@ public class EventListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_list);
 
         profileButton = findViewById(R.id.profileButton);
-
         eventsButton = findViewById(R.id.admin_view_event_list);
+        notificationBellButton = findViewById(R.id.notificationBellButton);
+        switchRolesButton = findViewById(R.id.switchRolesButton);
 
         eventsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,12 +58,25 @@ public class EventListActivity extends AppCompatActivity {
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(EventListActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        notificationBellButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EventListActivity.this, NotificationActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        switchRolesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EventListActivity.this, RoleSelectionActivity.class);
                 startActivity(intent);
             }
         });
     }
 }
-
-

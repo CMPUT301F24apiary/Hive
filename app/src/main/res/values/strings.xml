@@ -27,4 +27,5 @@
     <string name="back_button_content_description">Go back to previous screen</string>
     <string name="event_poster_content_description">Poster containing event information</string>
     <string name="group_icon_content_description">Icon depicting a group of people</string>
+    <string name="confirm_delete_image_text">Are you sure you want to delete this image?</string>
 </resources>

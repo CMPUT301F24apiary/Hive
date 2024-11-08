@@ -56,6 +56,10 @@ public class FacilityActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * This is to keep a track of if the facility profile has been completed
+     */
     public void updateProfileStatus() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -77,7 +81,7 @@ public class FacilityActivity extends AppCompatActivity {
     /**
      * Converts Base64 string to bitmap
      * @param base64Str string to be converted
-     * @return
+     * @return the converted bitmap
      */
     private Bitmap base64ToBitmap(String base64Str) {
         byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);

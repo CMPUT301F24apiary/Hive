@@ -67,6 +67,7 @@ public class FacilityDataManagerTest {
         verify(editor).putString("facilityPhone", phone);
     }
 
+
     @Test
     public void testSaveFacilityDataWithInvalidPhoneNumber() {
         String name = "Gym";

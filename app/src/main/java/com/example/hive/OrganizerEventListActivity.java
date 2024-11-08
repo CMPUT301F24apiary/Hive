@@ -37,10 +37,12 @@ public class OrganizerEventListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh the profile status whenever the activity is resumed
         updateProfileStatus();
     }
 
+    /**
+     * To keep a track of if facility profile has been completed using a flag.
+     */
     public void updateProfileStatus() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

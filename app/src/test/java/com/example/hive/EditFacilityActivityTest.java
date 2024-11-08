@@ -13,6 +13,9 @@ import org.mockito.Mockito;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
+/**
+ * Tests for editfacilityprofileactivity
+ */
 @RunWith(JUnit4.class)
 public class EditFacilityActivityTest {
 
@@ -21,7 +24,6 @@ public class EditFacilityActivityTest {
 
     @Before
     public void setup() {
-        // Initialize mocks
         editFacilityActivity = Mockito.mock(EditFacilityProfileActivity.class);
         mockImageView = Mockito.mock(ImageView.class);
 

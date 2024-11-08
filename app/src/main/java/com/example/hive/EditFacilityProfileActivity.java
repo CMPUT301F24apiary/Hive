@@ -112,8 +112,8 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
 
     /**
      * Converts a Bitmap image to a Base64-encoded string
-     * @param bitmap
-     * @return
+     * @param bitmap to be converted
+     * @return string
      */
     public String bitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -124,8 +124,8 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
 
     /**
      * Converts a base64 string to bitmap
-     * @param base64Str
-     * @return
+     * @param base64Str to be converted
+     * @return the converted butmap
      */
     public Bitmap base64ToBitmap(String base64Str) {
         byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
