@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,11 +26,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Few TODOs
- * - Limit events to only a few days in length, allowing unlimited requires a lot of processing
- *   for the end date
- * - Ensure all values are inputted in correct format - i.e. dates in dd-mm-yyyy, times in hh:mm
- * - Store poster in cloud storage on google and save reference
+ * Activity to add an event by filling in all the event details(By an organizer)
  *
  * @author Hrittija
  */
@@ -74,7 +72,10 @@ public class AddEventActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * To open the gallery for facility profile picture uploading
+     * @param view
+     */
     public void onAddPosterClick(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, GALLERY_REQUEST_CODE);
@@ -89,7 +90,9 @@ public class AddEventActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * The method to save the event details
+     */
     private void saveEventDetails() {
         String title = eventName.getText().toString().trim();
         String date = eventDate.getText().toString().trim();
@@ -131,6 +134,12 @@ public class AddEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method is used to convert the date in milliseconds
+     * @param date in form DD-MM-77
+     * @param time in form HH:MM
+     * @return the date in ms
+     */
     private long convertDateToMS(String date, String time) {
         String pattern = "dd-MM-yyyy HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.getDefault());
@@ -146,6 +155,14 @@ public class AddEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method adds the duration to the start time to find the end time and considers if
+     * it goes beyond 24 hours.
+     * @param startDate the event start date
+     * @param startTime the time
+     * @param duration the duration of event
+     * @return
+     */
     private String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
         String endDate = startDate;
 

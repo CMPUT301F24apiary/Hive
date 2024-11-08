@@ -25,6 +25,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -36,15 +37,18 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+//import java.util.Base64;
 
 public class ProfileEditActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
+
     ImageView profilePicture;
     public EditText personNameInput;
     public EditText userNameInput;
     public EditText emailInput;
     public EditText phoneInput;
     private Button editPictureButton, removePictureButton, saveButton, cancelButton;
+    private ImageButton notificationBellButton, notificationChosenBellButton, notificationNotChosenBellButton, notificationOrganizerBellButton;
     private SharedPreferences sharedPreferences;
 
     /**
@@ -70,6 +74,15 @@ public class ProfileEditActivity extends AppCompatActivity {
         removePictureButton = findViewById(R.id.removePictureButton);
         saveButton = findViewById(R.id.saveButton);
         cancelButton = findViewById(R.id.cancelButton);
+
+        // Initialize notification bell buttons
+        notificationBellButton = findViewById(R.id.notificationBellButton);
+        notificationChosenBellButton = findViewById(R.id.notificationChosenBellButton);
+        notificationNotChosenBellButton = findViewById(R.id.notificationNotChosenBellButton);
+        notificationOrganizerBellButton = findViewById(R.id.notificationOrganizerBellButton);
+
+        // Set up click listeners for notification bell buttons
+        setupNotificationButtons();
 
         loadProfileData();
 
@@ -122,12 +135,33 @@ public class ProfileEditActivity extends AppCompatActivity {
 
             // Use Glide to load and crop the selected image as a circle
             // From https://github.com/bumptech/glide/issues/3839, downloaded 2024-11-06
+
             Glide.with(this)
                     .load(imageUri)
                     .transform(new CircleCrop())
                     .into(profilePicture);
         }
     }
+
+    /**
+     * Sets up the click listeners for notification bell buttons to open the NotificationActivity.
+     */
+    void setupNotificationButtons() {
+        View.OnClickListener openNotificationActivity = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Open NotificationActivity
+                Intent intent = new Intent(ProfileEditActivity.this, NotificationActivity.class);
+                startActivity(intent);
+            }
+        };
+
+        notificationBellButton.setOnClickListener(openNotificationActivity);
+        notificationChosenBellButton.setOnClickListener(openNotificationActivity);
+        notificationNotChosenBellButton.setOnClickListener(openNotificationActivity);
+        notificationOrganizerBellButton.setOnClickListener(openNotificationActivity);
+    }
+
     // Validation methods
     private boolean isValidInput() {
         boolean isValid = true;
@@ -168,6 +202,7 @@ public class ProfileEditActivity extends AppCompatActivity {
         return true;
     }
 
+
     /**
      * Converts the bitmap image to a Base64 encoded string.
      *
@@ -192,12 +227,13 @@ public class ProfileEditActivity extends AppCompatActivity {
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
+
     /**
      * Loads the profile data from SharedPreferences and populates the input fields.
      * Also loads the profile picture if available.
      */
     public void loadProfileData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
         String personName = sharedPreferences.getString("personName", "");
         String userName = sharedPreferences.getString("userName", "");
         String email = sharedPreferences.getString("email", "");
@@ -249,7 +285,3 @@ public class ProfileEditActivity extends AppCompatActivity {
     }
 
 }
-
-
-
-
