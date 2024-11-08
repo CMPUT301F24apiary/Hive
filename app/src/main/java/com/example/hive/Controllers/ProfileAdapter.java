@@ -17,17 +17,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.example.hive.Events.Event;
 import com.example.hive.Models.User; // Assuming you have a User model class
 import com.example.hive.ProfileActivity;
 import com.example.hive.R;
 import com.example.hive.Views.AdminProfileListActivity;
 import com.example.hive.Views.AdminProfileViewActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * display each item in users list. when user clicks on details button, they are led to
- * admin profile page where admin can delete the profile.
+ * display each item in users list. when (admin) user clicks on details button, they are led to
+ * admin version of the profile page where admin can delete the profile.
  * known bug: crashes if there are no users in the database
  */
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder> {
@@ -36,7 +38,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
 
     public ProfileAdapter(Context context, List<User> userList) {
         this.context = context;
-        this.userList = userList;
+        this.userList = userList != null ? userList : new ArrayList<>();
     }
 
     @NonNull
@@ -46,8 +48,14 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         return new ProfileViewHolder(view);
     }
 
+    /*
+    Launch profile view intent if view details button is clicked
+     */
     @Override
     public void onBindViewHolder(@NonNull ProfileAdapter.ProfileViewHolder holder, int position) {
+        if (position >= userList.size()) {
+            return;  // position must be within userList, not out of bounds
+        }
         User user = userList.get(position);
 
         // using Glide for image loading
@@ -71,13 +79,16 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         
     }
 
+    /*
+    Get number of users in userList (should encompass all users in db)
+     */
     @Override
     public int getItemCount() {
-        return userList.size();
+        return userList != null ? userList.size() : 0;
     }
 
     public static class ProfileViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageViewProfile;
+        public ImageView imageViewProfile;
         public TextView textViewName;
         Button buttonViewDetails, deleteProfileButton;
 
@@ -90,9 +101,12 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         }
     }
 
-    public void refresh(List<User> userList) {
-        this.userList = userList;
+    /*
+    Refresh user list e.g. when a user is deleted by admin
+     */
+    public void refresh(List<User> newList) {
+        userList.clear();
+        userList.addAll(newList);
         notifyDataSetChanged();
     }
-
 }

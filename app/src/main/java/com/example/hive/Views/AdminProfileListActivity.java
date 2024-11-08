@@ -47,7 +47,7 @@ public class AdminProfileListActivity extends AppCompatActivity {
             return null;
         });
     }
-
+    /*
     private void refreshUserList() {
         FirebaseController firebaseController = new FirebaseController();
         firebaseController.fetchAllUsers().thenAccept(userList-> {
@@ -66,15 +66,6 @@ public class AdminProfileListActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_PROFILE_VIEW && resultCode == RESULT_OK && data!=null) {
-            Log.d(TAG, "Refreshing user list after deletion.");
-            String deviceId = data.getStringExtra("deviceId");
-            userList.removeIf(user ->user.getDeviceId().equals(deviceId));
-            //refreshUserList();  // update profile list view if user is deleted
-            profileAdapter.refresh(userList);
-        }
-    }
+     */
+
 }

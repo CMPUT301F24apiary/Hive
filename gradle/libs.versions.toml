@@ -1,9 +1,5 @@
 [versions]
-<<<<<<< HEAD
-agp = "8.7.1"
-=======
 agp = "8.6.0"
->>>>>>> main
 firebaseBomVersion = "33.5.1"
 compiler = "4.11.0"
 espressoCoreVersion = "3.4.0"
