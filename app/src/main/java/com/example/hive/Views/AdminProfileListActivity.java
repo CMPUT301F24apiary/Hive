@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hive.Controllers.FirebaseController;
-import com.example.hive.Controllers.ProfileAdapter;
 import com.example.hive.Models.User;
 import com.example.hive.R;
 
@@ -47,25 +46,25 @@ public class AdminProfileListActivity extends AppCompatActivity {
             return null;
         });
     }
-    /*
-    private void refreshUserList() {
-        FirebaseController firebaseController = new FirebaseController();
-        firebaseController.fetchAllUsers().thenAccept(userList-> {
-            Log.d(TAG, "User list size: " + userList.size());
-            users.clear();
-            users.addAll(userList);
-            if (profileAdapter == null) {
-                profileAdapter = new ProfileAdapter(this, userList);
-                recyclerView.setAdapter(profileAdapter);
-            } else {
-                profileAdapter.notifyDataSetChanged();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_PROFILE_VIEW && resultCode == RESULT_OK && data != null) {
+            String deletedDeviceId = data.getStringExtra("deviceId");
+            if (deletedDeviceId != null) {
+                removeUserFromList(deletedDeviceId);
             }
-        }).exceptionally(e-> {
-            Log.e(TAG, "Error with fetchAllUsers in firebase controller when refreshUserList", e);
-            return null;
-        });
+        }
     }
 
-     */
+    private void removeUserFromList(String deviceId) {
+        for (int i = 0; i < userList.size(); i++) {
+            if (userList.get(i).getDeviceId().equals(deviceId)) {
+                userList.remove(i);
+                profileAdapter.notifyItemRemoved(i);
+                break;
+            }
+        }
+    }
 
 }

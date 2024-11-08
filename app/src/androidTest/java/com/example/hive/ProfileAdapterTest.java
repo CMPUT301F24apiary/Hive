@@ -1,6 +1,5 @@
 package com.example.hive;
 
-import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -12,16 +11,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.test.annotation.UiThreadTest;
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.example.hive.Controllers.ProfileAdapter;
+import com.example.hive.Views.ProfileAdapter;
 import com.example.hive.Models.User;
-import com.example.hive.Views.AdminProfileViewActivity;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

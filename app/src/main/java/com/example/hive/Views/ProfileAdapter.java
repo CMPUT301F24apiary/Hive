@@ -1,4 +1,4 @@
-package com.example.hive.Controllers;
+package com.example.hive.Views;
 
 import static android.content.ContentValues.TAG;
 
@@ -17,12 +17,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
-import com.example.hive.Events.Event;
 import com.example.hive.Models.User; // Assuming you have a User model class
-import com.example.hive.ProfileActivity;
 import com.example.hive.R;
-import com.example.hive.Views.AdminProfileListActivity;
-import com.example.hive.Views.AdminProfileViewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
