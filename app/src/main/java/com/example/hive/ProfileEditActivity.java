@@ -132,6 +132,10 @@ public class ProfileEditActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri imageUri = data.getData();
+
+            // Use Glide to load and crop the selected image as a circle
+            // From https://github.com/bumptech/glide/issues/3839, downloaded 2024-11-06
+
             Glide.with(this)
                     .load(imageUri)
                     .transform(new CircleCrop())

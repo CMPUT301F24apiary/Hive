@@ -35,10 +35,11 @@ android {
 dependencies {
     implementation(libs.espresso.intents)
     implementation(libs.ext.junit)
+
     // Unit testing dependencies
-    testImplementation ("org.junit.jupiter:junit-jupiter-api:5.0.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.0.1")
     testImplementation(libs.testng)
-    testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:5.0.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.0.1")
     testImplementation("org.mockito:mockito-core:4.0.0")
     testImplementation("org.mockito:mockito-junit-jupiter:4.0.0")
 
@@ -60,5 +61,3 @@ dependencies {
     // Firebase authentication
     implementation(libs.play.services.auth)
 }
-
-

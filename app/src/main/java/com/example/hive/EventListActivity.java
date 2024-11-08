@@ -1,3 +1,15 @@
+/**
+ * EventListActivity.java
+ *
+ * This activity displays a list of events to the user. It includes an ImageButton that allows
+ * the user to navigate to their profile page.
+ *
+ * <p>Outstanding Issues:
+ * - None at this time.</p>
+ *
+ * @author Dina
+ * @version 1.0
+ */
 package com.example.hive;
 
 import android.content.Intent;
