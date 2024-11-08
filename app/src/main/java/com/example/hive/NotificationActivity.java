@@ -27,6 +27,14 @@ public class NotificationActivity extends AppCompatActivity {
 
     private final ArrayList<String> notifications = new ArrayList<>();
 
+    /**
+     * Called when the activity is first created. Initializes the view, sets up notifications,
+     * and configures the event buttons.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the most recent data.
+     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
