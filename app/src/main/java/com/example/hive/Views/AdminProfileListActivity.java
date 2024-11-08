@@ -5,14 +5,19 @@ import static android.content.ContentValues.TAG;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hive.AdminEvent.AdminEventListActivity;
 import com.example.hive.Controllers.FirebaseController;
-import com.example.hive.Controllers.ProfileAdapter;
 import com.example.hive.Models.User;
 import com.example.hive.R;
 
@@ -24,57 +29,112 @@ import java.util.List;
  * it uses the profile adapter
  */
 public class AdminProfileListActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
+    public RecyclerView recyclerView;
     private ProfileAdapter profileAdapter;
-    private List<User> userList, users;
+    private List<User> userList = new ArrayList<>();
     public static final int REQUEST_CODE_PROFILE_VIEW = 1;
+    private SearchView searchView;
+    private ImageButton backArrow;
+    private FirebaseController firebaseController;
 
+    /**
+     * init filter listener, back arrow to main events page listener.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_profile_list);
-        userList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerViewAdminProfileList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        FirebaseController firebaseController = new FirebaseController();
-        firebaseController.fetchAllUsers().thenAccept(userList -> {
-            Log.d(TAG, "User list size: " + userList.size());
-            profileAdapter = new ProfileAdapter(this, userList);
-            recyclerView.setAdapter(profileAdapter);
-        }).exceptionally(e->{
-            Log.e(TAG, "Error with fetchAllUsers in firebase controller", e);
-            return null;
-        });
-    }
+        firebaseController = new FirebaseController();
+        profileAdapter = new ProfileAdapter(this, userList);
+        recyclerView.setAdapter(profileAdapter);
+        fetchAllUsers();
 
-    private void refreshUserList() {
-        FirebaseController firebaseController = new FirebaseController();
-        firebaseController.fetchAllUsers().thenAccept(userList-> {
-            Log.d(TAG, "User list size: " + userList.size());
-            users.clear();
-            users.addAll(userList);
-            if (profileAdapter == null) {
-                profileAdapter = new ProfileAdapter(this, userList);
-                recyclerView.setAdapter(profileAdapter);
-            } else {
-                profileAdapter.notifyDataSetChanged();
+        searchView = findViewById(R.id.adminProfileSearchView);
+        backArrow = findViewById(R.id.backButton);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                profileAdapter.filter(query);
+                return true;
             }
-        }).exceptionally(e-> {
-            Log.e(TAG, "Error with fetchAllUsers in firebase controller when refreshUserList", e);
-            return null;
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                profileAdapter.filter(newText);
+                return true;
+            }
+        });
+
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Notify the user when the back arrow is clicked
+                Intent i = new Intent(AdminProfileListActivity.this, AdminEventListActivity.class);
+                Toast.makeText(AdminProfileListActivity.this, "Back arrow clicked", Toast.LENGTH_SHORT).show();
+                finish();
+                startActivity(i);
+            }
         });
     }
 
+
+    /**
+     * refresh the profile view page at all times.
+     */
     @Override
+    protected void onResume() {
+        super.onResume();
+        fetchAllUsers();
+    }
+
+    /**
+     * receive deviceId so that users can be updated (refreshed)
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_PROFILE_VIEW && resultCode == RESULT_OK && data!=null) {
-            Log.d(TAG, "Refreshing user list after deletion.");
-            String deviceId = data.getStringExtra("deviceId");
-            userList.removeIf(user ->user.getDeviceId().equals(deviceId));
-            //refreshUserList();  // update profile list view if user is deleted
-            profileAdapter.refresh(userList);
+
+        if (requestCode == REQUEST_CODE_PROFILE_VIEW && resultCode == RESULT_OK && data != null) {
+            String deletedDeviceId = data.getStringExtra("deviceId");
+            if (deletedDeviceId != null) {
+                Log.d("AdminProfileListActivity", "Device ID received: " + deletedDeviceId);
+                //removeUserFromList(deletedDeviceId);  // made into a reusable function to refresh users list
+                fetchAllUsers();
+            }
         }
+    }
+
+    /**
+     * Used to remove a user from the list. I've replaced this method with
+     * fetchAllUsers()
+     * @param deviceId
+     */
+    private void removeUserFromList(String deviceId) {
+        for (int i = 0; i < userList.size(); i++) {  // constraint
+            if (userList.get(i).getDeviceId().equals(deviceId)) {
+                userList.remove(i);
+                profileAdapter.notifyItemRemoved(i);
+                break;
+            }
+        }
+    }
+
+    /**
+     * updates the userList that contains all users (refresh functionality)
+     */
+    private void fetchAllUsers() {
+        firebaseController.fetchAllUsers().thenAccept(users -> {
+            userList.clear();
+            userList.addAll(users);
+            profileAdapter.notifyDataSetChanged();
+        }).exceptionally(e-> {
+            Log.e(TAG, "Error with fetchAllUsers method in firebase and AdminProfileListActivity.java", e);
+            return null;
+        });
     }
 }

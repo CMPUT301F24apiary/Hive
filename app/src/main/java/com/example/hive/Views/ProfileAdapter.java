@@ -1,4 +1,4 @@
-package com.example.hive.Controllers;
+package com.example.hive.Views;
 
 import static android.content.ContentValues.TAG;
 
@@ -18,25 +18,26 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Models.User; // Assuming you have a User model class
-import com.example.hive.ProfileActivity;
 import com.example.hive.R;
-import com.example.hive.Views.AdminProfileListActivity;
-import com.example.hive.Views.AdminProfileViewActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * display each item in users list. when user clicks on details button, they are led to
- * admin profile page where admin can delete the profile.
+ * display each item in users list. when (admin) user clicks on details button, they are led to
+ * admin version of the profile page where admin can delete the profile.
  * known bug: crashes if there are no users in the database
  */
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder> {
     private Context context;
     private List<User> userList;
+    private List<User> userListOriginal;
 
     public ProfileAdapter(Context context, List<User> userList) {
         this.context = context;
-        this.userList = userList;
+        this.userList = userList != null ? userList : new ArrayList<>();
+        this.userListOriginal = new ArrayList<>(this.userList);
+        //this.userListFiltered = new ArrayList<>(this.userList);
     }
 
     @NonNull
@@ -46,8 +47,17 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         return new ProfileViewHolder(view);
     }
 
+    /**
+     * Launch profile view intent if view details button is clicked
+     * @param holder The ViewHolder which should be updated to represent the contents of the
+     *        item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull ProfileAdapter.ProfileViewHolder holder, int position) {
+        if (position >= userList.size()) {
+            return;  // position must be within userList, not out of bounds
+        }
         User user = userList.get(position);
 
         // using Glide for image loading
@@ -63,22 +73,29 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
             Log.d(TAG, "Device ID for user " + user.getUserName() + ": " + user.getDeviceId());
 
         });
+        /*
         holder.itemView.setOnClickListener(v-> {
             Intent intent = new Intent(context, AdminProfileViewActivity.class);
             intent.putExtra("deviceId", user.getDeviceId());
             ((Activity) context).startActivityForResult(intent, AdminProfileListActivity.REQUEST_CODE_PROFILE_VIEW);
         });
-        
+
+         */
+
     }
 
+    /**
+     * Get number of users in userList (should encompass all users in db)
+     * @return
+     */
     @Override
     public int getItemCount() {
-        return userList.size();
+        return userList != null ? userList.size() : 0;
     }
 
     public static class ProfileViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageViewProfile;
-        TextView textViewName;
+        public ImageView imageViewProfile;
+        public TextView textViewName;
         Button buttonViewDetails, deleteProfileButton;
 
         public ProfileViewHolder(@NonNull View itemView) {
@@ -90,9 +107,32 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         }
     }
 
-    public void refresh(List<User> userList) {
-        this.userList = userList;
+    /**
+     * filter profiles view for admin
+     * @param query
+     */
+    public void filter(String query) {
+        userList.clear();
+        if (query.isEmpty()) {
+            userList.addAll(userListOriginal);
+        } else {
+            String queryLower = query.toLowerCase();
+            for (User user : userListOriginal) {
+                if (user.getUserName().toLowerCase().contains(queryLower)) {
+                    userList.add(user);
+                }
+            }
+        }
         notifyDataSetChanged();
     }
 
+    /**
+     * Refresh user list e.g. when a user is deleted by admin
+     * @param newList
+     */
+    public void refresh(List<User> newList) {
+        userList.clear();
+        userList.addAll(newList);
+        notifyDataSetChanged();
+    }
 }

@@ -2,12 +2,9 @@ package com.example.hive.Views;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,20 +12,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Controllers.FirebaseController;
-import com.example.hive.Controllers.ProfileAdapter;
-import com.example.hive.ProfileEditActivity;
 import com.example.hive.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Models.User;
 
-import java.util.List;
-
+/**
+ * This shows a profile page of user, for an admin user
+ * i.e. has a delete button.
+ */
 public class AdminProfileViewActivity extends AppCompatActivity {
 
     private Button deleteProfileButton;
@@ -57,14 +53,13 @@ public class AdminProfileViewActivity extends AppCompatActivity {
         backArrow = findViewById(R.id.backArrow);
         profilePicture = findViewById(R.id.profilePicture);
         personNameText = findViewById(R.id.personName);
-        userNameText = findViewById(R.id.userName);
         emailText = findViewById(R.id.emailLabel);
         phoneText = findViewById(R.id.phoneLabel);
         deviceId = getIntent().getStringExtra("deviceId");
         if (deviceId != null) {
             fetchUserProfile();
         } else {
-            Toast.makeText(this, "Error: deviceId is null", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Error: deviceId is null", Toast.LENGTH_LONG).show();
             Log.d(TAG, "Device ID for user " + deviceId);
             finish(); // go back; close activity
         }
@@ -82,11 +77,14 @@ public class AdminProfileViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Notify the user when the back arrow is clicked
-                Toast.makeText(com.example.hive.Views.AdminProfileViewActivity.this, "Back arrow clicked", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(AdminProfileViewActivity.this, AdminProfileViewActivity.class);
 
+                Toast.makeText(com.example.hive.Views.AdminProfileViewActivity.this, "Back arrow clicked", Toast.LENGTH_SHORT).show();
                 finish();
+                startActivity(i);
             }
         });
+
     }
 
 
@@ -98,9 +96,10 @@ public class AdminProfileViewActivity extends AppCompatActivity {
             @Override
             public void onUserFetched(User user) {
                 if (user != null) {
+                    Toast.makeText(AdminProfileViewActivity.this, "User name: " + user.getUserName(), Toast.LENGTH_LONG).show();
                     personNameText.setText(user.getUserName());
                     emailText.setText("Email: " + user.getEmail());
-                    //phoneText.setText("Phone: " + user.getPhoneNumber());
+                    phoneText.setText("Phone: " + user.getPhoneNumber());
 
                     String profilePictureUrl = user.getProfileImageUrl();
                     if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
@@ -123,26 +122,32 @@ public class AdminProfileViewActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Used to bring up an alert dialog and thereupon delete (or not) a user profile
+     */
     private void deleteUserProfile() {
-        firebaseController.deleteUserByDeviceId(deviceId, new FirebaseController.OnUserDeletedListener() {
-            @Override
-            public void onUserDeleted() {
-                Toast.makeText(AdminProfileViewActivity.this, "Profile deleted", Toast.LENGTH_LONG).show();
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("deviceId", deviceId); // pass deleted user's deviceId
-                setResult(RESULT_OK, resultIntent);
-                finish();  // exit from the user profile page, return to previous activity i.e. go back
-            }
+        new AlertDialog.Builder(this).setTitle("Are you sure you want to delete this profile?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    firebaseController.deleteUserByDeviceId(deviceId, new FirebaseController.OnUserDeletedListener() {
+                        @Override
+                        public void onUserDeleted() {
+                            Toast.makeText(AdminProfileViewActivity.this, "Profile deleted", Toast.LENGTH_LONG).show();
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra("deviceId", deviceId); // pass deleted user's deviceId
+                            setResult(RESULT_OK, resultIntent);
+                            finish();  // exit from the user profile page, return to previous activity i.e. go back
+                        }
 
-            @Override
-            public  void onError(Exception e) {
-                Log.e(TAG, "Error deleting user profile", e);
-                Toast.makeText(AdminProfileViewActivity.this, "Error deleting profile", Toast.LENGTH_LONG).show();
-            }
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e(TAG, "Error deleting user profile", e);
+                            //Toast.makeText(AdminProfileViewActivity.this, "Error deleting profile", Toast.LENGTH_LONG).show();
+                        }
 
-        });
+                    });
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
     }
-
-
 }
 

@@ -13,7 +13,6 @@ import static org.junit.Assert.*;
 
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static org.junit.Assert.*;
 
 /**
  * Instrumented test, which will execute on an Android device.

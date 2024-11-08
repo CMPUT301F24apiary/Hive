@@ -179,6 +179,7 @@ public class FirebaseController {
                         DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0); // get first queried object that is returned
                         User user = document.toObject(User.class);
                         user.setDeviceId(document.getString("deviceId"));
+                        user.setUserName(document.getString("username"));
                         listener.onUserFetched(user);
                     } else {
                         listener.onUserFetched(null);
