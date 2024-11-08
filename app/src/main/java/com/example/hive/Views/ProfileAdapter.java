@@ -70,12 +70,15 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
             Log.d(TAG, "Device ID for user " + user.getUserName() + ": " + user.getDeviceId());
 
         });
+        /*
         holder.itemView.setOnClickListener(v-> {
             Intent intent = new Intent(context, AdminProfileViewActivity.class);
             intent.putExtra("deviceId", user.getDeviceId());
             ((Activity) context).startActivityForResult(intent, AdminProfileListActivity.REQUEST_CODE_PROFILE_VIEW);
         });
-        
+
+         */
+
     }
 
     /**

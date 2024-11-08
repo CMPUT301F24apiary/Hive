@@ -31,29 +31,24 @@ import java.util.List;
 public class AdminProfileListActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     private ProfileAdapter profileAdapter;
-    private List<User> userList, users;
+    private List<User> userList = new ArrayList<>();
     public static final int REQUEST_CODE_PROFILE_VIEW = 1;
     private SearchView searchView;
     private ImageButton backArrow;
+    private FirebaseController firebaseController;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_profile_list);
-        userList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerViewAdminProfileList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        FirebaseController firebaseController = new FirebaseController();
-        firebaseController.fetchAllUsers().thenAccept(userList -> {
-            Log.d(TAG, "User list size: " + userList.size());
-            profileAdapter = new ProfileAdapter(this, userList);
-            recyclerView.setAdapter(profileAdapter);
-        }).exceptionally(e->{
-            Log.e(TAG, "Error with fetchAllUsers in firebase controller", e);
-            return null;
-        });
+        firebaseController = new FirebaseController();
+        profileAdapter = new ProfileAdapter(this, userList);
+        recyclerView.setAdapter(profileAdapter);
+        fetchAllUsers();
 
         searchView = findViewById(R.id.adminProfileSearchView);
         backArrow = findViewById(R.id.backButton);
@@ -75,31 +70,51 @@ public class AdminProfileListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Notify the user when the back arrow is clicked
                 Intent i = new Intent(AdminProfileListActivity.this, AdminEventListActivity.class);
-
-                Toast.makeText(com.example.hive.Views.AdminProfileListActivity.this, "Back arrow clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminProfileListActivity.this, "Back arrow clicked", Toast.LENGTH_SHORT).show();
                 finish();
                 startActivity(i);
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchAllUsers();
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_PROFILE_VIEW && resultCode == RESULT_OK && data != null) {
             String deletedDeviceId = data.getStringExtra("deviceId");
             if (deletedDeviceId != null) {
-                removeUserFromList(deletedDeviceId);
+                Log.d("AdminProfileListActivity", "Device ID received: " + deletedDeviceId);
+                //removeUserFromList(deletedDeviceId);  // made into a reusable function to refresh users list
+                fetchAllUsers();
             }
         }
     }
 
     private void removeUserFromList(String deviceId) {
-        for (int i = 0; i < userList.size(); i++) {
+        for (int i = 0; i < userList.size(); i++) {  // constraint
             if (userList.get(i).getDeviceId().equals(deviceId)) {
                 userList.remove(i);
                 profileAdapter.notifyItemRemoved(i);
                 break;
             }
         }
+    }
+
+
+    private void fetchAllUsers() {
+        firebaseController.fetchAllUsers().thenAccept(users -> {
+            userList.clear();
+            userList.addAll(users);
+            profileAdapter.notifyDataSetChanged();
+        }).exceptionally(e-> {
+            Log.e(TAG, "Error with fetchAllUsers method in firebase and AdminProfileListActivity.java", e);
+            return null;
+        });
     }
 }
