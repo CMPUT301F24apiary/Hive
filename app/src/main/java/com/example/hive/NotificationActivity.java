@@ -10,9 +10,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
 /**
- * NotificationActivity is responsible for displaying a list of notifications to the user,
- * including options to accept, decline, or re-register for events.
+ * NotificationActivity.java
+ *
+ * This activity displays a list of notifications to the user, providing options to
+ * accept, decline, or re-register for specific events. Notifications inform users
+ * of their status on event waiting lists and enable quick response actions.
+ *
+ * <p>Outstanding Issues:
+ * - None at this time.</p>
+ *
+ * @author Aleena
+ * @version 1.0
  */
+
 public class NotificationActivity extends AppCompatActivity {
 
     private final ArrayList<String> notifications = new ArrayList<>();
