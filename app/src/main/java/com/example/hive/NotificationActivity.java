@@ -2,15 +2,27 @@ package com.example.hive;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
 /**
- * NotificationActivity is responsible for displaying a list of notifications to the user,
- * including options to accept, decline, or re-register for events.
+ * NotificationActivity.java
+ *
+ * This activity displays a list of notifications to the user, providing options to
+ * accept, decline, or re-register for specific events. Notifications inform users
+ * of their status on event waiting lists and enable quick response actions.
+ *
+ * <p>Outstanding Issues:
+ * - None at this time.</p>
+ *
+ * @author Aleena
+ * @version 1.0
  */
+
 public class NotificationActivity extends AppCompatActivity {
 
     private final ArrayList<String> notifications = new ArrayList<>();
@@ -22,10 +34,23 @@ public class NotificationActivity extends AppCompatActivity {
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
      *                           this Bundle contains the most recent data.
      */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
+
+        // Back button functionality
+        ImageButton backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate back to EventListActivity
+                Intent intent = new Intent(NotificationActivity.this, EventListActivity.class);
+                startActivity(intent);
+                finish(); // Optional: close the NotificationActivity
+            }
+        });
 
         // Sample notifications to display
         notifications.add("You have been chosen from the waiting list for Christmas Event.");

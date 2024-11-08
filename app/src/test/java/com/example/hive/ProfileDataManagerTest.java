@@ -118,5 +118,7 @@ public class ProfileDataManagerTest {
 
         // Verify that an invalid email does not pass the '@' check
         assertFalse(email.contains("@"));
+
+
     }
 }

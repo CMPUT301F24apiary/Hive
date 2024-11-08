@@ -9,9 +9,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.hive.AdminEvent.AdminEventListActivity;
 
 /**
- * RoleSelectionActivity allows users to select their role as a User, Organizer, or Admin.
- * Based on the selected role, it navigates the user to the appropriate screen.
+ * RoleSelectionActivity.java
+ *
+ * This activity allows users to select their role as a User, Organizer, or Admin.
+ * Depending on the selected role, the activity navigates users to the respective
+ * screen for their role, providing a customized experience for each type.
+ *
+ * <p>Outstanding Issues:
+ * - None at this time.</p>
+ *
+ * @author Aleena
+ * @version 1.0
  */
+
 public class RoleSelectionActivity extends AppCompatActivity {
 
     /**

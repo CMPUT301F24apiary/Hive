@@ -4,9 +4,19 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
- * RegistrationActivity handles the registration process for users.
- * This activity displays the registration screen where users can sign up or register for events.
+ * RegistrationActivity.java
+ *
+ * This activity manages the registration process for users, providing a screen for
+ * signing up or registering for events. It facilitates user interaction with
+ * event registration options and displays the relevant information.
+ *
+ * <p>Outstanding Issues:
+ * - None at this time.</p>
+ *
+ * @author Aleena
+ * @version 1.0
  */
+
 public class RegistrationActivity extends AppCompatActivity {
 
     /**
