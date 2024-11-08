@@ -75,7 +75,8 @@
         android:hint="Enter your name"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:inputType="text"/>
 
     <!-- Username Section -->
     <TextView
@@ -99,7 +100,8 @@
         android:hint="Enter your username"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:inputType="text"/>
 
     <!-- Email Section -->
     <TextView
@@ -124,7 +126,8 @@
         android:inputType="textEmailAddress"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        />
 
     <!-- Phone Section -->
     <TextView
