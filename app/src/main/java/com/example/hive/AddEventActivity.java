@@ -18,10 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Controllers.EventController;
-import com.example.hive.Controllers.ImageController;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.example.hive.Events.Event;
 
 import java.text.ParseException;
@@ -30,19 +26,14 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Few TODOs
- * - Limit events to only a few days in length, allowing unlimited requires a lot of processing
- *   for the end date
- * - Ensure all values are inputted in correct format - i.e. dates in dd-mm-yyyy, times in hh:mm
- * - Store poster in cloud storage on google and save reference
+ * Activity to add an event by filling in all the event details(By an organizer)
  *
  * @author Hrittija
  */
 public class AddEventActivity extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST_CODE = 100;
-    private EditText eventName, eventDate,eventTime, eventDuration, eventCost, numParticipants,
-            entrantLimit, selectionDate,eventLocation, eventDescription;
+    private EditText eventName, eventDate,eventTime, eventDuration, eventCost, numParticipants, entrantLimit, selectionDate,eventLocation, eventDescription;
     private ToggleButton toggleReplacementDraw, toggleGeolocation;
     private ImageView addPosterImage;
     private Uri posterImageUri;
@@ -69,8 +60,7 @@ public class AddEventActivity extends AppCompatActivity {
         addPosterImage = findViewById(R.id.addPosterImage);
 
         backArrow.setOnClickListener(v -> {
-            Intent intent = new Intent(AddEventActivity.this,
-                    OrganizerEventListActivity.class);
+            Intent intent = new Intent(AddEventActivity.this, OrganizerEventListActivity.class);
             startActivity(intent);
             finish();
         });
@@ -82,10 +72,12 @@ public class AddEventActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * To open the gallery for facility profile picture uploading
+     * @param view
+     */
     public void onAddPosterClick(View view) {
-        Intent intent = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, GALLERY_REQUEST_CODE);
     }
 
@@ -98,7 +90,9 @@ public class AddEventActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * The method to save the event details
+     */
     private void saveEventDetails() {
         String title = eventName.getText().toString().trim();
         String date = eventDate.getText().toString().trim();
@@ -112,8 +106,7 @@ public class AddEventActivity extends AppCompatActivity {
         if (title.isEmpty() || date.isEmpty() || location.isEmpty() || time.isEmpty() ||
                 cost.isEmpty() || participantsStr.isEmpty() || description.isEmpty() ||
                 duration.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields.",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -127,48 +120,13 @@ public class AddEventActivity extends AppCompatActivity {
 
         long endDateTime = convertDateToMS(endDateSplit[0], endDateSplit[1]);
 
-        ImageController imgControl = new ImageController();
-        try {
-            imgControl.saveImage(this, posterImageUri, "event poster")
-                    .addOnSuccessListener(urlAndID -> {
-
-                        saveEvent(title, cost, startDateTime, endDateTime, description,
-                                numParticipantsCount, location, urlAndID);
-
-                    }).addOnFailureListener(e -> {
-                        // Handle the failure of the image upload
-                        Toast.makeText(this, "Failed to upload image: " +
-                                e.getMessage() +
-                                "\nEvent will still be created - navigate to the event page " +
-                                "and edit it to try uploading the poster again.",
-                                Toast.LENGTH_SHORT).show();
-
-                        saveEvent(title, cost, startDateTime, endDateTime, description,
-                                numParticipantsCount, location, null);
-
-                    });
-        } catch(Exception e) {
-            Toast.makeText(this, "Image upload failed: " + e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
-                           String description, int numParticipantsCount, String location,
-                           @Nullable Pair<String, String> urlAndID) {
-
         Event event = new Event(title, cost, startDateTime, endDateTime, null, description,
-                numParticipantsCount, location, urlAndID == null ? null : urlAndID.first);
+                numParticipantsCount, location, null);
 
         EventController controller = new EventController();
         controller.addEvent(event, id -> {
             event.setFirebaseID(id);
-            if (urlAndID != null) {
-                new ImageController().updateImageRef(urlAndID.second, id);
-            }
-            Toast.makeText(this, "Event created: '" + event.getTitle() + "'",
-                    Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(this, "Event created: " + event.toString(), Toast.LENGTH_SHORT).show();
             Intent resultIntent = new Intent();
             resultIntent.putExtra("event", event);
             setResult(1, resultIntent);
@@ -176,7 +134,12 @@ public class AddEventActivity extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * This method is used to convert the date in milliseconds
+     * @param date in form DD-MM-77
+     * @param time in form HH:MM
+     * @return the date in ms
+     */
     private long convertDateToMS(String date, String time) {
         String pattern = "dd-MM-yyyy HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.getDefault());
@@ -192,6 +155,14 @@ public class AddEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method adds the duration to the start time to find the end time and considers if
+     * it goes beyond 24 hours.
+     * @param startDate the event start date
+     * @param startTime the time
+     * @param duration the duration of event
+     * @return
+     */
     private String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
         String endDate = startDate;
 

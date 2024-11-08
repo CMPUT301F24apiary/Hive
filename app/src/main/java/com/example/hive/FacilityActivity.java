@@ -58,9 +58,30 @@ public class FacilityActivity extends AppCompatActivity {
     }
 
     /**
+     * This is to keep a track of if the facility profile has been completed
+     */
+    public void updateProfileStatus() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String facilityName = sharedPreferences.getString("facilityName", "Facility Name");
+        String email = sharedPreferences.getString("facilityEmail", "facility@google.com");
+        String phone = sharedPreferences.getString("facilityPhone", "(780) xxx - xxxx");
+
+        if (!facilityName.equals("Facility Name") && !email.equals("facility@google.com") && !phone.equals("(780) xxx - xxxx")) {
+            editor.putBoolean("profileComplete", true);
+        } else {
+            editor.putBoolean("profileComplete", false);
+        }
+
+        editor.apply();
+    }
+
+
+    /**
      * Converts Base64 string to bitmap
      * @param base64Str string to be converted
-     * @return
+     * @return the converted bitmap
      */
     private Bitmap base64ToBitmap(String base64Str) {
         byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
@@ -70,25 +91,33 @@ public class FacilityActivity extends AppCompatActivity {
     /**
      * Shows the facility information.
      */
-    private void FacilityData() {
+    public void FacilityData() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+
+        // Get the profile data
         String facilityName = sharedPreferences.getString("facilityName", "Facility Name");
         String email = sharedPreferences.getString("facilityEmail", "facility@google.com");
         String phone = sharedPreferences.getString("facilityPhone", "(780) xxx - xxxx");
         String facilityPosterBase64 = sharedPreferences.getString("facility_profile_picture", "");
 
-
+        // Set the UI with profile data
         facilityNameText.setText(facilityName);
-        emailText.setText("Email: "+email);
-        phoneText.setText("Phone: "+phone);
+        emailText.setText("Email: " + email);
+        phoneText.setText("Phone: " + phone);
 
+        // Set the facility poster image
         if (!facilityPosterBase64.isEmpty()) {
             Bitmap facilityBitmap = base64ToBitmap(facilityPosterBase64);
             facilityPoster.setImageBitmap(facilityBitmap);
         } else {
             facilityPoster.setImageResource(R.drawable.image1);
         }
+
+        updateProfileStatus();
     }
+
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
