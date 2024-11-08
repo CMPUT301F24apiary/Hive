@@ -31,10 +31,13 @@ import java.util.List;
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder> {
     private Context context;
     private List<User> userList;
+    private List<User> userListOriginal;
 
     public ProfileAdapter(Context context, List<User> userList) {
         this.context = context;
         this.userList = userList != null ? userList : new ArrayList<>();
+        this.userListOriginal = new ArrayList<>(this.userList);
+        //this.userListFiltered = new ArrayList<>(this.userList);
     }
 
     @NonNull
@@ -75,8 +78,9 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         
     }
 
-    /*
-    Get number of users in userList (should encompass all users in db)
+    /**
+     * Get number of users in userList (should encompass all users in db)
+     * @return
      */
     @Override
     public int getItemCount() {
@@ -97,8 +101,28 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         }
     }
 
-    /*
-    Refresh user list e.g. when a user is deleted by admin
+    /**
+     * filter profiles view for admin
+     * @param query
+     */
+    public void filter(String query) {
+        userList.clear();
+        if (query.isEmpty()) {
+            userList.addAll(userListOriginal);
+        } else {
+            String queryLower = query.toLowerCase();
+            for (User user : userListOriginal) {
+                if (user.getUserName().toLowerCase().contains(queryLower)) {
+                    userList.add(user);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Refresh user list e.g. when a user is deleted by admin
+     * @param newList
      */
     public void refresh(List<User> newList) {
         userList.clear();

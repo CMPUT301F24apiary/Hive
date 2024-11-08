@@ -80,6 +80,7 @@ public class AdminProfileViewActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
     }
 
 
