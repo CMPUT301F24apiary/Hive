@@ -21,6 +21,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.bumptech.glide.Glide;
 import com.example.hive.Models.User;
 
+/**
+ * This shows a profile page of user, for an admin user
+ * i.e. has a delete button.
+ */
 public class AdminProfileViewActivity extends AppCompatActivity {
 
     private Button deleteProfileButton;
@@ -118,6 +122,9 @@ public class AdminProfileViewActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Used to bring up an alert dialog and thereupon delete (or not) a user profile
+     */
     private void deleteUserProfile() {
         new AlertDialog.Builder(this).setTitle("Are you sure you want to delete this profile?")
                 .setPositiveButton("Yes", (dialog, which) -> {

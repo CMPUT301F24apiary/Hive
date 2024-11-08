@@ -37,7 +37,10 @@ public class AdminProfileListActivity extends AppCompatActivity {
     private ImageButton backArrow;
     private FirebaseController firebaseController;
 
-
+    /**
+     * init filter listener, back arrow to main events page listener.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,12 +80,22 @@ public class AdminProfileListActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * refresh the profile view page at all times.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         fetchAllUsers();
     }
 
+    /**
+     * receive deviceId so that users can be updated (refreshed)
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -96,6 +109,11 @@ public class AdminProfileListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Used to remove a user from the list. I've replaced this method with
+     * fetchAllUsers()
+     * @param deviceId
+     */
     private void removeUserFromList(String deviceId) {
         for (int i = 0; i < userList.size(); i++) {  // constraint
             if (userList.get(i).getDeviceId().equals(deviceId)) {
@@ -106,7 +124,9 @@ public class AdminProfileListActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * updates the userList that contains all users (refresh functionality)
+     */
     private void fetchAllUsers() {
         firebaseController.fetchAllUsers().thenAccept(users -> {
             userList.clear();

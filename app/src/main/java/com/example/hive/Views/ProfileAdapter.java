@@ -47,8 +47,11 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         return new ProfileViewHolder(view);
     }
 
-    /*
-    Launch profile view intent if view details button is clicked
+    /**
+     * Launch profile view intent if view details button is clicked
+     * @param holder The ViewHolder which should be updated to represent the contents of the
+     *        item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
      */
     @Override
     public void onBindViewHolder(@NonNull ProfileAdapter.ProfileViewHolder holder, int position) {
