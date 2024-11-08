@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="#1A2232">
 
-    <!-- Main Header Title -->
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/arrow2"
+        android:contentDescription="Go back to events list"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_gravity="start"
+        android:padding="12dp" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,24 +27,23 @@
         android:paddingBottom="16dp"
         android:layout_gravity="center" />
 
-    <!-- First Notification Layout -->
+    <!-- Notification 1 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="16dp">
 
         <TextView
             android:id="@+id/notification1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="You have been chosen for Christmas Event."
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
             android:background="#344055"
-            android:padding="8dp"
-            android:layout_gravity="center_horizontal" />
+            android:padding="16dp"
+            android:text="You have been chosen from the waiting list for Christmas Event."
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,21 +75,20 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Second Notification Layout -->
+    <!-- Notification 2 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="16dp">
 
         <TextView
             android:id="@+id/notification2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:background="#344055"
-            android:padding="8dp"
+            android:padding="16dp"
             android:text="You have not been chosen from the waiting list for Christmas Carol."
             android:textColor="#FFFFFF"
             android:textSize="16sp" />
@@ -95,24 +103,23 @@
             android:padding="12dp" />
     </LinearLayout>
 
-    <!-- Third Notification Layout -->
+    <!-- Notification 3 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="16dp">
 
         <TextView
             android:id="@+id/notification3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#344055"
+            android:padding="16dp"
             android:text="You have been chosen from the waiting list for Autumn Festival."
             android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:background="#344055"
-            android:padding="8dp"
-            android:layout_gravity="center_horizontal" />
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -144,21 +151,20 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Fourth Notification Layout -->
+    <!-- Notification 4 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="16dp">
 
         <TextView
             android:id="@+id/notification4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:background="#344055"
-            android:padding="8dp"
+            android:padding="16dp"
             android:text="You have not been chosen from the waiting list for Autumn U-Pick."
             android:textColor="#FFFFFF"
             android:textSize="16sp" />
@@ -168,9 +174,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#136F63"
-            android:padding="12dp"
             android:text="Re-register"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:padding="12dp" />
     </LinearLayout>
 
 </LinearLayout>

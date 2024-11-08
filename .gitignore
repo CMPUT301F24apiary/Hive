@@ -49,4 +49,4 @@ render.experimental.xml
 .externalNativeBuild
 .cxx
 local.properties
-.idea/
+.idea/.idea/

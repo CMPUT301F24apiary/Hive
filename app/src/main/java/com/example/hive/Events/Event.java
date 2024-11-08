@@ -215,6 +215,10 @@ public class Event implements Parcelable {
         return posterURL;
     }
 
+    public int getNumParticipants() {
+        return numParticipants;
+    }
+
     /**
      * Setter for firebase ID.
      *
