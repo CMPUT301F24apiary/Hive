@@ -116,5 +116,13 @@ public class User {
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+        generateInitialsDrawable();
+    }
+
+    private void generateInitialsDrawable() {
+        if (userName != null && !userName.trim().isEmpty()) {
+            String initials = userName.substring(0, 1).toUpperCase();
+            initialsDrawable = TextDrawable
+        }
     }
 }

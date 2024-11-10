@@ -65,6 +65,9 @@ dependencies {
     // Glide (for profile images)
     implementation(libs.glide)
 
+    // deterministic image generation
+    implementation(libs.textdrawable)
+
     // JavaDoc
 //    implementation(files("C:/Users/Zach/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
 }
