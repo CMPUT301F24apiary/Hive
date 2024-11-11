@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,7 +52,7 @@ public class AdminProfileViewActivity extends AppCompatActivity {
         // Initialize the views
         deleteProfileButton = findViewById(R.id.deleteProfileButton);
         backArrow = findViewById(R.id.backArrow);
-        profilePicture = findViewById(R.id.profilePicture);
+        profilePicture = findViewById(R.id.imageViewProfileImage);
         personNameText = findViewById(R.id.personName);
         emailText = findViewById(R.id.emailLabel);
         phoneText = findViewById(R.id.phoneLabel);
@@ -96,19 +97,24 @@ public class AdminProfileViewActivity extends AppCompatActivity {
             @Override
             public void onUserFetched(User user) {
                 if (user != null) {
-                    Toast.makeText(AdminProfileViewActivity.this, "User name: " + user.getUserName(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(AdminProfileViewActivity.this, "User name: " + user.getUserName(), Toast.LENGTH_LONG).show();
+                    Log.d("AdminProfileViewActivity", "Fetched user name: " + user.getUserName());
                     personNameText.setText(user.getUserName());
                     emailText.setText("Email: " + user.getEmail());
                     phoneText.setText("Phone: " + user.getPhoneNumber());
 
-                    String profilePictureUrl = user.getProfileImageUrl();
-                    if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
-                        Glide.with(AdminProfileViewActivity.this).load(profilePictureUrl)
+                    // using Glide for image loading
+                    if (!user.getProfileImageUrl().isEmpty()) {
+                        Glide.with(AdminProfileViewActivity.this).load(user.getProfileImageUrl())
                                 .error(R.drawable.ic_profile)
+                                .circleCrop()
                                 .into(profilePicture);
                     } else {
-                        profilePicture.setImageResource(R.drawable.ic_profile);  // default image just in case
+                        Log.d(TAG, "Device ID: " + user.getDeviceId() + ", User Name: " + user.getUserName());
+                        // Drawable userDrawable = user.getDisplayDrawable();
+                        profilePicture.setImageDrawable(user.getDisplayDrawable());
                     }
+
                 } else {
                     Toast.makeText(AdminProfileViewActivity.this, "User is null", Toast.LENGTH_LONG).show();
                 }

@@ -77,6 +77,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         holder.buttonViewDetails.setOnClickListener(v-> {
             Intent intent = new Intent(context, AdminProfileViewActivity.class);
             intent.putExtra("deviceId", user.getDeviceId());
+            intent.putExtra("profileImageUrl", user.getProfileImageUrl());
             context.startActivity(intent);
             Log.d(TAG, "Device ID for user " + user.getUserName() + ": " + user.getDeviceId());
 

@@ -1,11 +1,16 @@
 package com.example.hive.Models;
 
+import static android.content.ContentValues.TAG;
+
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.PropertyName;
 
 import org.w3c.dom.Text;
 
@@ -19,10 +24,12 @@ import java.util.Set;
 public class User {
     private static User instance = null;
     private String deviceId;
+    @PropertyName("username")
     private String userName;
     private String email;
     private String phoneNumber = null;  // optional param
     private String role;
+    @PropertyName("roleSet")
     private List<String> roleList;
     private String profileImageUrl;
     FirebaseFirestore db;
@@ -130,41 +137,44 @@ public class User {
     /**
      * generate initials profile pic if no profile pic is uploaded
      */
-    private void generateInitialsDrawable() {
+    private Drawable generateInitialsDrawable() {
+        Log.d(TAG, "Generating initials drawable for user: " + userName);
+        if (TextUtils.isEmpty(userName)) {
+            Log.w(TAG, "Username is empty, using default initials (PN)");
+        }
+
         ColorGenerator generator = ColorGenerator.MATERIAL;
         int key = Math.abs(deviceId.hashCode());
 
         int color1 = generator.getColor(key % 0xFFFFFF);
         int color3 = generator.getColor((key + 82) % 0xFFFFFF);
 
+        String initials = "PN";
         if (userName != null && !userName.trim().isEmpty()) {
-            String initials = userName.substring(0, 1).toUpperCase();
+            initials = userName.substring(0, 1).toUpperCase();
+        }
+
             initialsDrawable = new TextDrawable.Builder()
                     .setColor(color1)
                     .setBold()
                     .setTextColor(color3)
                     .setShape(TextDrawable.SHAPE_ROUND)
                     .setText(initials)
-                    .build();
-        } else {
-            initialsDrawable = new TextDrawable.Builder()
-                    .setColor(color1)
-                    .setBold()
-                    .setColor(Color.WHITE)
-                    .setTextColor(color3)
-                    .setShape(TextDrawable.SHAPE_ROUND)
-                    .setText("PN")
                     .setBorder(1)
                     .build();
 
-        }
+        return initialsDrawable;
     }
 
     /**
      * get either the profile image url or the initials drawable
-     * @return deterministic profile pic
+     * @return deterministic profile pic only if one has not been generated before
      */
     public Drawable getDisplayDrawable() {
-        return profileImageUrl == null || profileImageUrl.isEmpty() ? initialsDrawable : null;
+        if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+            return null;
+        } else {
+            return generateInitialsDrawable();
+        }
     }
 }
