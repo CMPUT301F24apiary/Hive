@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.glide)
 
     // deterministic image generation
+    // https://github.com/alvinhkh/TextDrawable
+    // https://jitpack.io/p/alvinhkh/TextDrawable
     implementation(libs.textdrawable)
 
     // JavaDoc

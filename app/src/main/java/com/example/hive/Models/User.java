@@ -1,6 +1,13 @@
 package com.example.hive.Models;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +26,7 @@ public class User {
     private List<String> roleList;
     private String profileImageUrl;
     FirebaseFirestore db;
+    private Drawable initialsDrawable;
 
     public static User getInstance() {
         if (instance == null) {
@@ -119,10 +127,44 @@ public class User {
         generateInitialsDrawable();
     }
 
+    /**
+     * generate initials profile pic if no profile pic is uploaded
+     */
     private void generateInitialsDrawable() {
+        ColorGenerator generator = ColorGenerator.MATERIAL;
+        int key = Math.abs(deviceId.hashCode());
+
+        int color1 = generator.getColor(key % 0xFFFFFF);
+        int color3 = generator.getColor((key + 82) % 0xFFFFFF);
+
         if (userName != null && !userName.trim().isEmpty()) {
             String initials = userName.substring(0, 1).toUpperCase();
-            initialsDrawable = TextDrawable
+            initialsDrawable = new TextDrawable.Builder()
+                    .setColor(color1)
+                    .setBold()
+                    .setTextColor(color3)
+                    .setShape(TextDrawable.SHAPE_ROUND)
+                    .setText(initials)
+                    .build();
+        } else {
+            initialsDrawable = new TextDrawable.Builder()
+                    .setColor(color1)
+                    .setBold()
+                    .setColor(Color.WHITE)
+                    .setTextColor(color3)
+                    .setShape(TextDrawable.SHAPE_ROUND)
+                    .setText("PN")
+                    .setBorder(1)
+                    .build();
+
         }
+    }
+
+    /**
+     * get either the profile image url or the initials drawable
+     * @return deterministic profile pic
+     */
+    public Drawable getDisplayDrawable() {
+        return profileImageUrl == null || profileImageUrl.isEmpty() ? initialsDrawable : null;
     }
 }

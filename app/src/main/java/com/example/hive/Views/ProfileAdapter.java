@@ -61,9 +61,17 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
         User user = userList.get(position);
 
         // using Glide for image loading
-        Glide.with(context).load(user.getProfileImageUrl())
-                .error(R.drawable.ic_profile)  // default image if there is error/no profile pic set
-                .into(holder.imageViewProfile);
+        if (user.getProfileImageUrl() != null && !user.getProfileImageUrl().isEmpty()) {
+            Glide.with(context).load(user.getProfileImageUrl())
+                    .error(R.drawable.ic_profile)
+                    .circleCrop()
+                    .into(holder.imageViewProfile);
+        } else {
+            holder.imageViewProfile.setImageDrawable(user.getDisplayDrawable());
+        }
+        //Glide.with(context).load(user.getProfileImageUrl())
+              //  .error(R.drawable.ic_profile)  // default image if there is error/no profile pic set
+              //  .into(holder.imageViewProfile);
 
         holder.textViewName.setText(user.getUserName());
         holder.buttonViewDetails.setOnClickListener(v-> {
