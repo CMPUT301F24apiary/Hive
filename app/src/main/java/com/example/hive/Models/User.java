@@ -134,14 +134,22 @@ public class User {
         generateInitialsDrawable();
     }
 
+    public String getInitials() {
+        String initials = "PN";
+        if (userName != null && !userName.trim().isEmpty()) {
+            String[] words = userName.trim().split("\\s+");
+            String initial1 = words[0].substring(0, 1).toUpperCase();
+            String initial2 = words.length > 1 ? words[words.length - 1].substring(0, 1).toUpperCase() : "";
+            initials = initial1 + initial2;
+        }
+        return initials;
+    }
+
     /**
      * generate initials profile pic if no profile pic is uploaded
      */
     private Drawable generateInitialsDrawable() {
-        Log.d(TAG, "Generating initials drawable for user: " + userName);
-        if (TextUtils.isEmpty(userName)) {
-            Log.w(TAG, "Username is empty, using default initials (PN)");
-        }
+        //Log.d(TAG, "Generating initials drawable for user: " + userName);
 
         ColorGenerator generator = ColorGenerator.MATERIAL;
         int key = Math.abs(deviceId.hashCode());
@@ -149,10 +157,7 @@ public class User {
         int color1 = generator.getColor(key % 0xFFFFFF);
         int color3 = generator.getColor((key + 82) % 0xFFFFFF);
 
-        String initials = "PN";
-        if (userName != null && !userName.trim().isEmpty()) {
-            initials = userName.substring(0, 1).toUpperCase();
-        }
+        String initials = getInitials();
 
             initialsDrawable = new TextDrawable.Builder()
                     .setColor(color1)
