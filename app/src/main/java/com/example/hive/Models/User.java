@@ -1,6 +1,18 @@
 package com.example.hive.Models;
 
+import static android.content.ContentValues.TAG;
+
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.PropertyName;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +24,16 @@ import java.util.Set;
 public class User {
     private static User instance = null;
     private String deviceId;
+    @PropertyName("username")
     private String userName;
     private String email;
     private String phoneNumber = null;  // optional param
     private String role;
+    @PropertyName("roleSet")
     private List<String> roleList;
     private String profileImageUrl;
     FirebaseFirestore db;
+    private Drawable initialsDrawable;
 
     public static User getInstance() {
         if (instance == null) {
@@ -116,5 +131,55 @@ public class User {
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+        generateInitialsDrawable();
+    }
+
+    public String getInitials() {
+        String initials = "PN";
+        if (userName != null && !userName.trim().isEmpty()) {
+            String[] words = userName.trim().split("\\s+");
+            String initial1 = words[0].substring(0, 1).toUpperCase();
+            String initial2 = words.length > 1 ? words[words.length - 1].substring(0, 1).toUpperCase() : "";
+            initials = initial1 + initial2;
+        }
+        return initials;
+    }
+
+    /**
+     * generate initials profile pic if no profile pic is uploaded
+     */
+    private Drawable generateInitialsDrawable() {
+        //Log.d(TAG, "Generating initials drawable for user: " + userName);
+
+        ColorGenerator generator = ColorGenerator.MATERIAL;
+        int key = Math.abs(deviceId.hashCode());
+
+        int color1 = generator.getColor(key % 0xFFFFFF);
+        int color3 = generator.getColor((key + 82) % 0xFFFFFF);
+
+        String initials = getInitials();
+
+            initialsDrawable = new TextDrawable.Builder()
+                    .setColor(color1)
+                    .setBold()
+                    .setTextColor(color3)
+                    .setShape(TextDrawable.SHAPE_ROUND)
+                    .setText(initials)
+                    .setBorder(1)
+                    .build();
+
+        return initialsDrawable;
+    }
+
+    /**
+     * get either the profile image url or the initials drawable
+     * @return deterministic profile pic only if one has not been generated before
+     */
+    public Drawable getDisplayDrawable() {
+        if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+            return null;
+        } else {
+            return generateInitialsDrawable();
+        }
     }
 }

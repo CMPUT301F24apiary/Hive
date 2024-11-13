@@ -65,6 +65,11 @@ dependencies {
     // Glide (for profile images)
     implementation(libs.glide)
 
+    // deterministic image generation
+    // https://github.com/alvinhkh/TextDrawable
+    // https://jitpack.io/p/alvinhkh/TextDrawable
+    implementation(libs.textdrawable)
+
     // JavaDoc
 //    implementation(files("C:/Users/Zach/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
 }

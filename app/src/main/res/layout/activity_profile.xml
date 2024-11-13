@@ -21,7 +21,7 @@
 
 
     <ImageView
-        android:id="@+id/profilePicture"
+        android:id="@+id/imageViewProfileImage"
         android:layout_width="165dp"
         android:layout_height="165dp"
         android:layout_alignParentEnd="true"
@@ -35,7 +35,7 @@
         android:id="@+id/personName"
         android:layout_width="118dp"
         android:layout_height="57dp"
-        android:layout_below="@+id/profilePicture"
+        android:layout_below="@+id/imageViewProfileImage"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="17dp"
         android:layout_marginEnd="149dp"
