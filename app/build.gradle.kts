@@ -44,6 +44,8 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:4.0.0")
 
     // App dependencies
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation ("com.google.zxing:core:3.3.3")
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.firebase.storage)
     implementation(platform(libs.firebase.bom))
