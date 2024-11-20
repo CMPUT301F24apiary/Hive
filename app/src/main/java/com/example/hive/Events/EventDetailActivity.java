@@ -18,6 +18,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
+import com.example.hive.EditEventActivity;
+import com.example.hive.EditFacilityProfileActivity;
+import com.example.hive.FacilityActivity;
 import com.example.hive.R;
 
 /**
@@ -95,10 +98,12 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
         });
 
         // Get reference to deleteEvent button
-        Button deleteEvent = findViewById(R.id.delete_event_button);
+        Button deleteEvent = findViewById(R.id.delete_event_btn);
+        Button editEvent = findViewById(R.id.edit_event_btn);
+
 
         // Get reference to delete QR button
-        Button deleteQR = findViewById(R.id.delete_qr_button);
+//        Button deleteQR = findViewById(R.id.delete_qr_button);
 
         // Get reference to back button
         ImageButton backBtn = findViewById(R.id.event_back_button);
@@ -174,6 +179,14 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             @Override
             public void onClick(View v) {
                 new ConfirmEventDelete().show(getSupportFragmentManager(), "Confirm Delete");
+            }
+        });
+
+        editEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EventDetailActivity.this, EditEventActivity.class);
+                startActivityForResult(intent, 1);
             }
         });
 

@@ -5,8 +5,11 @@ import android.util.Log;
 import androidx.annotation.VisibleForTesting;
 
 import com.example.hive.Events.Event;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -50,6 +53,27 @@ public class EventController extends FirebaseController {
         }).addOnFailureListener(e -> {
             Log.w("EventController", "Error adding event", e);
         });
+    }
+
+    public void updateEvent(Event event, final OnEventUpdatedCallback callback) {
+        DocumentReference eventRef = db.collection("events").document(event.getFirebaseID());
+
+        eventRef.update(
+                "title", event.getTitle(),
+                "cost", event.getCost(),
+                "startDateTime", event.getStartTime(),
+//                "endDateTime", event.getEndDateTime(),
+                "location", event.getLocation(),
+                "description", event.getDescription(),
+                "numParticipants", event.getNumParticipants()
+        ).addOnFailureListener(e -> {
+            Log.w("EventController", "Error adding event", e);
+        });
+    }
+
+    // Callback interface to handle event update success
+    public interface OnEventUpdatedCallback {
+        void onEventUpdated(String eventID);
     }
 
     /**

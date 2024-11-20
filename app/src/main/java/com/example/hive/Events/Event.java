@@ -21,14 +21,14 @@ import java.util.Locale;
  */
 public class Event implements Parcelable {
 
-    private final String title;
-    private final String cost;
-    private final long startDate;
-    private final long endDate;
+    private String title;
+    private  String cost;
+    private  long startDate;
+    private long endDate;
     private String firebaseID;
-    private final String description;
-    private final String location;
-    private final int numParticipants;
+    private  String description;
+    private  String location;
+    private  int numParticipants;
     private String posterURL;
 
     /**
@@ -238,6 +238,42 @@ public class Event implements Parcelable {
     public void setPosterURL(String posterURL) {
         this.posterURL = posterURL;
     }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setCost(String cost) {
+        this.cost = cost;
+    }
+
+    public void setStartDate(long startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setStartTime(long endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setDuration(long endDate) {
+        this.endDate = endDate;
+    }
+
+
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setNumParticipants(int numParticipants) {
+        this.numParticipants = numParticipants;
+    }
+
+
+
 
     /**
      * Getter to return all members of this event.
