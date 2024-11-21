@@ -48,7 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Initialize the views
         editProfileButton = findViewById(R.id.editProfileButton);
         backArrow = findViewById(R.id.backArrow);
-        profilePicture = findViewById(R.id.profilePicture); // Make sure you have this defined in your layout XML file
+        profilePicture = findViewById(R.id.imageViewProfileImage); // Make sure you have this defined in your layout XML file
         personNameText = findViewById(R.id.personName);
         userNameText = findViewById(R.id.userName);
         emailText = findViewById(R.id.emailLabel);
