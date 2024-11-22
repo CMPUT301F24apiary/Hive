@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -111,9 +112,12 @@ public class ProfileEditActivity extends AppCompatActivity {
         removePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("ProfEditRemovePic", "Clicked remove");
                 new FirebaseController().getUserDocId(deviceId, docId -> {
+                    Log.d("ProfEditRemovePic", docId);
                     new ImageController().deleteImageAndUpdateRelatedDoc(user.getProfileImageUrl(),
                             null, docId, success -> {
+                                Log.d("ProfEditRemovePic", success.toString());
                         if (success) {
                             // Reset to default profile picture
                             profilePicture.setImageDrawable(user.getDisplayDrawable());
