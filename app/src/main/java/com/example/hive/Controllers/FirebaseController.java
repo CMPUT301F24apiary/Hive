@@ -195,17 +195,8 @@ public class FirebaseController {
             if (!docs.isEmpty()) {
                 DocumentSnapshot doc = docs.getDocuments().get(0);
                 DocumentReference docRef = doc.getReference();
-                docRef.update(data).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        listener.onSuccess(Boolean.TRUE);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        listener.onSuccess(Boolean.FALSE);
-                    }
-                });
+                docRef.update(data).addOnSuccessListener(unused -> listener.onSuccess(Boolean.TRUE))
+                        .addOnFailureListener(e -> listener.onSuccess(Boolean.FALSE));
             }
         });
     }

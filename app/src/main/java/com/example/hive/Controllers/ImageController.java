@@ -212,7 +212,6 @@ public class ImageController extends FirebaseController {
     }
 
     public void getImageDocIdByUrl(String url, OnSuccessListener<String> listener) {
-        Log.d("GetImgByURL", url);
         db.collection("images").whereEqualTo("url", url).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -237,16 +236,11 @@ public class ImageController extends FirebaseController {
     public void deleteImageAndUpdateRelatedDoc(String url, @Nullable String imgID,
                                                String relatedDocID,
                                                OnSuccessListener<Boolean> callback) {
-        Log.d("DeleteImage", "DelImageCalled");
         if (imgID == null) {
-            Log.d("DeleteImage", "NoImgID");
             getImageDocIdByUrl(url, id -> {
-                Log.d("DeleteImage", "Got Image Doc ID: " + id);
                 deleteImage(url, id)
                     .addOnCompleteListener(task -> {
-                        Log.d("DeleteImage", "Delete Image was called");
                         if (task.isSuccessful()) {
-                            Log.d("DeleteImage", "Delete Image was successful");
                             handleRelatedDocument(relatedDocID, callback);
                         } else {
                             Log.e("Delete Image", "Failed to delete image",
@@ -356,7 +350,7 @@ public class ImageController extends FirebaseController {
      * OnSuccessListener: function to be called once deletion is complete
      */
     private void updateUserDocument(String docID, OnSuccessListener<Boolean> callback) {
-        CollectionReference userCollection = db.collection("user");
+        CollectionReference userCollection = db.collection("users");
 
         userCollection.document(docID).get()
                 .addOnCompleteListener(task -> {

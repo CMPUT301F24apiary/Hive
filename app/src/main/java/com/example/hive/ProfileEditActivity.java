@@ -272,7 +272,7 @@ public class ProfileEditActivity extends AppCompatActivity {
                     String pfpUrl = user.getProfileImageUrl();
 
                     if (!pfpUrl.isEmpty()) {
-                        Glide.with(ProfileEditActivity.this).load(pfpUrl).into(profilePicture);
+                        Glide.with(ProfileEditActivity.this).load(pfpUrl).circleCrop().into(profilePicture);
                     } else {
                         profilePicture.setImageDrawable(user.getDisplayDrawable());
                     }
