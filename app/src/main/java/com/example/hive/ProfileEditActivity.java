@@ -34,9 +34,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Controllers.ImageController;
+import com.example.hive.Models.User;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 //import java.util.Base64;
 
 public class ProfileEditActivity extends AppCompatActivity {
@@ -50,6 +54,9 @@ public class ProfileEditActivity extends AppCompatActivity {
     private Button editPictureButton, removePictureButton, saveButton, cancelButton;
     private ImageButton notificationBellButton, notificationChosenBellButton, notificationNotChosenBellButton, notificationOrganizerBellButton;
     private SharedPreferences sharedPreferences;
+    private User user;
+    private Uri pfpUri = null;
+    private String deviceId;
 
     /**
      * Called when the activity is starting. This is where most initialization should be done.
@@ -81,10 +88,12 @@ public class ProfileEditActivity extends AppCompatActivity {
         notificationNotChosenBellButton = findViewById(R.id.notificationNotChosenBellButton);
         notificationOrganizerBellButton = findViewById(R.id.notificationOrganizerBellButton);
 
+        deviceId = getIntent().getStringExtra("deviceId");
+
         // Set up click listeners for notification bell buttons
         setupNotificationButtons();
 
-        loadProfileData();
+        loadProfileData(deviceId);
 
         // Edit picture button logic
         editPictureButton.setOnClickListener(new View.OnClickListener() {
@@ -102,8 +111,19 @@ public class ProfileEditActivity extends AppCompatActivity {
         removePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Reset to default profile picture
-                profilePicture.setImageResource(R.drawable.ic_profile);
+                new FirebaseController().getUserDocId(deviceId, docId -> {
+                    new ImageController().deleteImageAndUpdateRelatedDoc(user.getProfileImageUrl(),
+                            null, docId, success -> {
+                        if (success) {
+                            // Reset to default profile picture
+                            profilePicture.setImageDrawable(user.getDisplayDrawable());
+                        } else {
+                            Toast.makeText(ProfileEditActivity.this,
+                                    "Profile Picture removal error",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
             }
         });
 
@@ -131,13 +151,13 @@ public class ProfileEditActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri imageUri = data.getData();
+            pfpUri = data.getData();
 
             // Use Glide to load and crop the selected image as a circle
             // From https://github.com/bumptech/glide/issues/3839, downloaded 2024-11-06
 
             Glide.with(this)
-                    .load(imageUri)
+                    .load(pfpUri)
                     .transform(new CircleCrop())
                     .into(profilePicture);
         }
@@ -232,28 +252,58 @@ public class ProfileEditActivity extends AppCompatActivity {
      * Loads the profile data from SharedPreferences and populates the input fields.
      * Also loads the profile picture if available.
      */
-    public void loadProfileData() {
-        sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
-        String personName = sharedPreferences.getString("personName", "");
-        String userName = sharedPreferences.getString("userName", "");
-        String email = sharedPreferences.getString("email", "");
-        String phone = sharedPreferences.getString("phone", "");
-        String profilePictureBase64 = sharedPreferences.getString("profilePicture", "");
+    public void loadProfileData(String deviceId) {
+        FirebaseController controller = new FirebaseController();
+        controller.fetchUserByDeviceId(deviceId, new FirebaseController.OnUserFetchedListener() {
+            @Override
+            public void onUserFetched(User fetchedUser) {
+                if (fetchedUser != null) {
+                    user = fetchedUser;
 
-        // Set the loaded data into the EditText fields
-        personNameInput.setText(personName);
-        userNameInput.setText(userName);
-        emailInput.setText(email);
-        phoneInput.setText(phone);
+                    personNameInput.setText(user.getUserName());
+                    userNameInput.setText(user.getUserName());
+                    emailInput.setText(user.getEmail());
+                    phoneInput.setText(user.getPhoneNumber());
 
-        // Load profile picture if available
-        if (!profilePictureBase64.isEmpty()) {
-            Bitmap profileBitmap = base64ToBitmap(profilePictureBase64);
-            profilePicture.setImageBitmap(profileBitmap);
-        } else {
-            // Set default profile picture
-            profilePicture.setImageResource(R.drawable.ic_profile);
-        }
+                    String pfpUrl = user.getProfileImageUrl();
+
+                    if (!pfpUrl.isEmpty()) {
+                        Glide.with(ProfileEditActivity.this).load(pfpUrl).into(profilePicture);
+                    } else {
+                        profilePicture.setImageDrawable(user.getDisplayDrawable());
+                    }
+                } else {
+                    Toast.makeText(ProfileEditActivity.this, "User is null", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(ProfileEditActivity.this, "Error fetching user profile (ProfileEditActivity)",
+                        Toast.LENGTH_LONG).show();
+            }});
+
+//                    sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+//        String personName = sharedPreferences.getString("personName", "");
+//        String userName = sharedPreferences.getString("userName", "");
+//        String email = sharedPreferences.getString("email", "");
+//        String phone = sharedPreferences.getString("phone", "");
+//        String profilePictureBase64 = sharedPreferences.getString("profilePicture", "");
+//
+//        // Set the loaded data into the EditText fields
+//        personNameInput.setText(personName);
+//        userNameInput.setText(userName);
+//        emailInput.setText(email);
+//        phoneInput.setText(phone);
+//
+//        // Load profile picture if available
+//        if (!profilePictureBase64.isEmpty()) {
+//            Bitmap profileBitmap = base64ToBitmap(profilePictureBase64);
+//            profilePicture.setImageBitmap(profileBitmap);
+//        } else {
+//            // Set default profile picture
+//            profilePicture.setImageResource(R.drawable.ic_profile);
+//        }
     }
 
     /**
@@ -266,19 +316,83 @@ public class ProfileEditActivity extends AppCompatActivity {
         String email = emailInput.getText().toString();
         String phone = phoneInput.getText().toString();
 
-        // Save profile picture
-        BitmapDrawable drawable = (BitmapDrawable) profilePicture.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-        String profilePictureBase64 = bitmapToBase64(bitmap);
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("username", userName);
+        data.put("name", personName);
+        data.put("email", email);
+        data.put("phoneNumber", phone);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("personName", personName);
-        editor.putString("userName", userName);
-        editor.putString("email", email);
-        editor.putString("phone", phone);
-        editor.putString("profilePicture", profilePictureBase64);
-        editor.apply();  // Apply the changes
+        FirebaseController fbControl = new FirebaseController();
+
+        if (pfpUri == null) {
+            fbControl.updateUserByDeviceId(deviceId, data, didUpdate -> {
+                if (didUpdate) {
+                    finish();
+                } else {
+                    Toast.makeText(
+                            ProfileEditActivity.this,
+                            "Update failed",
+                            Toast.LENGTH_SHORT)
+                            .show();
+                }
+            });
+        } else {
+            ImageController imgControl = new ImageController();
+            try {
+                imgControl.saveImage(this, pfpUri, "profile picture")
+                        .addOnSuccessListener(urlAndID -> {
+
+                            data.put("profileImageUrl", urlAndID.first);
+                            fbControl.updateUserByDeviceId(deviceId, data, didUpdate -> {
+                                if (didUpdate) {
+                                    imgControl.updateImageRef(urlAndID.second, deviceId,
+                                            true);
+                                    finish();
+                                } else {
+                                    Toast.makeText(ProfileEditActivity.this,
+                                            "Could not update user",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }).addOnFailureListener(e -> {
+                            // Handle the failure of the image upload
+                            Toast.makeText(this, "Failed to upload image: " +
+                                            e.getMessage() +
+                                            "\nUser will still be updated - try uploading the picture again.",
+                                    Toast.LENGTH_LONG).show();
+
+                            fbControl.updateUserByDeviceId(deviceId, data, didUpdate -> {
+                                if (didUpdate) {
+                                    finish();
+                                } else {
+                                    Toast.makeText(ProfileEditActivity.this,
+                                            "Could not update user",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        });
+            } catch(Exception e) {
+                Toast.makeText(this, "Image upload failed: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+
+
+        // Save profile picture
+//        BitmapDrawable drawable = (BitmapDrawable) profilePicture.getDrawable();
+//        Bitmap bitmap = drawable.getBitmap();
+//        String profilePictureBase64 = bitmapToBase64(bitmap);
+//
+//        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putString("personName", personName);
+//        editor.putString("userName", userName);
+//        editor.putString("email", email);
+//        editor.putString("phone", phone);
+//        editor.putString("profilePicture", profilePictureBase64);
+//        editor.apply();  // Apply the changes
     }
     public void setSharedPreferencesForTesting(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;

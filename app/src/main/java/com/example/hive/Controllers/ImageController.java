@@ -7,19 +7,22 @@ import android.provider.OpenableColumns;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.annotation.Nullable;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.function.Consumer;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Controller class to get and store images. Extends FirebaseController for db access, and utilizes
@@ -197,10 +200,25 @@ public class ImageController extends FirebaseController {
      * @param otherID
      * String: document ID of firebase document where this image is used
      */
-    public void updateImageRef(String imgID, String otherID) {
+    public void updateImageRef(String imgID, String otherID, boolean isDeviceId) {
         CollectionReference imagesCollection = db.collection("images");
+        if (isDeviceId) {
+            super.getUserDocId(otherID, userDocId -> {
+                imagesCollection.document(imgID).update("relatedDocID", userDocId);
+            });
+        } else {
+            imagesCollection.document(imgID).update("relatedDocID", otherID);
+        }
+    }
 
-        imagesCollection.document(imgID).update("relatedDocID", otherID);
+    public void getImageDocIdByUrl(String url, OnSuccessListener<String> listener) {
+        db.collection("images").whereEqualTo("url", url).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
+                listener.onSuccess(doc.getId());
+            }
+        });
     }
 
     /**
@@ -215,9 +233,23 @@ public class ImageController extends FirebaseController {
      * @param callback
      * OnSuccessListener: the function to be called once all deletion is performed
      */
-    public void deleteImageAndUpdateRelatedDoc(String url, String imgID, String relatedDocID,
+    public void deleteImageAndUpdateRelatedDoc(String url, @Nullable String imgID,
+                                               String relatedDocID,
                                                OnSuccessListener<Boolean> callback) {
-        deleteImage(url, imgID)
+        if (imgID == null) {
+            getImageDocIdByUrl(url, id -> {
+                deleteImage(url, id)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            handleRelatedDocument(relatedDocID, callback);
+                        } else {
+                            Log.e("Delete Image", "Failed to delete image",
+                                    task.getException());
+                        }
+                    });
+            });
+        } else {
+            deleteImage(url, imgID)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         handleRelatedDocument(relatedDocID, callback);
@@ -226,6 +258,7 @@ public class ImageController extends FirebaseController {
                                 task.getException());
                     }
                 });
+        }
     }
 
     /**
