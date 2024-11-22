@@ -1,6 +1,7 @@
 package com.example.hive;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -254,8 +255,5 @@ public class AddEventActivity extends AppCompatActivity {
         // Return end date and end time separated by a space
         return endDate + " " + endTime;
     }
-
-
-
 
 }

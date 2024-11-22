@@ -1,6 +1,7 @@
 package com.example.hive.Events;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -177,5 +178,15 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             }
         });
 
+    }
+
+    private void displayEventQR(Event event) {
+        try {
+            Bitmap qr = event.generateQRCode(400, 400);
+            qrImageView.setImageBitmap(qr);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "QR generation failed", Toast.LENGTH_LONG).show();
+        }
     }
 }
