@@ -41,6 +41,12 @@
         <activity
             android:name=".EventListActivity"
             android:exported="true" />
+        <activity
+            android:name=".OptionsPageActivity"
+            android:exported="true" />
+        <activity android:name=".WaitingListActivity" />
+
+
         <!--
  Keep MainActivity for navigation, but no launcher intent
         <activity android:name=".MainActivity" />
