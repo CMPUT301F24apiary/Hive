@@ -1,5 +1,6 @@
 package com.example.hive.Events;
 
+import com.example.hive.OptionsPageActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -117,6 +118,18 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
         // Create new instance of EventController to communicate with firebase
         controller = new EventController();
 
+        // Get reference to Entrant Options button
+        Button entrantOptionsButton = findViewById(R.id.entrant_options_btn);
+
+        // Set OnClickListener for Entrant Options button
+        entrantOptionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EventDetailActivity.this, OptionsPageActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // Get event object from the intent
         event = (Event) getIntent().getParcelableExtra("event");
 
@@ -176,6 +189,5 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
                 new ConfirmEventDelete().show(getSupportFragmentManager(), "Confirm Delete");
             }
         });
-
     }
 }
