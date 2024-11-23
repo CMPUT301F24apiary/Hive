@@ -21,10 +21,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Toast;
+
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hive.Views.CustomQrScannerActivity;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.bumptech.glide.Glide;
 import com.example.hive.AdminEvent.AdminEventListActivity;
 import com.example.hive.Controllers.FirebaseController;
@@ -33,13 +39,11 @@ import com.example.hive.Views.AdminProfileViewActivity;
 
 public class EventListActivity extends AppCompatActivity {
 
-    // Zach - DEV BUTTON
-    private Button eventsButton;
-
     private ImageButton profileButton;
-
-    private ImageButton notificationBellButton;  // Only one declaration for notificationBellButton
-    private Button switchRolesButton;  // New role switch button
+    private ImageButton notificationBellButton;  // Notification Bell button
+    private Button switchRolesButton;  // Switch Roles button
+    private Button scanQrCodeButton;  // Scan QR Code button
+    private ImageView qrCodeImageView;  // QR Code ImageView
 
     private User user;
 
@@ -57,20 +61,15 @@ public class EventListActivity extends AppCompatActivity {
 
         firebaseController = new FirebaseController();
 
+        // Initialize UI components
         profileButton = findViewById(R.id.profileButton);
-        eventsButton = findViewById(R.id.admin_view_event_list);
         notificationBellButton = findViewById(R.id.notificationBellButton);
         switchRolesButton = findViewById(R.id.switchRolesButton);
+        scanQrCodeButton = findViewById(R.id.scanQrCodeButton);
+        qrCodeImageView = findViewById(R.id.qrCodeImageView);
 
+        // Set click listeners for each button
         String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        eventsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(EventListActivity.this, AdminEventListActivity.class);
-                startActivity(i);
-            }
-        });
 
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,5 +95,46 @@ public class EventListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        scanQrCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanQrCode();
+            }
+        });
+    }
+
+    /**
+     * Initiates a QR code scanner and handles the scanned result.
+     */
+    private void scanQrCode() {
+        IntentIntegrator integrator = new IntentIntegrator(EventListActivity.this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+        integrator.setPrompt("Scan a QR code");
+        integrator.setCameraId(0);
+        integrator.setBeepEnabled(true);
+        integrator.setCaptureActivity(CustomQrScannerActivity.class); // Custom scanner
+        integrator.initiateScan();
+    }
+
+    /**
+     * Handles the result from the QR code scanner and displays the event details.
+     *
+     * @param requestCode The request code originally supplied to startActivityForResult().
+     * @param resultCode The result code returned by the child activity through its setResult().
+     * @param data An Intent that carries the result data.
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() != null) {
+                // Display scanned QR code content
+                Toast.makeText(this, "Event Details:\n" + result.getContents(), Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "No QR code scanned", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

@@ -35,7 +35,6 @@ public class ActivityEventListTests {
         // Simulate findViewById calls in the activity
         when(eventListActivity.findViewById(R.id.notificationBellButton)).thenReturn(notificationBellButton);
         when(eventListActivity.findViewById(R.id.profileButton)).thenReturn(profileButton);
-        when(eventListActivity.findViewById(R.id.admin_view_event_list)).thenReturn(adminViewEventListButton);
         when(eventListActivity.findViewById(R.id.switchRolesButton)).thenReturn(switchRolesButton);
 
         // Use doAnswer to simulate button click interactions
@@ -51,7 +50,6 @@ public class ActivityEventListTests {
         assertNotNull("EventListActivity should not be null", eventListActivity);
         assertNotNull("Notification Bell Button should not be null", eventListActivity.findViewById(R.id.notificationBellButton));
         assertNotNull("Profile Button should not be null", eventListActivity.findViewById(R.id.profileButton));
-        assertNotNull("Admin View Event List Button should not be null", eventListActivity.findViewById(R.id.admin_view_event_list));
         assertNotNull("Switch Roles Button should not be null", eventListActivity.findViewById(R.id.switchRolesButton));
     }
 

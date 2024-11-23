@@ -42,8 +42,12 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.0.1")
     testImplementation("org.mockito:mockito-core:4.0.0")
     testImplementation("org.mockito:mockito-junit-jupiter:4.0.0")
+    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
 
     // App dependencies
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation ("com.google.zxing:core:3.3.3")
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.firebase.storage)
     implementation(platform(libs.firebase.bom))
@@ -69,6 +73,10 @@ dependencies {
     // https://github.com/alvinhkh/TextDrawable
     // https://jitpack.io/p/alvinhkh/TextDrawable
     implementation(libs.textdrawable)
+
+    // QR code generation
+    implementation(libs.core)
+    implementation(libs.zxing.android.embedded)
 
     // JavaDoc
 //    implementation(files("C:/Users/Zach/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
