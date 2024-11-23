@@ -3,8 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.hive">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
@@ -20,6 +29,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Hive"
         tools:targetApi="31">
+        <activity android:name=".Views.CustomQrScannerActivity" />
         <activity
             android:name=".AdminImage.AdminImageListActivity"
             android:exported="false" />
