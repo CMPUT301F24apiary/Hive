@@ -3,9 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.hive">
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
 
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -44,6 +41,12 @@
         <activity
             android:name=".EventListActivity"
             android:exported="true" />
+        <activity
+            android:name=".OptionsPageActivity"
+            android:exported="true" />
+        <activity android:name=".WaitingListActivity" />
+
+
         <!--
  Keep MainActivity for navigation, but no launcher intent
         <activity android:name=".MainActivity" />

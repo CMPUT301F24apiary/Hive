@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
+import com.example.hive.OptionsPageActivity;
 import com.example.hive.R;
 import com.example.hive.Views.QRCodeActivity;
 
@@ -179,25 +180,45 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             }
         });
 
-    }
-
-
-    public void onClick(View view) {
-        if (view.getId() == R.id.textViewClickQRCode) {
-            if (event == null) {
-                Toast.makeText(this, "Event data not available", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            try {
-                Bitmap qrCodeBitmap = event.generateQRCode(300, 300);
-                Intent intent = new Intent(this, QRCodeActivity.class);
-                intent.putExtra("qrCode", qrCodeBitmap);
+        // Entrant Options button logic
+        TextView entrantOptionsButton = findViewById(R.id.entrant_options_btn);
+        entrantOptionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EventDetailActivity.this, OptionsPageActivity.class);
                 startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "QR generation failed", Toast.LENGTH_LONG).show();
             }
-        }
+        });
+
+        // Notification Settings button logic
+        TextView notificationSettingsButton = findViewById(R.id.event_noti_settings);
+        notificationSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(EventDetailActivity.this, "Notification Settings Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // QR Code button logic
+        TextView qrCodeButton = findViewById(R.id.textViewClickQRCode);
+        qrCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (event == null) {
+                    Toast.makeText(EventDetailActivity.this, "Event data not available", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                try {
+                    Bitmap qrCodeBitmap = event.generateQRCode(300, 300);
+                    Intent intent = new Intent(EventDetailActivity.this, QRCodeActivity.class);
+                    intent.putExtra("qrCode", qrCodeBitmap);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(EventDetailActivity.this, "QR generation failed", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }

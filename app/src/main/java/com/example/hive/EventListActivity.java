@@ -15,9 +15,13 @@ package com.example.hive;
 import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -103,7 +107,32 @@ public class EventListActivity extends AppCompatActivity {
             }
         });
     }
+    /**
+     * Called when the activity is resumed. Reloads the profile picture to reflect any changes made in the ProfileEditActivity.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadProfilePicture();
+    }
 
+    /**
+     * Loads the profile picture from SharedPreferences and updates the profile button image.
+     */
+    private void loadProfilePicture() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        String profilePictureBase64 = sharedPreferences.getString("profilePicture", "");
+
+        if (!profilePictureBase64.isEmpty()) {
+            // Convert Base64 string to Bitmap and set it on the profile button
+            byte[] decodedBytes = Base64.decode(profilePictureBase64, Base64.DEFAULT);
+            Bitmap profileBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            profileButton.setImageBitmap(profileBitmap);
+        } else {
+            // Set default profile picture
+            profileButton.setImageResource(R.drawable.ic_profile); // Replace with your default image resource
+        }
+    }
     /**
      * Initiates a QR code scanner and handles the scanned result.
      */
