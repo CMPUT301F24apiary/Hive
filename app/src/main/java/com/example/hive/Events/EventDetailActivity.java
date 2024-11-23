@@ -1,7 +1,7 @@
 package com.example.hive.Events;
 
-import com.example.hive.OptionsPageActivity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.R;
+import com.example.hive.Views.QRCodeActivity;
 
 /**
  * Display event information and delete button for admin.
@@ -118,18 +119,6 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
         // Create new instance of EventController to communicate with firebase
         controller = new EventController();
 
-        // Get reference to Entrant Options button
-        Button entrantOptionsButton = findViewById(R.id.entrant_options_btn);
-
-        // Set OnClickListener for Entrant Options button
-        entrantOptionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(EventDetailActivity.this, OptionsPageActivity.class);
-                startActivity(intent);
-            }
-        });
-
         // Get event object from the intent
         event = (Event) getIntent().getParcelableExtra("event");
 
@@ -189,5 +178,26 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
                 new ConfirmEventDelete().show(getSupportFragmentManager(), "Confirm Delete");
             }
         });
+
+    }
+
+
+    public void onClick(View view) {
+        if (view.getId() == R.id.textViewClickQRCode) {
+            if (event == null) {
+                Toast.makeText(this, "Event data not available", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            try {
+                Bitmap qrCodeBitmap = event.generateQRCode(300, 300);
+                Intent intent = new Intent(this, QRCodeActivity.class);
+                intent.putExtra("qrCode", qrCodeBitmap);
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "QR generation failed", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

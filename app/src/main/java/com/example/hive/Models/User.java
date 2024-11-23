@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * create a user object. Singleton i.e. only one user object is active at a time
+ * create a user object.
  */
 public class User {
     private static User instance = null;

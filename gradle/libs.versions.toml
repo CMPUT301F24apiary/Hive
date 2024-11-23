@@ -1,5 +1,6 @@
 [versions]
-agp = "8.6.0"
+agp = "8.7.1"
+core = "3.5.2"
 firebaseBomVersion = "33.5.1"
 compiler = "4.11.0"
 espressoCoreVersion = "3.4.0"
@@ -22,9 +23,11 @@ textdrawable = "f9f516c43b"
 truth = "1.6.0"
 junitJupiter = "5.8.1"
 testng = "6.9.6"
+zxingAndroidEmbedded = "4.3.0"
 
 [libraries]
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
+core = { module = "com.google.zxing:core", version.ref = "core" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
 glide-v4110 = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 google-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
@@ -49,6 +52,7 @@ textdrawable = { module = "com.github.alvinhkh:TextDrawable", version.ref = "tex
 truth = { module = "androidx.test.ext:truth", version.ref = "truth" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 testng = { group = "org.testng", name = "testng", version.ref = "testng" }
+zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
