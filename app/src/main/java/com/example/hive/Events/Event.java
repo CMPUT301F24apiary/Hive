@@ -1,10 +1,21 @@
 package com.example.hive.Events;
 
+import android.app.WallpaperInfo;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -290,5 +301,23 @@ public class Event implements Parcelable {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd-HH:mm", Locale.ENGLISH);
         String formatted = sdf.format(dateAsDate);
         return formatted.split("-");
+    }
+
+    /**
+     * Generates a QR code image from a string.
+     *
+     * Reference: https://github.com/afarber/android-questions/blob/master/QREncoder/app/src/main/java/de/afarber/qrencoder/MainActivity.java
+     * @param width
+     * @return
+     * @throws WriterException These are exceptions that may occur when encoding a barcode using the Writer framework (from docs)
+     */
+    public Bitmap generateQRCode(int width, int height) throws WriterException {
+        // error with QR generation may be because firebaseId is not set; check for that
+        String data = firebaseID;
+
+        MultiFormatWriter writer = new MultiFormatWriter();
+        BitMatrix matrix = writer.encode(data, BarcodeFormat.QR_CODE, width, height);
+        BarcodeEncoder encoder = new BarcodeEncoder();
+        return encoder.createBitmap(matrix);
     }
 }
