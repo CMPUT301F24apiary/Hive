@@ -74,6 +74,10 @@ dependencies {
     // https://jitpack.io/p/alvinhkh/TextDrawable
     implementation(libs.textdrawable)
 
+    // QR code generation
+    implementation(libs.core)
+    implementation(libs.zxing.android.embedded)
+
     // JavaDoc
 //    implementation(files("C:/Users/Zach/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
 }
