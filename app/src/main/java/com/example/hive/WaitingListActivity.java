@@ -1,11 +1,16 @@
 package com.example.hive;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.EditText;
-import android.widget.ListView;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,7 +38,16 @@ public class WaitingListActivity extends AppCompatActivity {
 
         // ListView and adapter
         ListView listView = findViewById(R.id.waiting_list_view);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, entrantsList);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, entrantsList) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                // Customize text color to white
+                View view = super.getView(position, convertView, parent);
+                TextView text = view.findViewById(android.R.id.text1);
+                text.setTextColor(getResources().getColor(R.color.white)); // Change text color to white
+                return view;
+            }
+        };
         listView.setAdapter(adapter);
 
         // Search functionality
@@ -53,6 +67,14 @@ public class WaitingListActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 // No action needed
             }
+        });
+
+        // Back button logic
+        ImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(WaitingListActivity.this, OptionsPageActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 }

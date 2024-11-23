@@ -55,6 +55,8 @@
         android:divider="@color/gray"
         android:dividerHeight="1dp"
         android:padding="16dp"
+        android:cacheColorHint="@android:color/transparent"
+        android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/search_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

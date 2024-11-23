@@ -3,9 +3,11 @@ package com.example.hive;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.hive.Events.EventDetailActivity;
 
 public class OptionsPageActivity extends AppCompatActivity {
 
@@ -14,49 +16,41 @@ public class OptionsPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_optionspage);
 
-        // Initialize buttons
-        Button invitedEntrantsButton = findViewById(R.id.invited_entrants_btn);
-        Button waitingListButton = findViewById(R.id.waiting_list_btn);
-        Button cancelledEntrantsButton = findViewById(R.id.cancelled_entrants_btn);
-        Button participantsButton = findViewById(R.id.participants_btn);
-        Button viewEntrantMapButton = findViewById(R.id.view_entrant_map_btn);
+        // Initialize TextViews
+        TextView invitedEntrantsButton = findViewById(R.id.invited_entrants_btn);
+        TextView waitingListButton = findViewById(R.id.waiting_list_btn);
+        TextView cancelledEntrantsButton = findViewById(R.id.cancelled_entrants_btn);
+        TextView participantsButton = findViewById(R.id.participants_btn);
+        TextView viewEntrantMapButton = findViewById(R.id.view_entrant_map_btn);
 
-        // Set click listeners
-        invitedEntrantsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Placeholder logic
-            }
+        // Back button logic
+        findViewById(R.id.back_button).setOnClickListener(v -> {
+            Intent intent = new Intent(OptionsPageActivity.this, EventDetailActivity.class);
+            startActivity(intent);
+            finish();
         });
 
-        waitingListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to WaitingListActivity
-                Intent intent = new Intent(OptionsPageActivity.this, WaitingListActivity.class);
-                startActivity(intent);
-            }
+        // Set click listeners for buttons
+        invitedEntrantsButton.setOnClickListener(v -> {
+            // Placeholder logic for Invited Entrants
         });
 
-        cancelledEntrantsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Placeholder logic
-            }
+        waitingListButton.setOnClickListener(v -> {
+            // Navigate to WaitingListActivity
+            Intent intent = new Intent(OptionsPageActivity.this, WaitingListActivity.class);
+            startActivity(intent);
         });
 
-        participantsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Placeholder logic
-            }
+        cancelledEntrantsButton.setOnClickListener(v -> {
+            // Placeholder logic for Cancelled Entrants
         });
 
-        viewEntrantMapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Placeholder logic
-            }
+        participantsButton.setOnClickListener(v -> {
+            // Placeholder logic for Participants
+        });
+
+        viewEntrantMapButton.setOnClickListener(v -> {
+            // Placeholder logic for Viewing Entrant Map
         });
     }
 }
