@@ -134,10 +134,10 @@
             android:paddingEnd="8dp"
             android:text="@string/event_description_default"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toTopOf="@id/organizer_event_btns_container"
+            app:layout_constraintBottom_toTopOf="@id/textViewClickQRCode"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/event_number_participants_container"/>
+            app:layout_constraintTop_toBottomOf="@id/event_number_participants_container" />
 
         <LinearLayout
             android:id="@+id/organizer_event_btns_container"
@@ -203,26 +203,21 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/textViewClickQRCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/event_detail_button_container"
-            app:layout_constraintTop_toBottomOf="@id/event_detail_description">
-
-            <TextView
-                android:id="@+id/textViewClickQRCode"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:gravity="center"
-                android:onClick="onClick"
-                android:paddingVertical="10dp"
-                android:text="QR Code"
-                android:textColor="@color/white"
-                android:textSize="22sp" />
-
-        </LinearLayout>
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:paddingVertical="10dp"
+            android:text="QR Code"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toTopOf="@+id/event_detail_button_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_detail_description" />
 
         <LinearLayout
             android:id="@+id/event_detail_button_container"
@@ -242,7 +237,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainRed"
                 android:text="Remove QR Code"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/register_for_event_btn"
@@ -250,7 +245,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainGreen"
-                android:text="Register" />
+                android:text="Register"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/edit_event_btn"
@@ -258,7 +254,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainGreen"
-                android:text="Edit Event" />
+                android:text="Edit Event"
+                android:visibility="gone" />
 
             <Space
                 android:layout_width="0dp"
@@ -271,7 +268,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainRed"
-                android:text="@string/delete_event_text" />
+                android:text="@string/delete_event_text"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/unregister_event_btn"

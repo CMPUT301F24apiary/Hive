@@ -123,30 +123,36 @@ public class AddEventActivity extends AppCompatActivity {
 
         long endDateTime = convertDateToMS(endDateSplit[0], endDateSplit[1]);
 
-        ImageController imgControl = new ImageController();
-        try {
-            imgControl.saveImage(this, posterImageUri, "event poster")
-                    .addOnSuccessListener(urlAndID -> {
+        if (posterImageUri == null) {
+            saveEvent(title, cost, startDateTime, endDateTime, description,
+                    numParticipantsCount, location, null);
+        } else {
+            ImageController imgControl = new ImageController();
+            try {
+                imgControl.saveImage(this, posterImageUri, "event poster")
+                        .addOnSuccessListener(urlAndID -> {
 
-                        saveEvent(title, cost, startDateTime, endDateTime, description,
-                                numParticipantsCount, location, urlAndID);
+                            saveEvent(title, cost, startDateTime, endDateTime, description,
+                                    numParticipantsCount, location, urlAndID);
 
-                    }).addOnFailureListener(e -> {
-                        // Handle the failure of the image upload
-                        Toast.makeText(this, "Failed to upload image: " +
-                                        e.getMessage() +
-                                        "\nEvent will still be created - navigate to the event page " +
-                                        "and edit it to try uploading the poster again.",
-                                Toast.LENGTH_SHORT).show();
+                        }).addOnFailureListener(e -> {
+                            // Handle the failure of the image upload
+                            Toast.makeText(this, "Failed to upload image: " +
+                                            e.getMessage() +
+                                            "\nEvent will still be created - navigate to the event page " +
+                                            "and edit it to try uploading the poster again.",
+                                    Toast.LENGTH_SHORT).show();
 
-                        saveEvent(title, cost, startDateTime, endDateTime, description,
-                                numParticipantsCount, location, null);
+                            saveEvent(title, cost, startDateTime, endDateTime, description,
+                                    numParticipantsCount, location, null);
 
-                    });
-        } catch(Exception e) {
-            Toast.makeText(this, "Image upload failed: " + e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
+                        });
+            } catch(Exception e) {
+                Toast.makeText(this, "Image upload failed: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
+
     }
 
     private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
