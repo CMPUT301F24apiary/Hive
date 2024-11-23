@@ -14,37 +14,44 @@ import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.BarcodeView;
 
 public class CustomQrScannerActivity extends AppCompatActivity {
-    //qr scanner used from https://github.com/zxing/zxing, on 2024-11-18
-    private BarcodeView barcodeView;
+    public BarcodeView barcodeView; // BarcodeView for QR code scanning
+    private Button cancelButton;     // Button to cancel the scan
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_qr_scanner);
 
+        // Initialize BarcodeView
         barcodeView = findViewById(R.id.barcode_scanner);
+
+        // Start continuous scanning with a callback for results
         barcodeView.decodeContinuous(new BarcodeCallback() {
             @Override
             public void barcodeResult(BarcodeResult result) {
-                if (result != null) {
-                    // Handle QR Code result
-                    Toast.makeText(CustomQrScannerActivity.this, "QR Code: " + result.getText(), Toast.LENGTH_LONG).show();
+                if (result != null && result.getText() != null && !result.getText().isEmpty()) {
+                    // Handle the scanned QR Code result
+                    Toast.makeText(CustomQrScannerActivity.this, "QR Code Scanned: " + result.getText(), Toast.LENGTH_LONG).show();
 
                     // Return the result to the previous activity
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("SCAN_RESULT", result.getText());
                     setResult(RESULT_OK, returnIntent);
                     finish();
+                } else {
+                    // Show a message if the scan result is empty
+                    Toast.makeText(CustomQrScannerActivity.this, "No QR Code detected. Try again.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void possibleResultPoints(java.util.List<com.google.zxing.ResultPoint> resultPoints) {
-                // No action needed
+                // Handle potential result points if needed (optional)
             }
         });
 
-        Button cancelButton = findViewById(R.id.cancelButton);
+        // Initialize and set up the Cancel button
+        cancelButton = findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,14 +63,29 @@ public class CustomQrScannerActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        barcodeView.resume();
+        // Resume scanning when the activity is resumed
+        if (barcodeView != null) {
+            barcodeView.resume();
+        }
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
-        barcodeView.pause();
+        // Pause scanning when the activity is paused
+        if (barcodeView != null) {
+            barcodeView.pause();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Release resources tied to BarcodeView
+        if (barcodeView != null) {
+            barcodeView.pause();
+        }
     }
 }
