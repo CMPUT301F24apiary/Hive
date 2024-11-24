@@ -19,9 +19,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.EditEventActivity;
-import com.example.hive.EditFacilityProfileActivity;
-import com.example.hive.EventListActivity;
-import com.example.hive.FacilityActivity;
 import com.example.hive.R;
 
 /**
@@ -99,12 +96,12 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
         });
 
         // Get reference to deleteEvent button
-        Button deleteEvent = findViewById(R.id.delete_event_btn);
-        Button editEvent = findViewById(R.id.edit_event_btn);
-
+        Button deleteEvent = findViewById(R.id.delete_event_button);
 
         // Get reference to delete QR button
-//        Button deleteQR = findViewById(R.id.delete_qr_button);
+        Button deleteQR = findViewById(R.id.delete_qr_button);
+        Button editevent= findViewById(R.id.edit_event_btn);
+
 
         // Get reference to back button
         ImageButton backBtn = findViewById(R.id.event_back_button);
@@ -183,23 +180,14 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             }
         });
 
-
-        editEvent.setOnClickListener(new View.OnClickListener() {
+        editevent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (event != null) {
-                    Intent intent = new Intent(EventDetailActivity.this, EditEventActivity.class);
-                    intent.putExtra("event", event);
-                    startActivity(intent);
-                } else {
-                    Log.e("EventDetailActivity", "Event is null, cannot edit");
-                    Toast.makeText(EventDetailActivity.this, "Error loading event", Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent(EventDetailActivity.this, EditEventActivity.class);
+                intent.putExtra("event", event);  // Passing the event object
+                startActivity(intent);  // Starts EditEventActivity
             }
         });
-
-
-
 
     }
 }

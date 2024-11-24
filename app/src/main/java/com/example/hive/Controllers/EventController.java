@@ -6,6 +6,7 @@ import androidx.annotation.VisibleForTesting;
 
 import com.example.hive.Events.Event;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -55,30 +56,35 @@ public class EventController extends FirebaseController {
         });
     }
 
-    public void updateEvent(Event event, OnSuccessListener<Void> listener) {
+    public void updateEvent(Event event, OnSuccessListener<Void> listener, OnFailureListener failureListener) {
+        // Validate that the event has a valid Firebase ID
         if (event.getFirebaseID() == null || event.getFirebaseID().isEmpty()) {
             Log.w("EventController", "Event does not have a valid Firebase ID.");
+            failureListener.onFailure(new IllegalArgumentException("Invalid Firebase ID"));
             return;
         }
-
         DocumentReference eventRef = db.collection("events").document(event.getFirebaseID());
 
-        eventRef.update(
-                "title", event.getTitle(),
-                "cost", event.getCost(),
-                "startDateTime", event.getStartDateInMS(),
-                "endDateTime", event.getEndDateInMS(),
-                "location", event.getLocation(),
-                "description", event.getDescription(),
-                "numParticipants", event.getNumParticipants()
-        ).addOnSuccessListener(aVoid -> {
-            listener.onSuccess(null);  // Call the listener when update is successful
-            Log.d("EventController", "Event successfully updated!");
-        }).addOnFailureListener(e -> {
-            Log.w("EventController", "Error updating event", e);
-            // You could handle the failure here, but we won't pass failure to the listener.
-        });
+        HashMap<String, Object> updatedData = new HashMap<>();
+        updatedData.put("title", event.getTitle());
+        updatedData.put("cost", event.getCost());
+        updatedData.put("startDateTime", event.getStartDateInMS());
+        updatedData.put("endDateTime", event.getEndDateInMS());
+        updatedData.put("location", event.getLocation());
+        updatedData.put("description", event.getDescription());
+        updatedData.put("numParticipants", event.getNumParticipants());
+
+        eventRef.update(updatedData)
+                .addOnSuccessListener(aVoid -> {
+                    listener.onSuccess(null);  // Notify the success listener
+                    Log.d("EventController", "Event successfully updated!");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("EventController", "Error updating event", e);
+                    failureListener.onFailure(e);  // Notify the failure listener
+                });
     }
+
 
 
 

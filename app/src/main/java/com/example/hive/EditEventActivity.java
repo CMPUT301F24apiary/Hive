@@ -64,7 +64,6 @@ public class EditEventActivity extends AppCompatActivity {
             return;
         }
 
-        // Populate the fields with event details
         loadEventDetails();
 
         backArrow.setOnClickListener(v -> {
@@ -146,17 +145,23 @@ public class EditEventActivity extends AppCompatActivity {
 //        }
 
         EventController controller = new EventController();
-        controller.updateEvent(event, new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(EditEventActivity.this, "Event updated successfully", Toast.LENGTH_SHORT).show();
+        controller.updateEvent(event,
+                new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(EditEventActivity.this, "Event updated successfully", Toast.LENGTH_SHORT).show();
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("event", event);
+                        setResult(RESULT_OK, resultIntent);
+                        finish(); // Close the EditEventActivity
+                    }
+                },
+                e -> {
+                    Toast.makeText(EditEventActivity.this, "Failed to update event: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.e("EditEventActivity", "Error updating event", e);
+                }
+        );
 
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("event", event);
-                setResult(RESULT_OK, resultIntent);
-                finish();  // Finish the activity and go back
-            }
-        });
 
     }
 

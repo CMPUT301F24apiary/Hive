@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * create a user object. Singleton i.e. only one user object is active at a time
+ * create a user object.
  */
 public class User {
     private static User instance = null;
@@ -157,6 +157,8 @@ public class User {
         int color1 = generator.getColor(key % 0xFFFFFF);
         int color3 = generator.getColor((key + 82) % 0xFFFFFF);
 
+        int borderColor = generator.getColor(0x000000);
+
         String initials = getInitials();
 
             initialsDrawable = new TextDrawable.Builder()
@@ -165,7 +167,8 @@ public class User {
                     .setTextColor(color3)
                     .setShape(TextDrawable.SHAPE_ROUND)
                     .setText(initials)
-                    .setBorder(1)
+                    .setBorder(20)
+                    .setBorderColor(Color.BLACK)
                     .build();
 
         return initialsDrawable;

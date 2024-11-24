@@ -12,25 +12,46 @@
  */
 package com.example.hive;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hive.Views.CustomQrScannerActivity;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.bumptech.glide.Glide;
 import com.example.hive.AdminEvent.AdminEventListActivity;
+import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Models.User;
+import com.example.hive.Views.AdminProfileViewActivity;
 
 public class EventListActivity extends AppCompatActivity {
 
-    // Zach - DEV BUTTON
-    private Button eventsButton;
-
     private ImageButton profileButton;
+    private ImageButton notificationBellButton;  // Notification Bell button
+    private Button switchRolesButton;  // Switch Roles button
+    private Button scanQrCodeButton;  // Scan QR Code button
+    private ImageView qrCodeImageView;  // QR Code ImageView
 
-    private ImageButton notificationBellButton;  // Only one declaration for notificationBellButton
-    private Button switchRolesButton;  // New role switch button
+    private User user;
 
+    private FirebaseController firebaseController;
     /**
      * Called when the activity is starting. This is where most initialization should be done.
      * It sets up the UI and initializes the profile button and notification bell button.
@@ -42,23 +63,23 @@ public class EventListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
 
+        firebaseController = new FirebaseController();
+
+        // Initialize UI components
         profileButton = findViewById(R.id.profileButton);
-        eventsButton = findViewById(R.id.admin_view_event_list);
         notificationBellButton = findViewById(R.id.notificationBellButton);
         switchRolesButton = findViewById(R.id.switchRolesButton);
+        scanQrCodeButton = findViewById(R.id.scanQrCodeButton);
+        qrCodeImageView = findViewById(R.id.qrCodeImageView);
 
-        eventsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(EventListActivity.this, AdminEventListActivity.class);
-                startActivity(i);
-            }
-        });
+        // Set click listeners for each button
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(EventListActivity.this, ProfileActivity.class);
+                intent.putExtra("deviceId", deviceId);
                 startActivity(intent);
             }
         });
@@ -78,5 +99,71 @@ public class EventListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        scanQrCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanQrCode();
+            }
+        });
+    }
+    /**
+     * Called when the activity is resumed. Reloads the profile picture to reflect any changes made in the ProfileEditActivity.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadProfilePicture();
+    }
+
+    /**
+     * Loads the profile picture from SharedPreferences and updates the profile button image.
+     */
+    private void loadProfilePicture() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        String profilePictureBase64 = sharedPreferences.getString("profilePicture", "");
+
+        if (!profilePictureBase64.isEmpty()) {
+            // Convert Base64 string to Bitmap and set it on the profile button
+            byte[] decodedBytes = Base64.decode(profilePictureBase64, Base64.DEFAULT);
+            Bitmap profileBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            profileButton.setImageBitmap(profileBitmap);
+        } else {
+            // Set default profile picture
+            profileButton.setImageResource(R.drawable.ic_profile); // Replace with your default image resource
+        }
+    }
+    /**
+     * Initiates a QR code scanner and handles the scanned result.
+     */
+    private void scanQrCode() {
+        IntentIntegrator integrator = new IntentIntegrator(EventListActivity.this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+        integrator.setPrompt("Scan a QR code");
+        integrator.setCameraId(0);
+        integrator.setBeepEnabled(true);
+        integrator.setCaptureActivity(CustomQrScannerActivity.class); // Custom scanner
+        integrator.initiateScan();
+    }
+
+    /**
+     * Handles the result from the QR code scanner and displays the event details.
+     *
+     * @param requestCode The request code originally supplied to startActivityForResult().
+     * @param resultCode The result code returned by the child activity through its setResult().
+     * @param data An Intent that carries the result data.
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() != null) {
+                // Display scanned QR code content
+                Toast.makeText(this, "Event Details:\n" + result.getContents(), Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "No QR code scanned", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

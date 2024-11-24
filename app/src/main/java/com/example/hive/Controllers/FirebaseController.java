@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -39,6 +40,8 @@ public class FirebaseController {
         if (!is_initialized) {
             db = FirebaseFirestore.getInstance();
             is_initialized = true;
+        } else {
+            db = getDb();
         }
     }
 
@@ -185,6 +188,28 @@ public class FirebaseController {
                         listener.onUserFetched(null);
                     }
                 }).addOnFailureListener(listener::onError);
+    }
+
+    public void updateUserByDeviceId(String deviceId, HashMap<String, Object> data, OnSuccessListener<Boolean> listener) {
+        db.collection("users").whereEqualTo("deviceId", deviceId).get().addOnSuccessListener(docs -> {
+            if (!docs.isEmpty()) {
+                DocumentSnapshot doc = docs.getDocuments().get(0);
+                DocumentReference docRef = doc.getReference();
+                docRef.update(data).addOnSuccessListener(unused -> listener.onSuccess(Boolean.TRUE))
+                        .addOnFailureListener(e -> listener.onSuccess(Boolean.FALSE));
+            }
+        });
+    }
+
+    public void getUserDocId(String deviceId, OnSuccessListener<String> listener) {
+        db.collection("users").whereEqualTo("deviceId", deviceId).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot docs) {
+                        DocumentSnapshot doc = docs.getDocuments().get(0);
+                        listener.onSuccess(doc.getId());
+                    }
+                });
     }
 
     /**
