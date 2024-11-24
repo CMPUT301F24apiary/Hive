@@ -250,9 +250,10 @@ public class Event implements Parcelable {
         this.startDate = startDate;
     }
 
-    public void setStartTime(long endDate) {
+    public void setEndDate(long endDate) {
         this.endDate = endDate;
     }
+
 
     public void setDuration(long endDate) {
         this.endDate = endDate;

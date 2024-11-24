@@ -163,7 +163,7 @@ public class AddEventActivity extends AppCompatActivity {
      * @param duration the duration of event
      * @return
      */
-    private String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
+    public String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
         String endDate = startDate;
 
         // Split up start time and duration into hours/minutes

@@ -45,6 +45,10 @@
         <activity android:name=".EditFacilityProfileActivity" />
         <activity android:name=".OrganizerEventListActivity" />
         <activity android:name=".AddEventActivity" /> <!-- Admin Event Activities -->
+        <activity android:name=".EditEventActivity">
+
+        </activity>
+
         <activity
             android:name=".AdminEvent.AdminEventListActivity"
             android:exported="true">

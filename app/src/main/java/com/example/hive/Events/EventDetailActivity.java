@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.EditEventActivity;
 import com.example.hive.EditFacilityProfileActivity;
+import com.example.hive.EventListActivity;
 import com.example.hive.FacilityActivity;
 import com.example.hive.R;
 
@@ -182,13 +183,23 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             }
         });
 
+
         editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EventDetailActivity.this, EditEventActivity.class);
-                startActivityForResult(intent, 1);
+                if (event != null) {
+                    Intent intent = new Intent(EventDetailActivity.this, EditEventActivity.class);
+                    intent.putExtra("event", event);
+                    startActivity(intent);
+                } else {
+                    Log.e("EventDetailActivity", "Event is null, cannot edit");
+                    Toast.makeText(EventDetailActivity.this, "Error loading event", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+
+
 
     }
 }

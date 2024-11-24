@@ -18,17 +18,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Controllers.EventController;
 import com.example.hive.Events.Event;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Activity to edit an existing event by updating event details (By an organizer)
- *
- * @author Hrittija
- */
 public class EditEventActivity extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST_CODE = 100;
@@ -36,18 +32,15 @@ public class EditEventActivity extends AppCompatActivity {
     private ToggleButton toggleReplacementDraw, toggleGeolocation;
     private ImageView addPosterImage;
     private Uri posterImageUri;
-    private Event eventToEdit;
+    private Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_addevents);  // Use the same layout as AddEventActivity
+        setContentView(R.layout.activity_editevent);
 
-        // Retrieve the event to edit from the intent
-        Intent intent = getIntent();
-        eventToEdit = (Event) intent.getSerializableExtra("event");  // Assuming Event implements Serializable
+        EventController controller = new EventController();
 
-        // Initialize the views
         ImageView backArrow = findViewById(R.id.backArrow);
         eventName = findViewById(R.id.eventName);
         eventDate = findViewById(R.id.eventDate);
@@ -63,71 +56,43 @@ public class EditEventActivity extends AppCompatActivity {
         eventDescription = findViewById(R.id.eventDescription);
         addPosterImage = findViewById(R.id.addPosterImage);
 
-        // Set up back button
+        Intent intent = getIntent();
+        event = intent.getParcelableExtra("event");
+        if (event == null) {
+            Toast.makeText(this, "Error loading event data", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        // Populate the fields with event details
+        loadEventDetails();
+
         backArrow.setOnClickListener(v -> {
-            Intent intentBack = new Intent(EditEventActivity.this, OrganizerEventListActivity.class);
-            startActivity(intentBack);
             finish();
         });
 
-        // Set up poster image
         addPosterImage.setOnClickListener(this::onAddPosterClick);
 
-        // Populate the fields with the event details
-        populateEventDetails();
-
-        // Set up save button to save edited event details
-        TextView saveButton = findViewById(R.id.saveButton);
-        saveButton.setOnClickListener(v -> saveEventDetails());
+        TextView updateButton = findViewById(R.id.updateButton);
+        updateButton.setOnClickListener(v -> saveEventDetails());
     }
 
-    /**
-     * Populate the fields with existing event details
-     */
-    private void populateEventDetails() {
-        if (eventToEdit != null) {
-            eventName.setText(eventToEdit.getTitle());
-//            eventDate.setText(formatDate(eventToEdit.getStartDate()));
-//            eventTime.setText(formatTime(eventToEdit.getStartTime()));
-//            eventDuration.setText(getEventDuration(eventToEdit.getStartDateTime(), eventToEdit.getEndDateTime()));
-            eventLocation.setText(eventToEdit.getLocation());
-            eventCost.setText(eventToEdit.getCost());
-            numParticipants.setText(String.valueOf(eventToEdit.getNumParticipants()));
-            eventDescription.setText(eventToEdit.getDescription());
-            // Set any other fields based on the event object
-        }
+    private void loadEventDetails() {
+        eventName.setText(event.getTitle());
+        eventDate.setText(new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date(event.getStartDate())));
+        eventTime.setText(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date(event.getStartDate())));
+        eventDuration.setText(getDurationString(event.getStartDateInMS(), event.getEndDateInMS()));
+        eventLocation.setText(event.getLocation());
+        eventCost.setText(event.getCost());
+        numParticipants.setText(String.valueOf(event.getNumParticipants()));
+        eventDescription.setText(event.getDescription());
+
+//        if (event.getPosterUri() != null) {
+//            posterImageUri = Uri.parse(event.getPosterUri());
+//            addPosterImage.setImageURI(posterImageUri);
+//        }
     }
 
-    /**
-     * Format the start date to "dd-MM-yyyy" format
-     */
-    private String formatDate(long startDateTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-        return sdf.format(new Date(startDateTime));
-    }
-
-    /**
-     * Format the start time to "HH:mm" format
-     */
-    private String formatTime(long startDateTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        return sdf.format(new Date(startDateTime));
-    }
-
-    /**
-     * Get the duration of the event based on start and end time
-     */
-    private String getEventDuration(long startDateTime, long endDateTime) {
-        long durationInMillis = endDateTime - startDateTime;
-        int hours = (int) (durationInMillis / (1000 * 60 * 60));
-        int minutes = (int) ((durationInMillis / (1000 * 60)) % 60);
-        return String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
-    }
-
-    /**
-     * To open the gallery for profile picture uploading
-     * @param view
-     */
     public void onAddPosterClick(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, GALLERY_REQUEST_CODE);
@@ -142,9 +107,6 @@ public class EditEventActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * The method to save the edited event details
-     */
     private void saveEventDetails() {
         String title = eventName.getText().toString().trim();
         String date = eventDate.getText().toString().trim();
@@ -172,37 +134,40 @@ public class EditEventActivity extends AppCompatActivity {
 
         long endDateTime = convertDateToMS(endDateSplit[0], endDateSplit[1]);
 
-        eventToEdit.setTitle(title);
-        eventToEdit.setCost(cost);
-        eventToEdit.setStartTime(startDateTime);
-//        eventToEdit.setEndTime(endDateTime);
-        eventToEdit.setLocation(location);
-        eventToEdit.setDescription(description);
-        eventToEdit.setNumParticipants(numParticipantsCount);
+        event.setTitle(title);
+        event.setStartDate(startDateTime);
+        event.setEndDate(endDateTime);
+        event.setLocation(location);
+        event.setDescription(description);
+        event.setCost(cost);
+        event.setNumParticipants(numParticipantsCount);
+//        if (posterImageUri != null) {
+//            event.setPosterUri(posterImageUri.toString());
+//        }
 
         EventController controller = new EventController();
-        controller.updateEvent(eventToEdit, id -> {
-            eventToEdit.setFirebaseID(id);
-            Toast.makeText(this, "Event updated: " + eventToEdit.toString(), Toast.LENGTH_SHORT).show();
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("event", eventToEdit);
-            setResult(1, resultIntent);
-            finish();
+        controller.updateEvent(event, new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(EditEventActivity.this, "Event updated successfully", Toast.LENGTH_SHORT).show();
+
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("event", event);
+                setResult(RESULT_OK, resultIntent);
+                finish();  // Finish the activity and go back
+            }
         });
+
     }
 
-    /**
-     * Convert date to milliseconds
-     * @param date in form DD-MM-YY
-     * @param time in form HH:MM
-     * @return the date in milliseconds
-     */
     private long convertDateToMS(String date, String time) {
         String pattern = "dd-MM-yyyy HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.getDefault());
         try {
             String dateTimeCombined = date + " " + time;
+
             Date dateTime = sdf.parse(dateTimeCombined);
+
             return dateTime != null ? dateTime.getTime() : 0;
         } catch (ParseException e) {
             Log.e("Edit Event Parse Error", e.toString());
@@ -210,32 +175,14 @@ public class EditEventActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Get the end date and time from the start date, time, and duration
-     * @param startDate the event start date
-     * @param startTime the event start time
-     * @param duration the event duration
-     * @return the end date and time in "dd-MM-yyyy HH:mm" format
-     */
-    /**
-     * Get the end date and time from the start date, time, and duration
-     * @param startDate the event start date
-     * @param startTime the event start time
-     * @param duration the event duration
-     * @return the end date and time in "dd-MM-yyyy HH:mm" format
-     */
     private String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
-        String startDateTime = startDate + " " + startTime;
-        long startDateTimeMillis = convertDateToMS(startDate, startTime);
-
-        String[] durationParts = duration.split(":");
-        int hours = Integer.parseInt(durationParts[0]);
-        int minutes = Integer.parseInt(durationParts[1]);
-
-        long endDateTimeMillis = startDateTimeMillis + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
-        return sdf.format(new Date(endDateTimeMillis));
+        return new AddEventActivity().getEndDateTimeFromDuration(startDate, startTime, duration);
     }
 
+    private String getDurationString(long startTime, long endTime) {
+        long durationMillis = endTime - startTime;
+        long hours = (durationMillis / (1000 * 60 * 60)) % 24;
+        long minutes = (durationMillis / (1000 * 60)) % 60;
+        return String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
+    }
 }

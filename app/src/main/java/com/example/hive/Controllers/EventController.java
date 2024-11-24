@@ -55,26 +55,37 @@ public class EventController extends FirebaseController {
         });
     }
 
-    public void updateEvent(Event event, final OnEventUpdatedCallback callback) {
+    public void updateEvent(Event event, OnSuccessListener<Void> listener) {
+        if (event.getFirebaseID() == null || event.getFirebaseID().isEmpty()) {
+            Log.w("EventController", "Event does not have a valid Firebase ID.");
+            return;
+        }
+
         DocumentReference eventRef = db.collection("events").document(event.getFirebaseID());
 
         eventRef.update(
                 "title", event.getTitle(),
                 "cost", event.getCost(),
-                "startDateTime", event.getStartTime(),
-//                "endDateTime", event.getEndDateTime(),
+                "startDateTime", event.getStartDateInMS(),
+                "endDateTime", event.getEndDateInMS(),
                 "location", event.getLocation(),
                 "description", event.getDescription(),
                 "numParticipants", event.getNumParticipants()
-        ).addOnFailureListener(e -> {
-            Log.w("EventController", "Error adding event", e);
+        ).addOnSuccessListener(aVoid -> {
+            listener.onSuccess(null);  // Call the listener when update is successful
+            Log.d("EventController", "Event successfully updated!");
+        }).addOnFailureListener(e -> {
+            Log.w("EventController", "Error updating event", e);
+            // You could handle the failure here, but we won't pass failure to the listener.
         });
     }
 
-    // Callback interface to handle event update success
-    public interface OnEventUpdatedCallback {
-        void onEventUpdated(String eventID);
-    }
+
+
+
+
+
+
 
     /**
      * Gets all event information from events collection of database. Once all data is retrieved,
