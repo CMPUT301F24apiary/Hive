@@ -58,6 +58,8 @@
         <activity android:name=".EditFacilityProfileActivity" />
         <activity android:name=".OrganizerEventListActivity" />
         <activity android:name=".AddEventActivity" />
+        <activity android:name=".EditEventActivity" />
+
         <activity android:name=".Views.QRCodeActivity" />
 
 
