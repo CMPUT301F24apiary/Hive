@@ -113,6 +113,7 @@ public class EditEventActivity extends AppCompatActivity {
         String cost = eventCost.getText().toString().trim();
         String participantsStr = numParticipants.getText().toString().trim();
         String description = eventDescription.getText().toString().trim();
+        String selectionDateString = selectionDate.getText().toString().trim();
 
         if (title.isEmpty() || date.isEmpty() || location.isEmpty() || time.isEmpty() ||
                 cost.isEmpty() || participantsStr.isEmpty() || description.isEmpty() ||
@@ -131,15 +132,17 @@ public class EditEventActivity extends AppCompatActivity {
 
         long endDateTime = convertDateToMS(endDateSplit[0], endDateSplit[1]);
 
+        long selectionDate = convertDateToMS(selectionDateString, "0:00");
+
         if (posterImageUri == null) {
             saveEvent(title, cost, startDateTime, endDateTime, description,
-                    numParticipantsCount, location, null);
+                    numParticipantsCount, location, null, selectionDate);
         } else {
             ImageController imgControl = new ImageController();
             imgControl.saveImage(this, posterImageUri, "event poster")
                     .addOnSuccessListener(urlAndID -> {
                         saveEvent(title, cost, startDateTime, endDateTime, description,
-                                numParticipantsCount, location, urlAndID);
+                                numParticipantsCount, location, urlAndID, selectionDate);
                     }).addOnFailureListener(e -> {
                         Toast.makeText(this, "Failed to upload image: " +
                                         e.getMessage() +
@@ -148,21 +151,21 @@ public class EditEventActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
 
                         saveEvent(title, cost, startDateTime, endDateTime, description,
-                                numParticipantsCount, location, null);
+                                numParticipantsCount, location, null, selectionDate);
                     });
         }
     }
 
     private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
                            String description, int numParticipantsCount, String location,
-                           @Nullable Pair<String, String> urlAndID) {
+                           @Nullable Pair<String, String> urlAndID, long selectionDate) {
         Event event;
         if (urlAndID != null && urlAndID.second != null) {
             event = new Event(title, cost, startDateTime, endDateTime, urlAndID.second, description,
-                    numParticipantsCount, location, urlAndID.first);  // Use the ID for the event if it's being updated
+                    numParticipantsCount, location, urlAndID.first, selectionDate);  // Use the ID for the event if it's being updated
         } else {
             event = new Event(title, cost, startDateTime, endDateTime, null, description,
-                    numParticipantsCount, location, urlAndID == null ? null : urlAndID.first);
+                    numParticipantsCount, location, urlAndID == null ? null : urlAndID.first, selectionDate);
         }
 
         EventController controller = new EventController();

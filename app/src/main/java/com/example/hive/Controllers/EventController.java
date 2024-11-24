@@ -93,9 +93,10 @@ public class EventController extends FirebaseController {
                 String posterTemp = (String) doc.get("poster");
                 Long numParticipantsLong = (Long) doc.get("numParticipants");
                 int numParticipants = numParticipantsLong.intValue();
+                long selectionDate = (long) doc.get("selectionDate");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
                 Event newEvent = new Event(title, cost, startDate, endDate, id, description,
-                        numParticipants, location, posterURL);
+                        (int) numParticipants, location, posterURL, selectionDate);
                 data.add(newEvent);
             }
             // Notify the callback with the fetched data
@@ -127,9 +128,10 @@ public class EventController extends FirebaseController {
                 String location = (String) doc.get("location");
                 String posterTemp = (String) doc.get("poster");
                 long numParticipants = (long) doc.get("numParticipants");
+                long selectionDate = (long) doc.get("selectionDate");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
                 Event newEvent = new Event(title, cost, startDate, endDate, id, description,
-                        (int) numParticipants, location, posterURL);
+                        (int) numParticipants, location, posterURL, selectionDate);
                 data.add(newEvent);
             }
             // Notify the callback with the fetched data

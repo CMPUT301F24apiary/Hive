@@ -70,7 +70,7 @@ public class Event implements Parcelable {
      */
     public Event(String title, String cost, long startDate, long endDate,
                  @Nullable String firebaseID, String description, int numParticipants,
-                 String location, @Nullable String posterURLlong, selectionDate) {
+                 String location, @Nullable String posterURL, long selectionDate) {
         this.title = title;
         this.cost = cost;
         this.startDate = startDate;
