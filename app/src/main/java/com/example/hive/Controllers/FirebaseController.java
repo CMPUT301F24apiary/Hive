@@ -14,11 +14,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -247,5 +249,70 @@ public class FirebaseController {
                 })
                 .addOnFailureListener(listener::onError);
     }
+    /**
+     * Adds a user to the waiting list of a specific event in Firestore.
+     *
+     * @param eventId    The ID of the event to which the user should be added.
+     *
+     * @param callback   A callback to handle success or failure of the operation.
+     */
+    public void addUserToWaitingList(String eventId, String userId, Callback callback) {
+        DocumentReference eventDoc = db.collection("waiting-list").document(eventId);
+
+        eventDoc.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // Update existing list
+                List<String> userIds = (List<String>) documentSnapshot.get("user-ids");
+                if (userIds != null && !userIds.contains(userId)) {
+                    userIds.add(userId);
+                    eventDoc.update("user-ids", userIds)
+                            .addOnSuccessListener(unused -> callback.onSuccess())
+                            .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+                } else {
+                    callback.onFailure("User already registered");
+                }
+            } else {
+                // Create a new list
+                Map<String, Object> data = new HashMap<>();
+                data.put("user-ids", Collections.singletonList(userId));
+                eventDoc.set(data)
+                        .addOnSuccessListener(unused -> callback.onSuccess())
+                        .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+            }
+        }).addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+
+
+    public void removeUserFromWaitingList(String eventId, String userId, Callback callback) {
+        DocumentReference eventDoc = db.collection("waiting-list").document(eventId);
+
+        eventDoc.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // Update existing list
+                List<String> userIds = (List<String>) documentSnapshot.get("user-ids");
+                if (userIds != null && userIds.contains(userId)) {
+                    userIds.remove(userId);
+                    eventDoc.update("user-ids", userIds)
+                            .addOnSuccessListener(unused -> callback.onSuccess())
+                            .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+                } else {
+                    callback.onFailure("User not found in waiting list");
+                }
+            } else {
+                callback.onFailure("Event not found");
+            }
+        }).addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    /**
+     * Callback interface for Firestore operations.
+     */
+    public interface Callback {
+        void onSuccess();
+        void onFailure(String errorMessage);
+    }
+
+
 
 }

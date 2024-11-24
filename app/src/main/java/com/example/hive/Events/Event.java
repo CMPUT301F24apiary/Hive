@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.MultiFormatWriter;
@@ -304,20 +305,21 @@ public class Event implements Parcelable {
     }
 
     /**
-     * Generates a QR code image from a string.
+     * Generates a QR code image from event data.
      *
-     * Reference: https://github.com/afarber/android-questions/blob/master/QREncoder/app/src/main/java/de/afarber/qrencoder/MainActivity.java
-     * @param width
-     * @return
-     * @throws WriterException These are exceptions that may occur when encoding a barcode using the Writer framework (from docs)
+     * @param width  The width of the QR code.
+     * @param height The height of the QR code.
+     * @return The generated QR code as a Bitmap.
+     * @throws WriterException If an error occurs during QR code generation.
      */
     public Bitmap generateQRCode(int width, int height) throws WriterException {
-        // error with QR generation may be because firebaseId is not set; check for that
-        String data = firebaseID;
+        // Include event data for entrants to scan
+        String data = "eventId:" + firebaseID;
 
         MultiFormatWriter writer = new MultiFormatWriter();
         BitMatrix matrix = writer.encode(data, BarcodeFormat.QR_CODE, width, height);
         BarcodeEncoder encoder = new BarcodeEncoder();
         return encoder.createBitmap(matrix);
     }
+
 }

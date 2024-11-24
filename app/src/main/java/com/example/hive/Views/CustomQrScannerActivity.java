@@ -30,19 +30,25 @@ public class CustomQrScannerActivity extends AppCompatActivity {
             @Override
             public void barcodeResult(BarcodeResult result) {
                 if (result != null && result.getText() != null && !result.getText().isEmpty()) {
-                    // Handle the scanned QR Code result
-                    Toast.makeText(CustomQrScannerActivity.this, "QR Code Scanned: " + result.getText(), Toast.LENGTH_LONG).show();
+                    // Extract event ID from scanned data
+                    String scanData = result.getText();
+                    if (scanData.startsWith("eventId:")) {
+                        String eventId = scanData.replace("eventId:", "");
 
-                    // Return the result to the previous activity
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("SCAN_RESULT", result.getText());
-                    setResult(RESULT_OK, returnIntent);
-                    finish();
+                        // Return the event ID to the calling activity
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("SCAN_RESULT", eventId);
+                        setResult(RESULT_OK, returnIntent);
+                        finish();
+                    } else {
+                        Toast.makeText(CustomQrScannerActivity.this, "Invalid QR Code data.", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    // Show a message if the scan result is empty
                     Toast.makeText(CustomQrScannerActivity.this, "No QR Code detected. Try again.", Toast.LENGTH_SHORT).show();
                 }
             }
+
+
 
             @Override
             public void possibleResultPoints(java.util.List<com.google.zxing.ResultPoint> resultPoints) {
@@ -88,4 +94,5 @@ public class CustomQrScannerActivity extends AppCompatActivity {
             barcodeView.pause();
         }
     }
+
 }
