@@ -219,6 +219,8 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainRed"
                 android:text="Remove QR Code" />
+                android:text="Remove QR Code"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/register_for_event_btn"
@@ -226,7 +228,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainGreen"
-                android:text="Register" />
+                android:text="Register"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/edit_event_btn"
@@ -234,7 +237,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainGreen"
-                android:text="Edit Event" />
+                android:text="Edit Event"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/delete_event_button"
@@ -243,6 +247,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainRed"
                 android:text="Remove Event" />
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/unregister_event_btn"

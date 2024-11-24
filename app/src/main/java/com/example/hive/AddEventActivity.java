@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Controllers.EventController;
+import com.example.hive.Controllers.ImageController;
 import com.example.hive.Events.Event;
 
 import java.text.ParseException;
@@ -107,7 +108,8 @@ public class AddEventActivity extends AppCompatActivity {
         if (title.isEmpty() || date.isEmpty() || location.isEmpty() || time.isEmpty() ||
                 cost.isEmpty() || participantsStr.isEmpty() || description.isEmpty() ||
                 duration.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill in all fields.",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -121,13 +123,54 @@ public class AddEventActivity extends AppCompatActivity {
 
         long endDateTime = convertDateToMS(endDateSplit[0], endDateSplit[1]);
 
+        if (posterImageUri == null) {
+            saveEvent(title, cost, startDateTime, endDateTime, description,
+                    numParticipantsCount, location, null);
+        } else {
+            ImageController imgControl = new ImageController();
+            try {
+                imgControl.saveImage(this, posterImageUri, "event poster")
+                        .addOnSuccessListener(urlAndID -> {
+
+                            saveEvent(title, cost, startDateTime, endDateTime, description,
+                                    numParticipantsCount, location, urlAndID);
+
+                        }).addOnFailureListener(e -> {
+                            // Handle the failure of the image upload
+                            Toast.makeText(this, "Failed to upload image: " +
+                                            e.getMessage() +
+                                            "\nEvent will still be created - navigate to the event page " +
+                                            "and edit it to try uploading the poster again.",
+                                    Toast.LENGTH_SHORT).show();
+
+                            saveEvent(title, cost, startDateTime, endDateTime, description,
+                                    numParticipantsCount, location, null);
+
+                        });
+            } catch(Exception e) {
+                Toast.makeText(this, "Image upload failed: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+    private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
+                           String description, int numParticipantsCount, String location,
+                           @Nullable Pair<String, String> urlAndID) {
+
         Event event = new Event(title, cost, startDateTime, endDateTime, null, description,
-                numParticipantsCount, location, null);
+                numParticipantsCount, location, urlAndID == null ? null : urlAndID.first);
 
         EventController controller = new EventController();
         controller.addEvent(event, id -> {
             event.setFirebaseID(id);
-            Toast.makeText(this, "Event created: " + event.toString(), Toast.LENGTH_SHORT).show();
+            if (urlAndID != null) {
+                new ImageController().updateImageRef(urlAndID.second, id, false);
+            }
+            Toast.makeText(this, "Event created: '" + event.getTitle() + "'",
+                    Toast.LENGTH_SHORT).show();
+
             Intent resultIntent = new Intent();
             resultIntent.putExtra("event", event);
             setResult(1, resultIntent);
