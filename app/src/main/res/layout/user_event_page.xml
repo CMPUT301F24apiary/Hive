@@ -2,67 +2,95 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="48dp"
         android:gravity="center_horizontal">
 
-    <!-- Event Image -->
-    <ImageView
-        android:id="@+id/eventImageView"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginBottom="16dp"
-        android:scaleType="centerCrop"
-        android:background="@color/gray" />
+        <!-- Event Image -->
+        <ImageView
+            android:id="@+id/eventImageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="16dp"
+            android:scaleType="centerCrop"
+            android:background="@color/gray" />
 
-    <!-- Event Title -->
-    <TextView
-        android:id="@+id/eventTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Event Title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:layout_marginBottom="8dp" />
+        <!-- Event Title -->
+        <TextView
+            android:id="@+id/eventTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event Title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp" />
 
-    <!-- Event Details -->
-    <TextView
-        android:id="@+id/eventDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Event Date, Time, and Location"
-        android:textSize="16sp"
-        android:textColor="@color/white"
-        android:layout_marginBottom="8dp" />
+        <!-- Event Cost -->
+        <TextView
+            android:id="@+id/costTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cost: $0.00"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp" />
 
-    <!-- Event Description -->
-    <TextView
-        android:id="@+id/eventDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Event Description"
-        android:textSize="14sp"
-        android:textColor="@color/white"
-        android:layout_marginBottom="8dp" />
+        <!-- Event Details -->
+        <TextView
+            android:id="@+id/eventDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Date - End Date"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp" />
 
-    <!-- Participants Count -->
-    <TextView
-        android:id="@+id/participantsCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Number of Participants"
-        android:textSize="14sp"
-        android:textColor="@color/white"
-        android:layout_marginBottom="16dp" />
+        <!-- Event Location -->
+        <TextView
+            android:id="@+id/locationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location: Not specified"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp" />
 
-    <!-- Register/Unregister Buttons -->
+        <!-- Selection Date -->
+        <TextView
+            android:id="@+id/selectionDateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selection Date: Not specified"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Event Description -->
+        <TextView
+            android:id="@+id/eventDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Event Description"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Participants Count -->
+        <TextView
+            android:id="@+id/participantsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Participants: 0/0"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Register/Unregister Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -88,6 +116,5 @@
                 android:text="Unregister"
                 android:textColor="@color/white" />
         </LinearLayout>
-</LinearLayout>
-    </ScrollView>
-
+    </LinearLayout>
+</ScrollView>

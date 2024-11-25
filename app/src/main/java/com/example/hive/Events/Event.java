@@ -46,27 +46,17 @@ public class Event implements Parcelable {
     /**
      * Event constructor. Creates a new event object with provided parameters.
      *
-     *
-     * @param title
-     * String: The event title.
-     * @param cost
-     * String: The cost of the event. Should be in format "00.00"
-     * @param startDate
-     * long: Start date in the format of milliseconds since epoch.
-     * @param endDate
-     * long: End date in the format of milliseconds since epoch.
-     * @param firebaseID
-     * String: Nullable: The ID of the related event document in Firestore.
-     * @param description
-     * String: The event description.
-     * @param numParticipants
-     * int: The number of participants to be selected for this event.
-     * @param location
-     * String: The location of the event, i.e. facility. Note that this will be converted to be an
-     * instance of a Facility object in the future.
-     * @param posterURL
-     * String: Nullable: The download URL of the event poster related to this event that is stored
-     * in Firebase cloud storage.
+     * @param title           String: The event title.
+     * @param cost            String: The cost of the event. Should be in format "00.00"
+     * @param startDate       long: Start date in the format of milliseconds since epoch.
+     * @param endDate         long: End date in the format of milliseconds since epoch.
+     * @param firebaseID      String: Nullable: The ID of the related event document in Firestore.
+     * @param description     String: The event description.
+     * @param numParticipants int: The number of participants to be selected for this event.
+     * @param location        String: The location of the event, i.e. facility. Note that this will be converted to be an
+     *                        instance of a Facility object in the future.
+     * @param posterURL       String: Nullable: The download URL of the event poster related to this event that is stored
+     *                        in Firebase cloud storage.
      */
     public Event(String title, String cost, long startDate, long endDate,
                  @Nullable String firebaseID, String description, int numParticipants,
@@ -85,9 +75,7 @@ public class Event implements Parcelable {
     /**
      * Required function to create an event object from a <code>Parcel</code>
      *
-     * @param in
-     * Parcel: The Parcel object to unpack
-     *
+     * @param in Parcel: The Parcel object to unpack
      * @see Parcel
      */
     protected Event(@NonNull Parcel in) {
@@ -124,8 +112,7 @@ public class Event implements Parcelable {
     /**
      * Getter to get start date in human readable format. Returns date as "mmm dd" i.e. "Jan 01"
      *
-     * @return
-     * The date in human readable format
+     * @return The date in human readable format
      */
     public String getStartDate() {
         return getDateAndTimeFromMS(this.startDate)[0];
@@ -134,8 +121,7 @@ public class Event implements Parcelable {
     /**
      * Getter to get end date in human readable format. Returns date as "mmm dd" i.e. "Jan 01"
      *
-     * @return
-     * The date in human readable format
+     * @return The date in human readable format
      */
     public String getEndDate() {
         return getDateAndTimeFromMS(this.endDate)[0];
@@ -145,8 +131,7 @@ public class Event implements Parcelable {
      * Getter to get start time in human readable format. Returns time as "hh:mm" i.e. "09:00". Note
      * that this uses the 24Hr clock, i.e. 9:00 p.m. is "21:00"
      *
-     * @return
-     * The time in human readable format
+     * @return The time in human readable format
      */
     public String getStartTime() {
         return getDateAndTimeFromMS(this.startDate)[1];
@@ -156,8 +141,7 @@ public class Event implements Parcelable {
      * Getter to get end time in human readable format. Returns time as "hh:mm" i.e. "09:00". Note
      * that this uses the 24Hr clock, i.e. 9:00 p.m. is "21:00"
      *
-     * @return
-     * The time in human readable format
+     * @return The time in human readable format
      */
     public String getEndTime() {
         return getDateAndTimeFromMS(this.endDate)[1];
@@ -166,8 +150,7 @@ public class Event implements Parcelable {
     /**
      * Getter for event cost.
      *
-     * @return
-     * The cost of the event.
+     * @return The cost of the event.
      */
     public String getCost() {
         return cost;
@@ -176,32 +159,34 @@ public class Event implements Parcelable {
     /**
      * Getter for start time, in MS since epoch.
      *
-     * @return
-     * The time in MS since epoch.
+     * @return The time in MS since epoch.
      */
-    public long getStartDateInMS() { return startDate; }
+    public long getStartDateInMS() {
+        return startDate;
+    }
 
     /**
      * Getter for end time, in MS since epoch.
      *
-     * @return
-     * The time in MS since epoch.
+     * @return The time in MS since epoch.
      */
-    public long getEndDateInMS() { return endDate; }
+    public long getEndDateInMS() {
+        return endDate;
+    }
 
     /**
      * Getter for firebase ID.
      *
-     * @return
-     * This event's firebase ID - the ID of related event document in Firestore.
+     * @return This event's firebase ID - the ID of related event document in Firestore.
      */
-    public String getFirebaseID() { return firebaseID; }
+    public String getFirebaseID() {
+        return firebaseID;
+    }
 
     /**
      * Getter for event description.
      *
-     * @return
-     * This event's description.
+     * @return This event's description.
      */
     public String getDescription() {
         return description;
@@ -210,8 +195,7 @@ public class Event implements Parcelable {
     /**
      * Getter for event location.
      *
-     * @return
-     * This event's location.
+     * @return This event's location.
      */
     public String getLocation() {
         return location;
@@ -220,8 +204,7 @@ public class Event implements Parcelable {
     /**
      * Getter for this events poster download URL.
      *
-     * @return
-     * The download URL for the poster related to this event, stored in Firebase Cloud Storage.
+     * @return The download URL for the poster related to this event, stored in Firebase Cloud Storage.
      */
     public String getPosterURL() {
         return posterURL;
@@ -234,8 +217,7 @@ public class Event implements Parcelable {
     /**
      * Setter for firebase ID.
      *
-     * @param firebaseID
-     * The Firebase ID to set this event's <code>firebaseID</code> to.
+     * @param firebaseID The Firebase ID to set this event's <code>firebaseID</code> to.
      */
     public void setFirebaseID(String firebaseID) {
         this.firebaseID = firebaseID;
@@ -244,8 +226,7 @@ public class Event implements Parcelable {
     /**
      * Setter for poster URL.
      *
-     * @param posterURL
-     * The URL to set this event's <code>posterURL</code> to.
+     * @param posterURL The URL to set this event's <code>posterURL</code> to.
      */
     public void setPosterURL(String posterURL) {
         this.posterURL = posterURL;
@@ -254,8 +235,7 @@ public class Event implements Parcelable {
     /**
      * Getter to return all members of this event.
      *
-     * @return
-     * All of this event's data in a HashMap.
+     * @return All of this event's data in a HashMap.
      */
     public HashMap<String, Object> getAll() {
         HashMap<String, Object> data = new HashMap<String, Object>();
@@ -292,10 +272,8 @@ public class Event implements Parcelable {
      * Converts a date & time in MS since epoch to a human readable format. Constructed as
      * "mmm dd-hh:mm". Returned as an array whose first element is date, second is time.
      *
-     * @param dateInMS
-     * The date in MS since epoch to convert.
-     * @return
-     * The String array containing the date and time.
+     * @param dateInMS The date in MS since epoch to convert.
+     * @return The String array containing the date and time.
      */
     private String[] getDateAndTimeFromMS(long dateInMS) {
         Date dateAsDate = new Date(dateInMS);
@@ -321,5 +299,4 @@ public class Event implements Parcelable {
         BarcodeEncoder encoder = new BarcodeEncoder();
         return encoder.createBitmap(matrix);
     }
-
 }

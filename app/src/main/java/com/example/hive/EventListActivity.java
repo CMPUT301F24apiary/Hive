@@ -6,15 +6,10 @@
  * and a switch roles button. Users can scan QR codes to join event waiting lists or view event
  * details.
  *
- * <p>Outstanding Issues:
- * - None at this time.</p>
- *
  * @author Dina
  * @version 1.2
  */
 package com.example.hive;
-
-import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,8 +18,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -33,8 +26,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Views.CustomQrScannerActivity;
+import com.example.hive.Views.UserEventPageActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -45,7 +38,6 @@ public class EventListActivity extends AppCompatActivity {
     private Button switchRolesButton; // Switch Roles button
     private Button scanQrCodeButton; // Scan QR Code button
     private ImageView qrCodeImageView; // QR Code ImageView
-    private FirebaseController firebaseController;
 
     private static final int REQUEST_CODE_QR_SCAN = 1001;
 
@@ -62,8 +54,6 @@ public class EventListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
-
-        firebaseController = new FirebaseController();
 
         // Initialize UI components
         profileButton = findViewById(R.id.profileButton);
@@ -147,7 +137,7 @@ public class EventListActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_QR_SCAN && resultCode == RESULT_OK && data != null) {
             String scannedEventId = data.getStringExtra("SCAN_RESULT");
             if (scannedEventId != null && !scannedEventId.isEmpty()) {
-                joinEventWaitingList(scannedEventId);
+                openEventPage(scannedEventId);
             } else {
                 Toast.makeText(this, "Invalid QR Code scanned.", Toast.LENGTH_SHORT).show();
             }
@@ -155,23 +145,13 @@ public class EventListActivity extends AppCompatActivity {
     }
 
     /**
-     * Simulates joining the event waiting list by interacting with Firebase.
+     * Opens the event details page using the scanned event ID.
      *
-     * @param eventId The event ID obtained from the QR code scan.
+     * @param eventId The scanned event ID.
      */
-    private void joinEventWaitingList(String eventId) {
-        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        firebaseController.addUserToWaitingList(eventId, deviceId, new FirebaseController.Callback() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(EventListActivity.this, "Successfully joined the waiting list!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                Toast.makeText(EventListActivity.this, "Failed to join waiting list: " + errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void openEventPage(String eventId) {
+        Intent intent = new Intent(this, UserEventPageActivity.class);
+        intent.putExtra("SCAN_RESULT", eventId);
+        startActivity(intent);
     }
 }
