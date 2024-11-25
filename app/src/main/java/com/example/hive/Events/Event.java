@@ -42,6 +42,8 @@ public class Event implements Parcelable {
     private final int numParticipants;
     private String posterURL;
     private final long selectionDate;
+    private final int entrantLimit;
+    private final String duration;
 
     /**
      * Event constructor. Creates a new event object with provided parameters.
@@ -70,7 +72,7 @@ public class Event implements Parcelable {
      */
     public Event(String title, String cost, long startDate, long endDate,
                  @Nullable String firebaseID, String description, int numParticipants,
-                 String location, @Nullable String posterURL, long selectionDate) {
+                 String location, @Nullable String posterURL, long selectionDate,int entrantLimit,String duration) {
         this.title = title;
         this.cost = cost;
         this.startDate = startDate;
@@ -81,6 +83,8 @@ public class Event implements Parcelable {
         this.numParticipants = numParticipants;
         this.posterURL = posterURL;
         this.selectionDate = selectionDate;
+        this.entrantLimit = entrantLimit;
+        this.duration = duration;
     }
 
     /**
@@ -102,6 +106,8 @@ public class Event implements Parcelable {
         this.numParticipants = in.readInt();
         this.selectionDate = in.readLong();
         this.posterURL = in.readString();
+        this.entrantLimit = in.readInt();
+        this.duration = in.readString();
     }
 
     /**
@@ -178,6 +184,9 @@ public class Event implements Parcelable {
         return cost;
     }
 
+    public int getEntrantLimit(){
+        return entrantLimit; }
+
     /**
      * Getter for start time, in MS since epoch.
      *
@@ -210,6 +219,10 @@ public class Event implements Parcelable {
      */
     public String getDescription() {
         return description;
+    }
+
+    public String getDuration(){
+        return duration;
     }
 
     /**

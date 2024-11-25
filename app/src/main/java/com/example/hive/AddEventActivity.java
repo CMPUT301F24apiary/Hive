@@ -103,6 +103,8 @@ public class AddEventActivity extends AppCompatActivity {
         String duration = eventDuration.getText().toString().trim();
         String cost = eventCost.getText().toString().trim();
         String participantsStr = numParticipants.getText().toString().trim();
+        String entrant= entrantLimit.getText().toString().trim();
+
         String description = eventDescription.getText().toString().trim();
         String selectionDateString = selectionDate.getText().toString().trim();
 
@@ -115,7 +117,7 @@ public class AddEventActivity extends AppCompatActivity {
         }
 
         int numParticipantsCount = Integer.parseInt(participantsStr);
-
+        int entrantInt = Integer.parseInt(entrant);
         long startDateTime = convertDateToMS(date, time);
 
         String endDateAndTime = getEndDateTimeFromDuration(date, time, duration);
@@ -128,7 +130,7 @@ public class AddEventActivity extends AppCompatActivity {
 
         if (posterImageUri == null) {
             saveEvent(title, cost, startDateTime, endDateTime, description,
-                    numParticipantsCount, location, null, selectionDate);
+                    numParticipantsCount, location, null, selectionDate,entrantInt, duration);
         } else {
             ImageController imgControl = new ImageController();
             try {
@@ -136,7 +138,7 @@ public class AddEventActivity extends AppCompatActivity {
                         .addOnSuccessListener(urlAndID -> {
 
                             saveEvent(title, cost, startDateTime, endDateTime, description,
-                                    numParticipantsCount, location, urlAndID, selectionDate);
+                                    numParticipantsCount, location, urlAndID, selectionDate,entrantInt, duration);
 
                         }).addOnFailureListener(e -> {
                             // Handle the failure of the image upload
@@ -147,7 +149,7 @@ public class AddEventActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
 
                             saveEvent(title, cost, startDateTime, endDateTime, description,
-                                    numParticipantsCount, location, null, selectionDate);
+                                    numParticipantsCount, location, null, selectionDate,entrantInt, duration);
 
                         });
             } catch(Exception e) {
@@ -160,10 +162,10 @@ public class AddEventActivity extends AppCompatActivity {
 
     private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
                            String description, int numParticipantsCount, String location,
-                           @Nullable Pair<String, String> urlAndID, long selectionDate) {
+                           @Nullable Pair<String, String> urlAndID, long selectionDate, int entrant, String duration) {
 
         Event event = new Event(title, cost, startDateTime, endDateTime, null, description,
-                numParticipantsCount, location, urlAndID == null ? null : urlAndID.first, selectionDate);
+                numParticipantsCount, location, urlAndID == null ? null : urlAndID.first, selectionDate,entrant, duration);
 
         EventController controller = new EventController();
         controller.addEvent(event, id -> {

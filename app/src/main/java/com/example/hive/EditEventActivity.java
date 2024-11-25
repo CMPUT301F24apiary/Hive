@@ -2,7 +2,6 @@ package com.example.hive;
 
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,12 +21,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import android.util.Pair;
+import android.widget.ToggleButton;
 
 public class EditEventActivity extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST_CODE = 100;
     private EditText eventName, eventDate, eventTime, eventDuration, eventCost, numParticipants, entrantLimit, selectionDate, eventLocation, eventDescription;
     private ImageView addPosterImage;
+    private ToggleButton toggleReplacementDraw, toggleGeolocation;
     private Uri posterImageUri;
     private Event currentEvent;  // The event being edited
 
@@ -45,6 +46,8 @@ public class EditEventActivity extends AppCompatActivity {
         numParticipants = findViewById(R.id.numParticipants);
         entrantLimit = findViewById(R.id.entrantLimit);
         selectionDate = findViewById(R.id.SelectionDate);
+        toggleReplacementDraw = findViewById(R.id.toggleReplacementDraw);
+        toggleGeolocation = findViewById(R.id.toggleGeolocation);
         eventDescription = findViewById(R.id.eventDescription);
         addPosterImage = findViewById(R.id.addPosterImage);
 
@@ -65,10 +68,10 @@ public class EditEventActivity extends AppCompatActivity {
             eventLocation.setText(currentEvent.getLocation());
             eventCost.setText(currentEvent.getCost());
             selectionDate.setText(currentEvent.getSelectionDate());
-
             numParticipants.setText(String.valueOf(currentEvent.getNumParticipants()));
             eventDescription.setText(currentEvent.getDescription());
             entrantLimit.setText(String.valueOf(currentEvent.getEntrantLimit()));
+            eventDuration.setText(currentEvent.getDuration());
         } else {
             Toast.makeText(this, "Event details are not available", Toast.LENGTH_SHORT).show();
         }
@@ -114,6 +117,8 @@ public class EditEventActivity extends AppCompatActivity {
         String participantsStr = numParticipants.getText().toString().trim();
         String description = eventDescription.getText().toString().trim();
         String selectionDateString = selectionDate.getText().toString().trim();
+        String entrant = entrantLimit.getText().toString().trim();
+
 
         if (title.isEmpty() || date.isEmpty() || location.isEmpty() || time.isEmpty() ||
                 cost.isEmpty() || participantsStr.isEmpty() || description.isEmpty() ||
@@ -123,6 +128,8 @@ public class EditEventActivity extends AppCompatActivity {
         }
 
         int numParticipantsCount = Integer.parseInt(participantsStr);
+        int entrantLimit= Integer.parseInt(entrant);
+
 
         long startDateTime = convertDateToMS(date, time);
 
@@ -136,13 +143,13 @@ public class EditEventActivity extends AppCompatActivity {
 
         if (posterImageUri == null) {
             saveEvent(title, cost, startDateTime, endDateTime, description,
-                    numParticipantsCount, location, null, selectionDate);
+                    numParticipantsCount, location, null, selectionDate, entrantLimit,duration);
         } else {
             ImageController imgControl = new ImageController();
             imgControl.saveImage(this, posterImageUri, "event poster")
                     .addOnSuccessListener(urlAndID -> {
                         saveEvent(title, cost, startDateTime, endDateTime, description,
-                                numParticipantsCount, location, urlAndID, selectionDate);
+                                numParticipantsCount, location, urlAndID, selectionDate, entrantLimit, duration);
                     }).addOnFailureListener(e -> {
                         Toast.makeText(this, "Failed to upload image: " +
                                         e.getMessage() +
@@ -151,21 +158,21 @@ public class EditEventActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
 
                         saveEvent(title, cost, startDateTime, endDateTime, description,
-                                numParticipantsCount, location, null, selectionDate);
+                                numParticipantsCount, location, null, selectionDate,entrantLimit, duration);
                     });
         }
     }
 
     private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
                            String description, int numParticipantsCount, String location,
-                           @Nullable Pair<String, String> urlAndID, long selectionDate) {
+                           @Nullable Pair<String, String> urlAndID, long selectionDate, int entrantLimit, String duration) {
         Event event;
         if (urlAndID != null && urlAndID.second != null) {
             event = new Event(title, cost, startDateTime, endDateTime, urlAndID.second, description,
-                    numParticipantsCount, location, urlAndID.first, selectionDate);  // Use the ID for the event if it's being updated
+                    numParticipantsCount, location, urlAndID.first, selectionDate,entrantLimit,duration);  // Use the ID for the event if it's being updated
         } else {
             event = new Event(title, cost, startDateTime, endDateTime, null, description,
-                    numParticipantsCount, location, urlAndID == null ? null : urlAndID.first, selectionDate);
+                    numParticipantsCount, location, urlAndID == null ? null : urlAndID.first, selectionDate,entrantLimit,duration);
         }
 
         EventController controller = new EventController();
