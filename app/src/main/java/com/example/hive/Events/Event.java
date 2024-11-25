@@ -142,6 +142,9 @@ public class Event implements Parcelable {
         return getDateAndTimeFromMS(this.selectionDate)[0];
     }
 
+    
+
+
     /**
      * Getter to get end date in human readable format. Returns date as "mmm dd" i.e. "Jan 01"
      *
@@ -285,6 +288,9 @@ public class Event implements Parcelable {
         data.put("endDateInMS", this.endDate);
         data.put("startDateInMS", this.startDate);
         data.put("numParticipants", this.numParticipants);
+        data.put("duration",this.duration);
+        data.put("selectionDate",this.selectionDate);
+
         data.put("poster", this.posterURL != null ? this.posterURL : "");
         return data;
     }
@@ -305,6 +311,7 @@ public class Event implements Parcelable {
         dest.writeString(location);
         dest.writeInt(numParticipants);
         dest.writeString(posterURL);
+        dest.writeString(duration);
     }
 
     /**

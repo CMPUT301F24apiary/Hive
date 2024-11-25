@@ -71,7 +71,6 @@ public class EditEventActivity extends AppCompatActivity {
             numParticipants.setText(String.valueOf(currentEvent.getNumParticipants()));
             eventDescription.setText(currentEvent.getDescription());
             entrantLimit.setText(String.valueOf(currentEvent.getEntrantLimit()));
-            eventDuration.setText(currentEvent.getDuration());
         } else {
             Toast.makeText(this, "Event details are not available", Toast.LENGTH_SHORT).show();
         }
@@ -115,53 +114,55 @@ public class EditEventActivity extends AppCompatActivity {
         String duration = eventDuration.getText().toString().trim();
         String cost = eventCost.getText().toString().trim();
         String participantsStr = numParticipants.getText().toString().trim();
+        String entrant = entrantLimit.getText().toString().trim();
+        boolean isReplacementDraw = toggleReplacementDraw.isChecked();
+        boolean isGeolocation = toggleGeolocation.isChecked();
+
         String description = eventDescription.getText().toString().trim();
         String selectionDateString = selectionDate.getText().toString().trim();
-        String entrant = entrantLimit.getText().toString().trim();
-
 
         if (title.isEmpty() || date.isEmpty() || location.isEmpty() || time.isEmpty() ||
                 cost.isEmpty() || participantsStr.isEmpty() || description.isEmpty() ||
-                duration.isEmpty()) {
+                duration.isEmpty() || entrant.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         int numParticipantsCount = Integer.parseInt(participantsStr);
-        int entrantLimit= Integer.parseInt(entrant);
-
-
+        int entrantInt = Integer.parseInt(entrant);
         long startDateTime = convertDateToMS(date, time);
 
         String endDateAndTime = getEndDateTimeFromDuration(date, time, duration);
-
         String[] endDateSplit = endDateAndTime.split(" ");
-
-        long endDateTime = convertDateToMS(endDateSplit[0], endDateSplit[1]);
+        long endDateTime = convertDateToMS(endDateSplit[0], endDateSplit.length > 1 ? endDateSplit[1] : "");
 
         long selectionDate = convertDateToMS(selectionDateString, "0:00");
 
         if (posterImageUri == null) {
             saveEvent(title, cost, startDateTime, endDateTime, description,
-                    numParticipantsCount, location, null, selectionDate, entrantLimit,duration);
+                    numParticipantsCount, location, null, selectionDate, entrantInt, duration
+                    );
         } else {
             ImageController imgControl = new ImageController();
-            imgControl.saveImage(this, posterImageUri, "event poster")
-                    .addOnSuccessListener(urlAndID -> {
-                        saveEvent(title, cost, startDateTime, endDateTime, description,
-                                numParticipantsCount, location, urlAndID, selectionDate, entrantLimit, duration);
-                    }).addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to upload image: " +
-                                        e.getMessage() +
-                                        "\nEvent will still be updated - navigate to the event page " +
-                                        "and edit it to try uploading the poster again.",
-                                Toast.LENGTH_SHORT).show();
-
-                        saveEvent(title, cost, startDateTime, endDateTime, description,
-                                numParticipantsCount, location, null, selectionDate,entrantLimit, duration);
-                    });
+            try {
+                imgControl.saveImage(this, posterImageUri, "event poster")
+                        .addOnSuccessListener(urlAndID -> {
+                            saveEvent(title, cost, startDateTime, endDateTime, description,
+                                    numParticipantsCount, location, urlAndID, selectionDate, entrantInt, duration
+                                 );
+                        }).addOnFailureListener(e -> {
+                            Toast.makeText(this, "Failed to upload image: " + e.getMessage() +
+                                            "\nEvent will still be created - navigate to the event page and edit it to try uploading the poster again.",
+                                    Toast.LENGTH_SHORT).show();
+                            saveEvent(title, cost, startDateTime, endDateTime, description,
+                                    numParticipantsCount, location, null, selectionDate, entrantInt, duration);
+                        });
+            } catch (Exception e) {
+                Toast.makeText(this, "Image upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
     }
+
 
     private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
                            String description, int numParticipantsCount, String location,
@@ -192,17 +193,24 @@ public class EditEventActivity extends AppCompatActivity {
 
 
     private long convertDateToMS(String date, String time) {
-        String pattern = "dd-MM-yyyy HH:mm";
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.getDefault());
-        try {
-            String dateTimeCombined = date + " " + time;
-            Date dateTime = sdf.parse(dateTimeCombined);
-            return dateTime != null ? dateTime.getTime() : 0;
-        } catch (ParseException e) {
-            Log.e("EditEvent Parse Error", e.toString());
-            return 0;
+        String[] patterns = {"MMM dd, yyyy HH:mm", "MMM dd, yyyy", "MMM dd HH:mm", "MMM dd"};
+        for (String pattern : patterns) {
+            SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.getDefault());
+            try {
+                String dateTimeCombined = date + " " + time;
+                Date dateTime = sdf.parse(dateTimeCombined.trim());
+                if (dateTime != null) {
+                    return dateTime.getTime();
+                }
+            } catch (ParseException e) {
+                Log.e("AddEvent Parse Error", "Unparseable date with pattern " + pattern + ": " + date + " " + time, e);
+            }
         }
+        // If no patterns match, return 0 or handle as needed
+        return 0;
     }
+
+
 
     private String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
         String endDate = startDate;
