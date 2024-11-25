@@ -88,20 +88,22 @@ public class EventController extends FirebaseController {
                 long startDate = (long) doc.get("startDateInMS");
                 long endDate = (long) doc.get("endDateInMS");
                 String cost = (String) doc.get("cost");
-                Long entrantLimitLong = (Long) doc.get("entrantLimit");                String duration = (String) doc.get("duration");
+                Long entrantLimitLong = (Long) doc.get("entrantLimit");
+                Integer entrantLimit = null;
+                if (entrantLimitLong != null) {
+                    entrantLimit = entrantLimitLong.intValue();
+                }
+                String duration = (String) doc.get("duration");
 
-                int entrantLimit = entrantLimitLong.intValue();
 
                 String description = (String) doc.get("description");
                 String location = (String) doc.get("location");
-
                 String posterTemp = (String) doc.get("poster");
-                Long numParticipantsLong = (Long) doc.get("numParticipants");
-                int numParticipants = numParticipantsLong.intValue();
+                long numParticipants = (long) doc.get("numParticipants");
                 long selectionDate = (long) doc.get("selectionDate");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
                 Event newEvent = new Event(title, cost, startDate, endDate, id, description,
-                        (int) numParticipants, location, posterURL, selectionDate,entrantLimit,duration );
+                        (int) numParticipants, location, posterURL, selectionDate, entrantLimit, duration);
                 data.add(newEvent);
             }
             // Notify the callback with the fetched data
@@ -130,7 +132,10 @@ public class EventController extends FirebaseController {
                 long endDate = (long) doc.get("endDateInMS");
                 String cost = (String) doc.get("cost");
                 Long entrantLimitLong = (Long) doc.get("entrantLimit");
-                int entrantLimit = entrantLimitLong.intValue();
+                Integer entrantLimit = null;
+                if (entrantLimitLong != null) {
+                    entrantLimit = entrantLimitLong.intValue();
+                }
                 String duration = (String) doc.get("duration");
 
 
@@ -141,7 +146,7 @@ public class EventController extends FirebaseController {
                 long selectionDate = (long) doc.get("selectionDate");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
                 Event newEvent = new Event(title, cost, startDate, endDate, id, description,
-                        (int) numParticipants, location, posterURL, selectionDate,entrantLimit,duration);
+                        (int) numParticipants, location, posterURL, selectionDate, entrantLimit, duration);
                 data.add(newEvent);
             }
             // Notify the callback with the fetched data
