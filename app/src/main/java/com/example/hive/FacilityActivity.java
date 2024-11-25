@@ -26,6 +26,7 @@ public class FacilityActivity extends AppCompatActivity {
     private ImageView backArrowButton;
     private ImageView facilityPoster;
     private TextView facilityNameText, emailText, phoneText;
+    private String deviceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,8 @@ public class FacilityActivity extends AppCompatActivity {
         facilityNameText = findViewById(R.id.facility_name);
         emailText = findViewById(R.id.email_label);
         phoneText = findViewById(R.id.phone_label);
+
+        deviceId = getIntent().getStringExtra("deviceId");
 
         FacilityData();
 
