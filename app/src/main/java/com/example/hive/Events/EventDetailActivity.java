@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.R;
 import com.example.hive.Views.QRCodeActivity;
+import com.example.hive.Models.QRCode;
 
 /**
  * Display event information and delete button for admin.
@@ -191,6 +192,7 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
 
             try {
                 Bitmap qrCodeBitmap = event.generateQRCode(300, 300);
+                QRCode.saveQRToDb(qrCodeBitmap, event.getFirebaseID());
                 Intent intent = new Intent(this, QRCodeActivity.class);
                 intent.putExtra("qrCode", qrCodeBitmap);
                 startActivity(intent);
