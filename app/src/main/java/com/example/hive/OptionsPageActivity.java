@@ -52,7 +52,9 @@ public class OptionsPageActivity extends AppCompatActivity {
         });
 
         cancelledEntrantsButton.setOnClickListener(v -> {
-            // Placeholder for Cancelled Entrants logic
+            Intent intent = new Intent(OptionsPageActivity.this, CancelledListActivity.class);
+            intent.putExtra("eventId", eventId); // Pass the eventId to WaitingListActivity
+            startActivity(intent);
         });
 
         participantsButton.setOnClickListener(v -> {
