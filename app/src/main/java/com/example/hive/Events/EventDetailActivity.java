@@ -22,6 +22,7 @@ import com.example.hive.Controllers.EventController;
 import com.example.hive.OptionsPageActivity;
 import com.example.hive.R;
 import com.example.hive.Views.QRCodeActivity;
+import com.example.hive.Models.QRCode;
 
 
 /**
