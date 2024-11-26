@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
+    implementation ("com.google.firebase:firebase-firestore:25.1.1")
+
     implementation(libs.glide.v4110)
     annotationProcessor(libs.compiler)
     implementation(libs.appcompat)
@@ -61,10 +63,17 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.13.0")
     androidTestImplementation(libs.testng) // Glide for image handling
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.0")
+    implementation ("com.google.zxing:core:3.3.3")
+    implementation ("com.google.firebase:firebase-auth:21.3.0")
+
+
 
     // Firebase authentication
+    implementation(platform(libs.google.firebase.bom))
     implementation(libs.play.services.auth)
     implementation(libs.play.services.base)
+
+
 
     // Glide (for profile images)
     implementation(libs.glide)

@@ -12,6 +12,9 @@
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
 
+
+
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -45,6 +48,7 @@
             android:name=".OptionsPageActivity"
             android:exported="true" />
         <activity android:name=".WaitingListActivity" />
+        <activity android:name="com.journeyapps.barcodescanner.CaptureActivity" />
 
 
         <!--
@@ -61,6 +65,7 @@
         <activity android:name=".OrganizerEventListActivity" />
         <activity android:name=".AddEventActivity" />
         <activity android:name=".Views.QRCodeActivity" />
+        <activity android:name=".Views.UserEventPageActivity" />
 
 
         <!-- Admin Event Activities -->
