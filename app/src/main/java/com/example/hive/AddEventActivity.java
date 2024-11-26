@@ -21,10 +21,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.Controllers.ImageController;
 import com.example.hive.Events.Event;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -165,12 +167,16 @@ public class AddEventActivity extends AppCompatActivity {
         EventController controller = new EventController();
         controller.addEvent(event, id -> {
             event.setFirebaseID(id);
-            if (urlAndID != null) {
-                new ImageController().updateImageRef(urlAndID.second, id, false);
-            }
-            Toast.makeText(this, "Event created: '" + event.getTitle() + "'",
-                    Toast.LENGTH_SHORT).show();
 
+
+            // Create an empty waiting-list subcollection for the event
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("events").document(id).collection("waiting-list")
+                    .add(new HashMap<>()) // Adds an empty document to initialize the collection
+                    .addOnSuccessListener(documentReference -> Log.d("AddEventActivity", "Waiting list created successfully"))
+                    .addOnFailureListener(e -> Log.e("AddEventActivity", "Failed to create waiting list", e));
+
+            Toast.makeText(this, "Event created: " + event.toString(), Toast.LENGTH_SHORT).show();
             Intent resultIntent = new Intent();
             resultIntent.putExtra("event", event);
             setResult(1, resultIntent);
@@ -299,4 +305,7 @@ public class AddEventActivity extends AppCompatActivity {
         return endDate + " " + endTime;
     }
 
+
+
 }
+
