@@ -1,25 +1,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1A2232">
+    android:orientation="vertical">
 
-    <!-- Barcode scanner view -->
-    <com.journeyapps.barcodescanner.BarcodeView
+    <!-- The camera preview for scanning -->
+    <com.journeyapps.barcodescanner.DecoratedBarcodeView
         android:id="@+id/barcode_scanner"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Cancel button -->
+    <!-- Cancel Button -->
     <Button
         android:id="@+id/cancelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="#FF0000"
         android:text="Cancel"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:textColor="#FFFFFF" />
 </RelativeLayout>
+
 
