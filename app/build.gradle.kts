@@ -62,6 +62,8 @@ dependencies {
     androidTestImplementation(libs.testng) // Glide for image handling
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.0")
     implementation ("com.google.zxing:core:3.3.3")
+    implementation ("com.google.firebase:firebase-auth:21.3.0")
+
 
 
     // Firebase authentication

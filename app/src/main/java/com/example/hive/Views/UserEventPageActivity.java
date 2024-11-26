@@ -13,7 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Events.Event;
+import com.example.hive.Models.User;
 import com.example.hive.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Locale;
 
@@ -25,7 +28,6 @@ public class UserEventPageActivity extends AppCompatActivity {
     private String eventId;
     private TextView locationTextView, costTextView;
     private TextView dateTextView, timeTextView;
-
 
 
     @Override
@@ -58,6 +60,7 @@ public class UserEventPageActivity extends AppCompatActivity {
             finish();
         }
 
+
         setupButtonListeners();
     }
 
@@ -86,7 +89,6 @@ public class UserEventPageActivity extends AppCompatActivity {
     }
 
 
-
     private void updateUIWithEventDetails(Event event) {
         Log.d("UserEventPageActivity", "Event Details: " + event.getTitle());
         Log.d("UserEventPageActivity", "Waiting List ID: " + event.getWaitingListId());
@@ -105,10 +107,10 @@ public class UserEventPageActivity extends AppCompatActivity {
         timeTextView.setText(String.format(Locale.ENGLISH, "Time: %s - %s",
                 startDateAndTime[1], endDateAndTime[1]));
         eventTitle.setText(event.getTitle());
-        eventDescription.setText(String.format(Locale.ENGLISH, "Event Description: %s",event.getDescription()));
+        eventDescription.setText(String.format(Locale.ENGLISH, "Event Description: %s", event.getDescription()));
         participantsCount.setText(String.format(Locale.ENGLISH, "Participants: %d", event.getNumParticipants()));
         locationTextView.setText(String.format(Locale.ENGLISH, "Location: %s", event.getLocation()));
-
+        costTextView.setText(String.format(Locale.ENGLISH, "$%s", event.getCost()));
         timeTextView.setText(String.format(Locale.ENGLISH, "Time: %s - %s", event.getStartTime(), event.getEndTime()));
 
 
@@ -123,8 +125,15 @@ public class UserEventPageActivity extends AppCompatActivity {
 
 
     private void setupButtonListeners() {
+        String userId = User.getInstance().getDeviceId(); // Retrieve deviceId
+
         registerButton.setOnClickListener(v -> {
-            String userId = "your_user_id_here"; // Replace with actual logic to get the user's ID
+            if (userId == null || userId.isEmpty()) {
+                Toast.makeText(UserEventPageActivity.this, "User ID is missing. Cannot register.", Toast.LENGTH_SHORT).show();
+                Log.e("UserEventPageActivity", "User ID is null or empty.");
+                return;
+            }
+
             firebaseController.addUserToWaitingList(eventId, userId, new FirebaseController.Callback() {
                 @Override
                 public void onSuccess() {
@@ -139,7 +148,12 @@ public class UserEventPageActivity extends AppCompatActivity {
         });
 
         unregisterButton.setOnClickListener(v -> {
-            String userId = "your_user_id_here"; // Replace with actual logic to get the user's ID
+            if (userId == null || userId.isEmpty()) {
+                Toast.makeText(UserEventPageActivity.this, "User ID is missing. Cannot unregister.", Toast.LENGTH_SHORT).show();
+                Log.e("UserEventPageActivity", "User ID is null or empty.");
+                return;
+            }
+
             firebaseController.removeUserFromWaitingList(eventId, userId, new FirebaseController.Callback() {
                 @Override
                 public void onSuccess() {

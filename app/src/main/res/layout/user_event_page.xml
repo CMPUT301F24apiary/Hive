@@ -31,14 +31,6 @@
             android:textStyle="bold" />
 
         <!-- Event Cost -->
-        <TextView
-            android:id="@+id/costTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
 
         <!-- Event Details -->
         <TextView
@@ -51,15 +43,6 @@
             android:textSize="24sp" />
 
         <!-- Event Location -->
-        <TextView
-            android:id="@+id/locationTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:text="Location: Not specified"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
 
         <!-- Selection Date -->
         <TextView
@@ -80,7 +63,35 @@
             android:textColor="@color/white"
             android:textSize="24sp" />
 
-        <!-- Event Description -->
+
+        <TextView
+            android:id="@+id/locationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:text="Location: Not specified"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/costTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/participantsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+
         <TextView
             android:id="@+id/eventDescription"
             android:layout_width="match_parent"
@@ -91,14 +102,6 @@
             android:textSize="24sp" />
 
         <!-- Participants Count -->
-        <TextView
-            android:id="@+id/participantsCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
 
         <!-- Register/Unregister Buttons -->
         <LinearLayout
