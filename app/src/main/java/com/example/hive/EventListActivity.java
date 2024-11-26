@@ -12,11 +12,15 @@
  */
 package com.example.hive;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
@@ -24,11 +28,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Views.CustomQrScannerActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.bumptech.glide.Glide;
+import com.example.hive.AdminEvent.AdminEventListActivity;
+import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Models.User;
+import com.example.hive.Views.AdminProfileViewActivity;
 
 public class EventListActivity extends AppCompatActivity {
 
@@ -38,6 +49,9 @@ public class EventListActivity extends AppCompatActivity {
     private Button scanQrCodeButton;  // Scan QR Code button
     private ImageView qrCodeImageView;  // QR Code ImageView
 
+    private User user;
+
+    private FirebaseController firebaseController;
     /**
      * Called when the activity is starting. This is where most initialization should be done.
      * It sets up the UI and initializes the profile button and notification bell button.
@@ -49,6 +63,8 @@ public class EventListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
 
+        firebaseController = new FirebaseController();
+
         // Initialize UI components
         profileButton = findViewById(R.id.profileButton);
         notificationBellButton = findViewById(R.id.notificationBellButton);
@@ -57,10 +73,13 @@ public class EventListActivity extends AppCompatActivity {
         qrCodeImageView = findViewById(R.id.qrCodeImageView);
 
         // Set click listeners for each button
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(EventListActivity.this, ProfileActivity.class);
+                intent.putExtra("deviceId", deviceId);
                 startActivity(intent);
             }
         });
