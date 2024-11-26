@@ -1,17 +1,23 @@
 package com.example.hive.Controllers;
 
 import android.util.Log;
+import android.util.Pair;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.example.hive.Events.Event;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -150,6 +156,61 @@ public class EventController extends FirebaseController {
             Log.e("ControllerDeleteEvent", "Error fetching document", e);
             callback.onSuccess(Boolean.FALSE);
         });
+    }
+
+    public void getField(String id, String whichField, OnSuccessListener<Object> listener) {
+        CollectionReference eventsCollection = db.collection("events");
+
+        eventsCollection.document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Object res = documentSnapshot.get(whichField);
+                if (res != null) {
+                    listener.onSuccess(res);
+                } else {
+                    Log.e("EventController - getField", whichField + " is not a field");
+                }
+            }
+        });
+
+    }
+
+    public void getInvitedList(String eventID,
+                               OnSuccessListener<Pair<Boolean, ArrayList<String>>> listener) {
+        CollectionReference eventsCollection = db.collection("events");
+
+        eventsCollection.document(eventID).collection("invited-list").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
+                        if (docs.isEmpty()) {
+                            listener.onSuccess(new Pair<>(Boolean.FALSE, null));
+                        } else {
+                            ArrayList<String> userIDs = new ArrayList<>();
+                            for (DocumentSnapshot doc:docs) {
+                                userIDs.add(doc.getId());
+                            }
+                            listener.onSuccess(new Pair<>(Boolean.TRUE, userIDs));
+                        }
+                    }
+        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onSuccess(new Pair<>(Boolean.FALSE, null));
+                    }
+                });
+
+    }
+
+    public void addInvitedList(String eventID, ArrayList<String> invited) {
+        CollectionReference eventsCollection = db.collection("events");
+
+        for (String uid:invited) {
+            Log.d("AddInvitedList", uid);
+            eventsCollection.document(eventID).collection("invited-list").document(uid).set(new HashMap<>());
+        }
+
     }
 
 }
