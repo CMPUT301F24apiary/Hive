@@ -30,7 +30,8 @@ public class EventClassTest {
                 "Test Description",
                 20,
                 "Test Location",
-                "Test Image URL"
+                "Test Image URL",
+            1731177806000L
         );
         testEventWithNullID = new Event(
                 "Test Title Null ID",
@@ -41,7 +42,8 @@ public class EventClassTest {
                 "Test Description Null ID",
                 30,
                 "Test Location Null ID",
-                "Test Image URL Null ID"
+                "Test Image URL Null ID",
+                1731177806000L
         );
         testEventWithNullURL = new Event(
                 "Test Title Null URL",
@@ -52,7 +54,8 @@ public class EventClassTest {
                 "Test Description Null URL",
                 40,
                 "Test Location Null URL",
-                null
+                null,
+                1731177806000L
         );
     }
 

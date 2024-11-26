@@ -63,6 +63,8 @@
         <activity android:name=".CancelledListActivity" />
         <activity android:name=".OrganizerEventListActivity" />
         <activity android:name=".AddEventActivity" />
+        <activity android:name=".EditEventActivity" />
+
         <activity android:name=".Views.QRCodeActivity" />
         <activity android:name=".Views.UserEventPageActivity" /> <!-- Admin Event Activities -->
         <activity

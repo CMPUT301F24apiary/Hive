@@ -1,14 +1,13 @@
 package com.example.hive;
 
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -17,50 +16,49 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.ToggleButton;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.Controllers.ImageController;
 import com.example.hive.DateAndTimePickers.DatePickerFragment;
 import com.example.hive.DateAndTimePickers.TimePickerFragment;
 import com.example.hive.Events.Event;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.util.Pair;
+import android.widget.ToggleButton;
+
 /**
- * Activity to add an event by filling in all the event details(By an organizer)
- *
- * @author Hrittija
+ * Activity to edit and event or event poster/details
  */
-public class AddEventActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+public class EditEventActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
     private static final int GALLERY_REQUEST_CODE = 100;
-    private EditText eventName, eventDuration, eventCost, numParticipants, entrantLimit,eventLocation, eventDescription;
-    private ToggleButton toggleReplacementDraw, toggleGeolocation;
+    private EditText eventName, eventDuration, eventCost, numParticipants, entrantLimit, eventLocation, eventDescription;
     private ImageView addPosterImage;
+    private ToggleButton toggleReplacementDraw, toggleGeolocation;
     private Uri posterImageUri;
+    private Event currentEvent;  // The event being edited
     private String startTime, startDate, selectionDate;
-    private Button pickStartTime, pickStartDate, pickSelectionDate;
+    private Button pickStartTime, pickStartDate, pickSelectionDate, removePoster;
     private String activeDateButton;
+    private String firebaseID;
+    private boolean removePosterSelected = false;
+    private String posterURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_addevents);
-        EventController controller = new EventController();
+        setContentView(R.layout.activity_editevent);
 
-        ImageView backArrow = findViewById(R.id.backArrow);
         eventName = findViewById(R.id.eventName);
         eventDuration = findViewById(R.id.eventDuration);
         eventLocation = findViewById(R.id.eventLocation);
@@ -71,51 +69,113 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         toggleGeolocation = findViewById(R.id.toggleGeolocation);
         eventDescription = findViewById(R.id.eventDescription);
         addPosterImage = findViewById(R.id.addPosterImage);
-
-        backArrow.setOnClickListener(v -> {
-            Intent intent = new Intent(AddEventActivity.this, OrganizerEventListActivity.class);
-            startActivity(intent);
-            finish();
-        });
-
         pickStartTime = findViewById(R.id.pick_start_time);
+        pickStartDate = findViewById(R.id.pick_start_date);
+        pickSelectionDate = findViewById(R.id.pick_selection_date);
+        removePoster = findViewById(R.id.remove_poster);
+
+        currentEvent = getIntent().getParcelableExtra("event");
+        if (currentEvent != null) {
+            Log.d("EditEventActivity", "Event Title: " + currentEvent.getTitle());
+            // Log other fields similarly
+        } else {
+            Log.e("EditEventActivity", "No event data passed");
+        }
+
+        if (currentEvent != null) {
+            eventName.setText(currentEvent.getTitle());
+            eventDuration.setText(currentEvent.getDuration());
+            pickStartTime.setText(currentEvent.getStartTime());
+            startTime = currentEvent.getStartTime();
+            pickStartDate.setText(currentEvent.getDateInDashFormat("start"));
+            startDate = currentEvent.getDateInDashFormat("start");
+            pickSelectionDate.setText(currentEvent.getDateInDashFormat("selection"));
+            selectionDate = currentEvent.getDateInDashFormat("selection");
+            eventLocation.setText(currentEvent.getLocation());
+            eventCost.setText(currentEvent.getCost());
+            numParticipants.setText(String.valueOf(currentEvent.getNumParticipants()));
+            eventDescription.setText(currentEvent.getDescription());
+            entrantLimit.setText(String.valueOf(currentEvent.getEntrantLimit()));
+            toggleGeolocation.setChecked(currentEvent.isGeolocationOn());
+            toggleReplacementDraw.setChecked(currentEvent.isReplacementDrawOn());
+            firebaseID = currentEvent.getFirebaseID();
+            posterURL = currentEvent.getPosterURL();
+            if (posterURL != null && !posterURL.isEmpty()) {
+                Glide.with(this).load(posterURL).into(addPosterImage);
+                removePoster.setVisibility(View.VISIBLE);
+            }
+        } else {
+            Toast.makeText(this, "Event details are not available", Toast.LENGTH_SHORT).show();
+        }
+
         pickStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerFragment().show(getSupportFragmentManager(), "Pick Start Time");
+                Bundle b = new Bundle();
+                int startHr, startMin;
+                startHr = Integer.parseInt(currentEvent.getStartTime().split(":")[0]);
+                startMin = Integer.parseInt(currentEvent.getStartTime().split(":")[1]);
+                b.putInt("hr", startHr);
+                b.putInt("min", startMin);
+                TimePickerFragment timeFrag = new TimePickerFragment();
+                timeFrag.setArguments(b);
+                timeFrag.show(getSupportFragmentManager(), "Pick Start Time");
             }
         });
 
-        pickStartDate = findViewById(R.id.pick_start_date);
         pickStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activeDateButton = "start";
-                new DatePickerFragment().show(getSupportFragmentManager(), "Pick Start Date");
+                Bundle b = new Bundle();
+                String[] date = currentEvent.getDateInDashFormat("start").split("-");
+                b.putInt("day", Integer.parseInt(date[0]));
+                b.putInt("month", Integer.parseInt(date[1])-1);
+                b.putInt("year", Integer.parseInt(date[2]));
+                DatePickerFragment dateFrag = new DatePickerFragment();
+                dateFrag.setArguments(b);
+                dateFrag.show(getSupportFragmentManager(), "Pick Start Date");
             }
         });
 
-        pickSelectionDate = findViewById(R.id.pick_selection_date);
         pickSelectionDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activeDateButton = "select";
-                new DatePickerFragment().show(getSupportFragmentManager(), "Pick Selection Date");
+                Bundle b = new Bundle();
+                String[] date = currentEvent.getDateInDashFormat("selection").split("-");
+                b.putInt("day", Integer.parseInt(date[0]));
+                b.putInt("month", Integer.parseInt(date[1])-1);
+                b.putInt("year", Integer.parseInt(date[2]));
+                DatePickerFragment dateFrag = new DatePickerFragment();
+                dateFrag.setArguments(b);
+                dateFrag.show(getSupportFragmentManager(), "Pick Selection Date");
             }
         });
 
-        addPosterImage.setOnClickListener(this::onAddPosterClick);
+        removePoster.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addPosterImage.setImageResource(R.drawable.ic_add);
+                removePosterSelected = true;
+            }
+        });
 
-        TextView saveButton = findViewById(R.id.saveButton);
-        saveButton.setOnClickListener(v -> saveEventDetails());
+        // Back button to go to the event detail
+        ImageView backArrow = findViewById(R.id.backArrow);
+        backArrow.setOnClickListener(v -> {
+            finish();
+        });
+
+        // Image selection
+        addPosterImage.setOnClickListener(v -> onAddPosterClick());
+
+        // Save the edited event details
+        TextView updateButton = findViewById(R.id.updateButton);
+        updateButton.setOnClickListener(v -> saveEventDetails());
     }
 
-
-    /**
-     * To open the gallery for facility profile picture uploading
-     * @param view
-     */
-    public void onAddPosterClick(View view) {
+    public void onAddPosterClick() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, GALLERY_REQUEST_CODE);
     }
@@ -129,24 +189,26 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         }
     }
 
-    /**
-     * The method to save the event details
-     */
     private void saveEventDetails() {
         String title = eventName.getText().toString().trim();
         String location = eventLocation.getText().toString().trim();
         String duration = eventDuration.getText().toString().trim();
         String cost = eventCost.getText().toString().trim();
         String participantsStr = numParticipants.getText().toString().trim();
-        String entrant= entrantLimit.getText().toString().trim();
+        String entrantString = entrantLimit.getText().toString().trim();
+        Integer entrant;
+        if (!entrantString.equals("null")) {
+            entrant = Integer.parseInt(entrantLimit.getText().toString().trim());
+        } else {
+            entrant = null;
+        }
 
         String description = eventDescription.getText().toString().trim();
 
         if (title.isEmpty() || startDate.isEmpty() || location.isEmpty() || startTime.isEmpty() ||
                 cost.isEmpty() || participantsStr.isEmpty() || description.isEmpty() ||
-                duration.isEmpty() || selectionDate.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields.",
-                    Toast.LENGTH_SHORT).show();
+                duration.isEmpty()) {
+            Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -164,82 +226,75 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         boolean replacementDrawOn = toggleReplacementDraw.isChecked();
 
         int numParticipantsCount = Integer.parseInt(participantsStr);
-        int entrantInt = Integer.parseInt(entrant);
         long startDateTime = convertDateToMS(startDate, startTime);
 
         String endDateAndTime = getEndDateTimeFromDuration(startDate, startTime, duration);
-
         String[] endDateSplit = endDateAndTime.split(" ");
-
-        long endDateTime = convertDateToMS(endDateSplit[0], endDateSplit[1]);
+        long endDateTime = convertDateToMS(endDateSplit[0], endDateSplit.length > 1 ? endDateSplit[1] : "");
 
         long selectionDateLong = convertDateToMS(selectionDate, "0:00");
 
+        if (removePosterSelected) {
+            new ImageController().deleteImageAndUpdateRelatedDoc(posterURL, null, firebaseID, success -> {
+                Log.d("EditEvent", "Image Removed");
+            });
+        }
+
         if (posterImageUri == null) {
-            saveEvent(title, cost, startDateTime, endDateTime, description,
-                    numParticipantsCount, location, null, selectionDateLong,entrantInt,
+            updateEvent(firebaseID, title, cost, startDateTime, endDateTime, description,
+                    numParticipantsCount, location, null, selectionDateLong, entrant,
                     duration, geolocationOn, replacementDrawOn);
         } else {
             ImageController imgControl = new ImageController();
             try {
                 imgControl.saveImage(this, posterImageUri, "event poster")
                         .addOnSuccessListener(urlAndID -> {
-
-                            saveEvent(title, cost, startDateTime, endDateTime, description,
+                            updateEvent(firebaseID, title, cost, startDateTime, endDateTime, description,
                                     numParticipantsCount, location, urlAndID, selectionDateLong,
-                                    entrantInt, duration, geolocationOn, replacementDrawOn);
-
+                                    entrant, duration, geolocationOn, replacementDrawOn);
                         }).addOnFailureListener(e -> {
-                            // Handle the failure of the image upload
-                            Toast.makeText(this, "Failed to upload image: " +
-                                            e.getMessage() +
-                                            "\nEvent will still be created - navigate to the event page " +
-                                            "and edit it to try uploading the poster again.",
+                            Toast.makeText(this, "Failed to upload image: " + e.getMessage() +
+                                            "\nEvent will still be created - navigate to the event page and edit it to try uploading the poster again.",
                                     Toast.LENGTH_SHORT).show();
-
-                            saveEvent(title, cost, startDateTime, endDateTime, description,
+                            updateEvent(firebaseID, title, cost, startDateTime, endDateTime, description,
                                     numParticipantsCount, location, null, selectionDateLong,
-                                    entrantInt, duration, geolocationOn, replacementDrawOn);
-
+                                    entrant, duration, geolocationOn, replacementDrawOn);
                         });
-            } catch(Exception e) {
-                Toast.makeText(this, "Image upload failed: " + e.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(this, "Image upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
-    private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
-                           String description, int numParticipantsCount, String location,
-                           @Nullable Pair<String, String> urlAndID, long selectionDate, int entrant,
-                           String duration, boolean geolocationOn, boolean replacementDrawOn) {
 
-        Event event = new Event(title, cost, startDateTime, endDateTime, null, description,
-                numParticipantsCount, location, urlAndID == null ? null : urlAndID.first,
-                selectionDate,entrant, duration, geolocationOn, replacementDrawOn);
+    private void updateEvent(String firebaseID, String title, String cost, long startDateTime,
+                             long endDateTime, String description, int numParticipantsCount,
+                             String location, @Nullable Pair<String, String> urlAndID,
+                             long selectionDate, @Nullable Integer entrantLimit, String duration,
+                             boolean geolocationOn, boolean replacementDrawOn) {
+        Event event;
+        if (urlAndID != null) {
+            event = new Event(title, cost, startDateTime, endDateTime, firebaseID, description,
+                    numParticipantsCount, location, urlAndID.first, selectionDate,entrantLimit,duration, geolocationOn, replacementDrawOn);  // Use the ID for the event if it's being updated
+        } else {
+            event = new Event(title, cost, startDateTime, endDateTime, firebaseID, description,
+                    numParticipantsCount, location,  null, selectionDate,entrantLimit,duration, geolocationOn, replacementDrawOn);
+        }
 
         EventController controller = new EventController();
-        controller.addEvent(event, id -> {
-            event.setFirebaseID(id);
-            if (urlAndID != null) {
+        controller.updateEvent(event, id -> {
+            if (urlAndID != null && urlAndID.second != null) {
                 new ImageController().updateImageRef(urlAndID.second, id, false);
             }
 
-            // Create an empty waiting-list subcollection for the event
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("events").document(id).collection("waiting-list")
-                    .add(new HashMap<>()) // Adds an empty document to initialize the collection
-                    .addOnSuccessListener(documentReference -> Log.d("AddEventActivity", "Waiting list created successfully"))
-                    .addOnFailureListener(e -> Log.e("AddEventActivity", "Failed to create waiting list", e));
+            // Display a toast message confirming the update
+            Toast.makeText(this, "Event updated: '" + event.getTitle() + "'", Toast.LENGTH_SHORT).show();
 
-            Toast.makeText(this, "Event created: " + event.toString(), Toast.LENGTH_SHORT).show();
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("event", event);
-            setResult(1, resultIntent);
+            // Finish the activity (or navigate as needed)
             finish();
         });
     }
+
 
     /**
      * This method is used to convert the date in milliseconds
@@ -262,14 +317,6 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         }
     }
 
-    /**
-     * This method adds the duration to the start time to find the end time and considers if
-     * it goes beyond 24 hours.
-     * @param startDate the event start date
-     * @param startTime the time
-     * @param duration the duration of event
-     * @return
-     */
     private String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
         String endDate = startDate;
 
