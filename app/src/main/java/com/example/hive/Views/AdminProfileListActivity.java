@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hive.AdminEvent.AdminEventListActivity;
+import com.example.hive.AdminImage.AdminImageListActivity;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Models.User;
 import com.example.hive.R;
@@ -68,16 +69,42 @@ public class AdminProfileListActivity extends AppCompatActivity {
             }
         });
 
-        backArrow.setOnClickListener(new View.OnClickListener() {
+        // Get references to the three buttons to switch list views
+        Button viewEvents = findViewById(R.id.view_events_btn);
+        Button viewFacilities = findViewById(R.id.view_facilities_btn);
+        Button viewImages = findViewById(R.id.view_images_btn);
+
+        // Logic to switch list activities on button presses
+        viewEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Notify the user when the back arrow is clicked
-                Intent i = new Intent(AdminProfileListActivity.this, AdminEventListActivity.class);
-                Toast.makeText(AdminProfileListActivity.this, "Back arrow clicked", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(AdminProfileListActivity.this,
+                        AdminEventListActivity.class);
                 finish();
                 startActivity(i);
             }
         });
+
+        viewImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(AdminProfileListActivity.this,
+                        AdminImageListActivity.class);
+                finish();
+                startActivity(i);
+            }
+        });
+
+//        backArrow.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Notify the user when the back arrow is clicked
+//                Intent i = new Intent(AdminProfileListActivity.this, AdminEventListActivity.class);
+//                Toast.makeText(AdminProfileListActivity.this, "Back arrow clicked", Toast.LENGTH_SHORT).show();
+//                finish();
+//                startActivity(i);
+//            }
+//        });
     }
 
 

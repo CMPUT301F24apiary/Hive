@@ -42,12 +42,18 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.0.1")
     testImplementation("org.mockito:mockito-core:4.0.0")
     testImplementation("org.mockito:mockito-junit-jupiter:4.0.0")
+    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
 
     // App dependencies
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation ("com.google.zxing:core:3.3.3")
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.firebase.storage)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
+    implementation ("com.google.firebase:firebase-firestore:25.1.1")
+
     implementation(libs.glide.v4110)
     annotationProcessor(libs.compiler)
     implementation(libs.appcompat)
@@ -57,10 +63,17 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.13.0")
     androidTestImplementation(libs.testng) // Glide for image handling
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.0")
+    implementation ("com.google.zxing:core:3.3.3")
+    implementation ("com.google.firebase:firebase-auth:21.3.0")
+
+
 
     // Firebase authentication
+    implementation(platform(libs.google.firebase.bom))
     implementation(libs.play.services.auth)
     implementation(libs.play.services.base)
+
+
 
     // Glide (for profile images)
     implementation(libs.glide)

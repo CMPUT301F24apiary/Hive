@@ -12,12 +12,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +43,8 @@ public class FirebaseController {
         if (!is_initialized) {
             db = FirebaseFirestore.getInstance();
             is_initialized = true;
+        } else {
+            db = getDb();
         }
     }
 
@@ -198,6 +203,28 @@ public class FirebaseController {
                 }).addOnFailureListener(listener::onError);
     }
 
+    public void updateUserByDeviceId(String deviceId, HashMap<String, Object> data, OnSuccessListener<Boolean> listener) {
+        db.collection("users").whereEqualTo("deviceId", deviceId).get().addOnSuccessListener(docs -> {
+            if (!docs.isEmpty()) {
+                DocumentSnapshot doc = docs.getDocuments().get(0);
+                DocumentReference docRef = doc.getReference();
+                docRef.update(data).addOnSuccessListener(unused -> listener.onSuccess(Boolean.TRUE))
+                        .addOnFailureListener(e -> listener.onSuccess(Boolean.FALSE));
+            }
+        });
+    }
+
+    public void getUserDocId(String deviceId, OnSuccessListener<String> listener) {
+        db.collection("users").whereEqualTo("deviceId", deviceId).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot docs) {
+                        DocumentSnapshot doc = docs.getDocuments().get(0);
+                        listener.onSuccess(doc.getId());
+                    }
+                });
+    }
+
     /**
      * interface; listener for user fetching
      */
@@ -233,5 +260,56 @@ public class FirebaseController {
                 })
                 .addOnFailureListener(listener::onError);
     }
+    /**
+     * Adds a user to the waiting list of a specific event in Firestore.
+     *
+     * @param waitingListId The ID of the waiting list to which the user should be added.
+     * @param userId        The ID of the user to be added.
+     * @param callback      A callback to handle success or failure of the operation.
+     */
+    public void addUserToWaitingList(String waitingListId, String userId, Callback callback) {
+        DocumentReference waitingListRef = db.collection("waiting-list").document(waitingListId);
 
+        waitingListRef.update("user-ids", FieldValue.arrayUnion(userId))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "User added to waiting list successfully.");
+                    callback.onSuccess();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to add user to waiting list: " + e.getMessage(), e);
+                    callback.onFailure("Failed to add user to waiting list.");
+                });
+    }
+
+    /**
+     * Removes a user from the waiting list of a specific event in Firestore.
+     *
+     * @param waitingListId The ID of the waiting list from which the user should be removed.
+     * @param userId        The ID of the user to be removed.
+     * @param callback      A callback to handle success or failure of the operation.
+     */
+    public void removeUserFromWaitingList(String waitingListId, String userId, Callback callback) {
+        DocumentReference waitingListRef = db.collection("waiting-list").document(waitingListId);
+
+        waitingListRef.update("user-ids", FieldValue.arrayRemove(userId))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "User removed from waiting list successfully.");
+                    callback.onSuccess();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to remove user from waiting list: " + e.getMessage(), e);
+                    callback.onFailure("Failed to remove user from waiting list.");
+                });
+    }
+
+    /**
+     * Callback interface for Firestore operations.
+     */
+    public interface Callback {
+        void onSuccess();
+        void onFailure(String errorMessage);
+    }
 }
+
+
+
