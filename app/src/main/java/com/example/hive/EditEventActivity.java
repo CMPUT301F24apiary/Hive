@@ -95,7 +95,7 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
             entrantLimit.setText(String.valueOf(currentEvent.getEntrantLimit()));
             firebaseID = currentEvent.getFirebaseID();
             posterURL = currentEvent.getPosterURL();
-            if (!posterURL.isEmpty()) {
+            if (posterURL != null && !posterURL.isEmpty()) {
                 Glide.with(this).load(posterURL).into(addPosterImage);
                 removePoster.setVisibility(View.VISIBLE);
             }
