@@ -24,6 +24,7 @@ import com.example.hive.OptionsPageActivity;
 import com.example.hive.R;
 import com.example.hive.Views.QRCodeActivity;
 
+
 /**
  * Display event information and delete button for admin.
  *
@@ -194,12 +195,10 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
 
         // Entrant Options button logic
         TextView entrantOptionsButton = findViewById(R.id.entrant_options_btn);
-        entrantOptionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(EventDetailActivity.this, OptionsPageActivity.class);
-                startActivity(intent);
-            }
+        entrantOptionsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EventDetailActivity.this, OptionsPageActivity.class);
+            intent.putExtra("eventId", id); // Pass the eventId (id) to OptionsPageActivity
+            startActivity(intent);
         });
 
         // Notification Settings button logic
@@ -230,7 +229,12 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
                     e.printStackTrace();
                     Toast.makeText(EventDetailActivity.this, "QR generation failed", Toast.LENGTH_LONG).show();
                 }
+
+
             }
+
+
         });
+
     }
 }
