@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,12 +44,15 @@ public class Event implements Parcelable {
     private String location;
     private int numParticipants;
     private String posterURL;
+    private long selectionDate;
+    private Integer entrantLimit;
+    private String duration;
+    private boolean geolocationOn;
+    private boolean replacementDrawOn;
     private HashMap<String, String> waitingList;
     private String waitingListId;
     private String qrCode;
-    private int entrantLimit;
     private boolean replacementDrawAllowed;
-    private long selectionDate;
     private boolean geolocation;
 
 
@@ -73,11 +77,11 @@ public class Event implements Parcelable {
      * @param posterURL       String: Nullable: The download URL of the event poster related to this event that is stored
      *                        in Firebase cloud storage.
      */
-
-
     public Event(String title, String cost, long startDate, long endDate,
                  @Nullable String firebaseID, String description, int numParticipants,
-                 String location, @Nullable String posterURL) {
+                 String location, @Nullable String posterURL, long selectionDate,
+                 @Nullable Integer entrantLimit, String duration, boolean geolocationOn,
+                 boolean replacementDrawOn) {
         this.title = title;
         this.cost = cost;
         this.startDate = startDate;
@@ -87,6 +91,11 @@ public class Event implements Parcelable {
         this.location = location;
         this.numParticipants = numParticipants;
         this.posterURL = posterURL;
+        this.selectionDate = selectionDate;
+        this.entrantLimit = entrantLimit;
+        this.duration = duration;
+        this.geolocationOn = geolocationOn;
+        this.replacementDrawOn = replacementDrawOn;
         this.waitingList = new HashMap<>();
         this.waitingListId = "";
 
@@ -107,11 +116,40 @@ public class Event implements Parcelable {
         this.description = in.readString();
         this.location = in.readString();
         this.numParticipants = in.readInt();
+        this.selectionDate = in.readLong();
         this.posterURL = in.readString();
+        this.entrantLimit = (Integer) in.readSerializable();
+        this.duration = in.readString();
+        this.geolocationOn = in.readInt() == 1;
+        this.replacementDrawOn = in.readInt() == 1;
         this.waitingList = in.readHashMap(String.class.getClassLoader());
         this.waitingListId = in.readString();
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(cost);
+        dest.writeLong(startDate);
+        dest.writeLong(endDate);
+        dest.writeString(firebaseID);
+        dest.writeString(description);
+        dest.writeString(location);
+        dest.writeInt(numParticipants);
+        dest.writeLong(selectionDate);
+        dest.writeString(posterURL);
+        dest.writeSerializable(entrantLimit);
+        dest.writeString(duration);
+        dest.writeInt(geolocationOn ? 1 : 0);
+        dest.writeInt(replacementDrawOn ? 1 : 0);
+        dest.writeMap(waitingList);
+        dest.writeString(waitingListId);
+    }
 
     /**
      * Required function to create or unpack an event parcel.
@@ -143,6 +181,12 @@ public class Event implements Parcelable {
     public String getStartDate() {
         return getDateAndTimeFromMS(this.startDate)[0];
     }
+    public String getSelectionDate() {
+        return getDateAndTimeFromMS(this.selectionDate)[0];
+    }
+
+
+
     public void setStartDate(long startDate) {
         this.startDate = startDate;
     }
@@ -191,6 +235,9 @@ public class Event implements Parcelable {
         this.cost = cost;
     }
 
+    public Integer getEntrantLimit(){
+        return entrantLimit; }
+
     /**
      * Getter for start time, in MS since epoch.
      *
@@ -227,6 +274,10 @@ public class Event implements Parcelable {
         return description;
     }
 
+    public String getDuration(){
+        return duration;
+    }
+
     /**
      * Getter for event location.
      *
@@ -260,6 +311,7 @@ public class Event implements Parcelable {
     public String getWaitingListId() {
         return waitingListId;
     }
+
 
     /**
      * Getter for this events poster download URL.
@@ -296,6 +348,43 @@ public class Event implements Parcelable {
     }
 
     /**
+     * Getter for geolocation
+     *
+     * @return if geolocation is on or off
+     */
+    public boolean isGeolocationOn() {
+        return geolocationOn;
+    }
+
+    /**
+     * Setter for geolocation
+     *
+     * @param geolocationOn boolean: sets the value for geolocation
+     */
+    public void setGeolocationOn(boolean geolocationOn) {
+        this.geolocationOn = geolocationOn;
+    }
+
+
+    /**
+     * Getter for replacement draw
+     *
+     * @return if replacement draw is on or off
+     */
+    public boolean isReplacementDrawOn() {
+        return replacementDrawOn;
+    }
+
+    /**
+     * Setter for replacement draw
+     *
+     * @param replacementDrawOn boolean: sets the value for replacement draw
+     */
+    public void setReplacementDrawOn(boolean replacementDrawOn) {
+        this.replacementDrawOn = replacementDrawOn;
+    }
+
+    /**
      * Getter to return all members of this event.
      *
      * @return All of this event's data in a HashMap.
@@ -309,28 +398,36 @@ public class Event implements Parcelable {
         data.put("endDateInMS", this.endDate);
         data.put("startDateInMS", this.startDate);
         data.put("numParticipants", this.numParticipants);
+        data.put("duration",this.duration);
+        data.put("selectionDate",this.selectionDate);
+        data.put("geolocation", this.geolocationOn);
+        data.put("replacementDrawAllowed", this.replacementDrawOn);
+        data.put("entrantLimit", this.entrantLimit);
         data.put("poster", this.posterURL != null ? this.posterURL : "");
         return data;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(cost);
-        dest.writeLong(startDate);
-        dest.writeLong(endDate);
-        dest.writeString(firebaseID);
-        dest.writeString(description);
-        dest.writeString(location);
-        dest.writeInt(numParticipants);
-        dest.writeString(posterURL);
-        dest.writeMap(waitingList);
-        dest.writeString(waitingListId);
+    public String getDateInDashFormat(String whichDate) {
+        switch (whichDate) {
+            case "start": {
+                Date date = new Date(startDate);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                return sdf.format(date);
+            }
+            case "end": {
+                Date date = new Date(endDate);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                return sdf.format(date);
+            }
+            case "selection": {
+                Date date = new Date(selectionDate);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                return sdf.format(date);
+            }
+            default:
+                Log.e("Event Class - getDateInDashFormat", "Invalid date provided" + whichDate);
+                return "";
+        }
     }
 
     /**
