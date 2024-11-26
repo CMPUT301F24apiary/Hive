@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
  * A singleton class that creates an instance of the Firestore database
  */
 public class FirebaseController {
+    private static FirebaseController instance;
     private FirebaseFirestore db;
     private static boolean is_initialized = false;
 
@@ -40,6 +41,13 @@ public class FirebaseController {
             db = FirebaseFirestore.getInstance();
             is_initialized = true;
         }
+    }
+
+    public static synchronized FirebaseController getInstance() {
+        if (instance == null) {
+            instance = new FirebaseController();
+        }
+        return instance;
     }
 
     /**
@@ -173,6 +181,7 @@ public class FirebaseController {
      * @param listener
      */
     public void fetchUserByDeviceId(String deviceId, OnUserFetchedListener listener) {
+        FirebaseFirestore db = getDb();
         db.collection("users").whereEqualTo("deviceId", deviceId).get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -180,6 +189,8 @@ public class FirebaseController {
                         User user = document.toObject(User.class);
                         user.setDeviceId(document.getString("deviceId"));
                         user.setUserName(document.getString("username"));
+                        List<String> roleList = (List<String>) document.get("roleSet");
+                        user.setRoleList(roleList);
                         listener.onUserFetched(user);
                     } else {
                         listener.onUserFetched(null);
