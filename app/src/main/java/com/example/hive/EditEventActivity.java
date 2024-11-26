@@ -36,6 +36,9 @@ import java.util.regex.Pattern;
 import android.util.Pair;
 import android.widget.ToggleButton;
 
+/**
+ * Activity to edit and event or event poster/details
+ */
 public class EditEventActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
     private static final int GALLERY_REQUEST_CODE = 100;
