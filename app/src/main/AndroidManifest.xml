@@ -60,6 +60,8 @@
         <activity android:name=".ProfileEditActivity" />
         <activity android:name=".FacilityActivity" />
         <activity android:name=".EditFacilityProfileActivity" />
+        <activity android:name=".CancelledListActivity" />
+
         <activity android:name=".OrganizerEventListActivity" />
         <activity android:name=".AddEventActivity" />
         <activity android:name=".Views.QRCodeActivity" />
