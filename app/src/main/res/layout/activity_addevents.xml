@@ -5,17 +5,17 @@
     android:background="@color/mainDark">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="16dp">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/backArrow"
@@ -26,90 +26,95 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
                 android:text="Add an Event"
                 android:textColor="@color/white"
-                android:textSize="25sp"
-                android:layout_marginStart="30dp" />
+                android:textSize="25sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:text="Name"
                 android:textColor="@color/mainGreen"
-                android:textSize="22sp"
-                android:gravity="center_vertical" />
+                android:textSize="22sp" />
 
             <EditText
                 android:id="@+id/eventName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="@color/white"
                 android:hint="Enter event name"
                 android:inputType="textPersonName"
-                android:backgroundTint="@color/white"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:text="Date"
                 android:textColor="@color/mainGreen"
-                android:textSize="22sp"
-                android:gravity="center_vertical" />
+                android:textSize="22sp" />
 
-            <EditText
-                android:id="@+id/eventDate"
-                android:layout_width="0dp"
+            <Button
+                android:id="@+id/pick_start_date"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Enter event date"
-                android:inputType="date"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white" />
+                android:backgroundTint="@color/mainGreen"
+                android:text="Choose Date" />
+
         </LinearLayout>
 
         <!-- New Event Time field -->
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:text="Time"
                 android:textColor="@color/mainGreen"
-                android:textSize="22sp"
-                android:gravity="center_vertical" />
+                android:textSize="22sp" />
 
             <EditText
                 android:id="@+id/eventTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="@color/white"
                 android:hint="Enter event time"
                 android:inputType="time"
-                android:backgroundTint="@color/white"
                 android:textColor="@color/white"
-                android:textColorHint="@color/white" />
+                android:textColorHint="@color/white"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/pick_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/mainGreen"
+                android:text="Choose Time" />
 
         </LinearLayout>
 
@@ -140,146 +145,143 @@
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:text="Location"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp"
-                android:gravity="center_vertical" />
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/eventLocation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="@color/white"
                 android:hint="Enter event location"
                 android:inputType="text"
-                android:backgroundTint="@color/white"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:text="Cost:"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp"
-                android:gravity="center_vertical" />
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/eventCost"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="@color/white"
                 android:hint="Enter event cost"
                 android:inputType="numberDecimal"
-                android:backgroundTint="@color/white"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="230dp"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:text="Number of Participants:"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp"
-                android:gravity="center_vertical" />
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/numParticipants"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:inputType="number"
                 android:backgroundTint="@color/white"
+                android:inputType="number"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:text="Entrant Limit:"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp"
-                android:gravity="center_vertical" />
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/entrantLimit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="@color/white"
                 android:hint="Enter entrant limit"
                 android:inputType="number"
-                android:backgroundTint="@color/white"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:text="Selection Date"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp"
-                android:gravity="center_vertical" />
+                android:textSize="20sp" />
 
-            <EditText
-                android:id="@+id/SelectionDate"
-                android:layout_width="0dp"
+            <Button
+                android:id="@+id/pick_selection_date"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="date"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white" />
+                android:backgroundTint="@color/mainGreen"
+                android:text="Choose Date" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:text="Allow Replacement Draw"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp"
-                android:gravity="center_vertical" />
+                android:textSize="20sp" />
 
             <ToggleButton
                 android:id="@+id/toggleReplacementDraw"
@@ -289,18 +291,18 @@
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:text="Enable Geolocation for Event"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp"
-                android:gravity="center_vertical" />
+                android:textSize="20sp" />
 
             <ToggleButton
                 android:id="@+id/toggleGeolocation"
@@ -312,30 +314,30 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="Event Description:"
             android:textColor="@color/mainGreen"
-            android:textSize="20sp"
-            android:layout_marginTop="16dp" />
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/eventDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/white"
             android:hint="Enter event description"
             android:inputType="textMultiLine"
-            android:minLines="4"
             android:maxLines="4"
-            android:backgroundTint="@color/white"
+            android:minLines="4"
             android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:layout_marginTop="8dp" />
+            android:textColorHint="@color/white" />
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -349,10 +351,10 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="80dp"
-                android:src="@drawable/ic_add"
                 android:contentDescription="Add Poster Image"
+                android:onClick="onAddPosterClick"
                 android:scaleType="centerCrop"
-                android:onClick="onAddPosterClick" />
+                android:src="@drawable/ic_add" />
         </LinearLayout>
 
         <Button
@@ -361,9 +363,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="32dp"
+            android:backgroundTint="@color/mainGreen"
             android:text="Save"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/mainGreen" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
 </ScrollView>

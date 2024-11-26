@@ -1,5 +1,7 @@
 package com.example.hive;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -8,9 +10,12 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -20,25 +25,32 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Controllers.EventController;
 import com.example.hive.Controllers.ImageController;
+import com.example.hive.DateAndTimePickers.DatePickerFragment;
+import com.example.hive.DateAndTimePickers.TimePickerFragment;
 import com.example.hive.Events.Event;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Activity to add an event by filling in all the event details(By an organizer)
  *
  * @author Hrittija
  */
-public class AddEventActivity extends AppCompatActivity {
+public class AddEventActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
     private static final int GALLERY_REQUEST_CODE = 100;
-    private EditText eventName, eventDate,eventTime, eventDuration, eventCost, numParticipants, entrantLimit, selectionDate,eventLocation, eventDescription;
+    private EditText eventName, eventDuration, eventCost, numParticipants, entrantLimit,eventLocation, eventDescription;
     private ToggleButton toggleReplacementDraw, toggleGeolocation;
     private ImageView addPosterImage;
     private Uri posterImageUri;
+    private String startTime, startDate, selectionDate;
+    private Button pickStartTime, pickStartDate, pickSelectionDate;
+    private String activeDateButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +60,11 @@ public class AddEventActivity extends AppCompatActivity {
 
         ImageView backArrow = findViewById(R.id.backArrow);
         eventName = findViewById(R.id.eventName);
-        eventDate = findViewById(R.id.eventDate);
-        eventTime = findViewById(R.id.eventTime);
         eventDuration = findViewById(R.id.eventDuration);
         eventLocation = findViewById(R.id.eventLocation);
         eventCost = findViewById(R.id.eventCost);
         numParticipants = findViewById(R.id.numParticipants);
         entrantLimit = findViewById(R.id.entrantLimit);
-        selectionDate = findViewById(R.id.SelectionDate);
         toggleReplacementDraw = findViewById(R.id.toggleReplacementDraw);
         toggleGeolocation = findViewById(R.id.toggleGeolocation);
         eventDescription = findViewById(R.id.eventDescription);
@@ -65,6 +74,32 @@ public class AddEventActivity extends AppCompatActivity {
             Intent intent = new Intent(AddEventActivity.this, OrganizerEventListActivity.class);
             startActivity(intent);
             finish();
+        });
+
+        pickStartTime = findViewById(R.id.pick_start_time);
+        pickStartTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TimePickerFragment().show(getSupportFragmentManager(), "Pick Start Time");
+            }
+        });
+
+        pickStartDate = findViewById(R.id.pick_start_date);
+        pickStartDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activeDateButton = "start";
+                new DatePickerFragment().show(getSupportFragmentManager(), "Pick Start Date");
+            }
+        });
+
+        pickSelectionDate = findViewById(R.id.pick_selection_date);
+        pickSelectionDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activeDateButton = "select";
+                new DatePickerFragment().show(getSupportFragmentManager(), "Pick Selection Date");
+            }
         });
 
         addPosterImage.setOnClickListener(this::onAddPosterClick);
@@ -97,40 +132,51 @@ public class AddEventActivity extends AppCompatActivity {
      */
     private void saveEventDetails() {
         String title = eventName.getText().toString().trim();
-        String date = eventDate.getText().toString().trim();
         String location = eventLocation.getText().toString().trim();
-        String time = eventTime.getText().toString().trim();
         String duration = eventDuration.getText().toString().trim();
         String cost = eventCost.getText().toString().trim();
         String participantsStr = numParticipants.getText().toString().trim();
         String entrant= entrantLimit.getText().toString().trim();
 
         String description = eventDescription.getText().toString().trim();
-        String selectionDateString = selectionDate.getText().toString().trim();
 
-        if (title.isEmpty() || date.isEmpty() || location.isEmpty() || time.isEmpty() ||
+        if (title.isEmpty() || startDate.isEmpty() || location.isEmpty() || startTime.isEmpty() ||
                 cost.isEmpty() || participantsStr.isEmpty() || description.isEmpty() ||
-                duration.isEmpty()) {
+                duration.isEmpty() || selectionDate.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields.",
                     Toast.LENGTH_SHORT).show();
             return;
         }
 
+        Pattern durationPattern = Pattern.compile("^\\d{1,2}:\\d{2}");
+        Matcher durationMatcher = durationPattern.matcher(duration);
+        boolean durationMatch = durationMatcher.find();
+
+        if (!durationMatch) {
+            Toast.makeText(this, "Invalid duration - should be hh:mm",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        boolean geolocationOn = toggleGeolocation.isChecked();
+        boolean replacementDrawOn = toggleReplacementDraw.isChecked();
+
         int numParticipantsCount = Integer.parseInt(participantsStr);
         int entrantInt = Integer.parseInt(entrant);
-        long startDateTime = convertDateToMS(date, time);
+        long startDateTime = convertDateToMS(startDate, startTime);
 
-        String endDateAndTime = getEndDateTimeFromDuration(date, time, duration);
+        String endDateAndTime = getEndDateTimeFromDuration(startDate, startTime, duration);
 
         String[] endDateSplit = endDateAndTime.split(" ");
 
         long endDateTime = convertDateToMS(endDateSplit[0], endDateSplit[1]);
 
-        long selectionDate = convertDateToMS(selectionDateString, "0:00");
+        long selectionDateLong = convertDateToMS(selectionDate, "0:00");
 
         if (posterImageUri == null) {
             saveEvent(title, cost, startDateTime, endDateTime, description,
-                    numParticipantsCount, location, null, selectionDate,entrantInt, duration);
+                    numParticipantsCount, location, null, selectionDateLong,entrantInt,
+                    duration, geolocationOn, replacementDrawOn);
         } else {
             ImageController imgControl = new ImageController();
             try {
@@ -138,7 +184,8 @@ public class AddEventActivity extends AppCompatActivity {
                         .addOnSuccessListener(urlAndID -> {
 
                             saveEvent(title, cost, startDateTime, endDateTime, description,
-                                    numParticipantsCount, location, urlAndID, selectionDate,entrantInt, duration);
+                                    numParticipantsCount, location, urlAndID, selectionDateLong,
+                                    entrantInt, duration, geolocationOn, replacementDrawOn);
 
                         }).addOnFailureListener(e -> {
                             // Handle the failure of the image upload
@@ -149,7 +196,8 @@ public class AddEventActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
 
                             saveEvent(title, cost, startDateTime, endDateTime, description,
-                                    numParticipantsCount, location, null, selectionDate,entrantInt, duration);
+                                    numParticipantsCount, location, null, selectionDateLong,
+                                    entrantInt, duration, geolocationOn, replacementDrawOn);
 
                         });
             } catch(Exception e) {
@@ -162,10 +210,12 @@ public class AddEventActivity extends AppCompatActivity {
 
     private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
                            String description, int numParticipantsCount, String location,
-                           @Nullable Pair<String, String> urlAndID, long selectionDate, int entrant, String duration) {
+                           @Nullable Pair<String, String> urlAndID, long selectionDate, int entrant,
+                           String duration, boolean geolocationOn, boolean replacementDrawOn) {
 
         Event event = new Event(title, cost, startDateTime, endDateTime, null, description,
-                numParticipantsCount, location, urlAndID == null ? null : urlAndID.first, selectionDate,entrant, duration);
+                numParticipantsCount, location, urlAndID == null ? null : urlAndID.first,
+                selectionDate,entrant, duration, geolocationOn, replacementDrawOn);
 
         EventController controller = new EventController();
         controller.addEvent(event, id -> {
@@ -304,4 +354,21 @@ public class AddEventActivity extends AppCompatActivity {
         return endDate + " " + endTime;
     }
 
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        startTime = String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
+        pickStartTime.setText(startTime);
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        String date = String.valueOf(dayOfMonth) + "-" + String.valueOf(month+1) + "-" + String.valueOf(year);
+        if (activeDateButton.equals("start")) {
+            startDate = date;
+            pickStartDate.setText(startDate);
+        } else if (activeDateButton.equals("select")) {
+            selectionDate = date;
+            pickSelectionDate.setText(selectionDate);
+        }
+    }
 }

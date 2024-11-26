@@ -71,15 +71,12 @@
                 android:textSize="22sp"
                 android:gravity="center_vertical" />
 
-            <EditText
-                android:id="@+id/eventDate"
-                android:layout_width="0dp"
+            <Button
+                android:id="@+id/pick_start_date"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="date"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white" />
+                android:backgroundTint="@color/mainGreen"
+                android:text="Choose Date" />
         </LinearLayout>
 
         <!-- New Event Time field -->
@@ -103,10 +100,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:inputType="time"
                 android:backgroundTint="@color/white"
+                android:inputType="time"
                 android:textColor="@color/white"
-                android:textColorHint="@color/white" />
+                android:textColorHint="@color/white"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/pick_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/mainGreen"
+                android:text="Choose Time" />
 
         </LinearLayout>
 
@@ -249,15 +254,12 @@
                 android:textSize="20sp"
                 android:gravity="center_vertical" />
 
-            <EditText
-                android:id="@+id/SelectionDate"
-                android:layout_width="0dp"
+            <Button
+                android:id="@+id/pick_selection_date"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="date"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white" />
+                android:backgroundTint="@color/mainGreen"
+                android:text="Choose Date" />
         </LinearLayout>
 
         <LinearLayout

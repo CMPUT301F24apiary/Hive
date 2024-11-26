@@ -127,9 +127,12 @@ public class EventController extends FirebaseController {
                 String posterTemp = (String) doc.get("poster");
                 long numParticipants = (long) doc.get("numParticipants");
                 long selectionDate = (long) doc.get("selectionDate");
+                boolean geolocationOn = (boolean) doc.get("geolocation");
+                boolean replacementDrawOn = (boolean) doc.get("replacementDrawAllowed");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
                 Event newEvent = new Event(title, cost, startDate, endDate, id, description,
-                        (int) numParticipants, location, posterURL, selectionDate, entrantLimit, duration);
+                        (int) numParticipants, location, posterURL, selectionDate, entrantLimit,
+                        duration, geolocationOn, replacementDrawOn);
                 data.add(newEvent);
             }
             // Notify the callback with the fetched data
@@ -166,26 +169,19 @@ public class EventController extends FirebaseController {
                 String description = (String) doc.get("description");
                 String location = (String) doc.get("location");
                 String posterTemp = (String) doc.get("poster");
-                Long numParticipantsLong = (Long) doc.get("numParticipants");
+                long numParticipantsLong = (long) doc.get("numParticipants");
                 Long selectionDateLong = (Long) doc.get("selectionDate");
+                boolean geolocationOn = (boolean) doc.get("geolocation");
+                boolean replacementDrawOn = (boolean) doc.get("replacementDrawAllowed");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
 
+
                 // Check if the required fields are null before creating the event object
-                if (startDateLong != null && endDateLong != null && numParticipantsLong != null && selectionDateLong != null) {
-                    Event newEvent = new Event(
-                            title,
-                            cost,
-                            startDateLong,
-                            endDateLong,
-                            id,
-                            description,
-                            numParticipantsLong.intValue(),
-                            location,
-                            posterURL,
-                            selectionDateLong,
-                            entrantLimit,
-                            duration
-                    );
+                if (startDateLong != null && endDateLong != null && selectionDateLong != null) {
+                    Event newEvent = new Event(title, cost, startDateLong, endDateLong, id,
+                            description, (int) numParticipantsLong, location, posterURL,
+                            selectionDateLong, entrantLimit, duration, geolocationOn,
+                            replacementDrawOn);
                     data.add(newEvent);
                 } else {
                     Log.d("EventController", "One of the required fields is null for event: " + id);

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +45,8 @@ public class Event implements Parcelable {
     private final long selectionDate;
     private final Integer entrantLimit;
     private final String duration;
+    private final boolean geolocationOn;
+    private final boolean replacementDrawOn;
 
     /**
      * Event constructor. Creates a new event object with provided parameters.
@@ -72,7 +75,9 @@ public class Event implements Parcelable {
      */
     public Event(String title, String cost, long startDate, long endDate,
                  @Nullable String firebaseID, String description, int numParticipants,
-                 String location, @Nullable String posterURL, long selectionDate, @Nullable Integer entrantLimit,String duration) {
+                 String location, @Nullable String posterURL, long selectionDate,
+                 @Nullable Integer entrantLimit, String duration, boolean geolocationOn,
+                 boolean replacementDrawOn) {
         this.title = title;
         this.cost = cost;
         this.startDate = startDate;
@@ -85,6 +90,8 @@ public class Event implements Parcelable {
         this.selectionDate = selectionDate;
         this.entrantLimit = entrantLimit;
         this.duration = duration;
+        this.geolocationOn = geolocationOn;
+        this.replacementDrawOn = replacementDrawOn;
     }
 
     /**
@@ -106,8 +113,33 @@ public class Event implements Parcelable {
         this.numParticipants = in.readInt();
         this.selectionDate = in.readLong();
         this.posterURL = in.readString();
-        this.entrantLimit = in.readInt();
+        this.entrantLimit = (Integer) in.readSerializable();
         this.duration = in.readString();
+        this.geolocationOn = in.readInt() == 1;
+        this.replacementDrawOn = in.readInt() == 1;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(cost);
+        dest.writeLong(startDate);
+        dest.writeLong(endDate);
+        dest.writeString(firebaseID);
+        dest.writeString(description);
+        dest.writeString(location);
+        dest.writeInt(numParticipants);
+        dest.writeLong(selectionDate);
+        dest.writeString(posterURL);
+        dest.writeSerializable(entrantLimit);
+        dest.writeString(duration);
+        dest.writeInt(geolocationOn ? 1 : 0);
+        dest.writeInt(replacementDrawOn ? 1 : 0);
     }
 
     /**
@@ -187,7 +219,7 @@ public class Event implements Parcelable {
         return cost;
     }
 
-    public int getEntrantLimit(){
+    public Integer getEntrantLimit(){
         return entrantLimit; }
 
     /**
@@ -295,23 +327,27 @@ public class Event implements Parcelable {
         return data;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(cost);
-        dest.writeLong(startDate);
-        dest.writeLong(endDate);
-        dest.writeString(firebaseID);
-        dest.writeString(description);
-        dest.writeString(location);
-        dest.writeInt(numParticipants);
-        dest.writeString(posterURL);
-        dest.writeString(duration);
+    public String getDateInDashFormat(String whichDate) {
+        switch (whichDate) {
+            case "start": {
+                Date date = new Date(startDate);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                return sdf.format(date);
+            }
+            case "end": {
+                Date date = new Date(endDate);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                return sdf.format(date);
+            }
+            case "selection": {
+                Date date = new Date(selectionDate);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                return sdf.format(date);
+            }
+            default:
+                Log.e("Event Class - getDateInDashFormat", "Invalid date provided" + whichDate);
+                return "";
+        }
     }
 
     /**
