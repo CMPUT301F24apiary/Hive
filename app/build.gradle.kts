@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
+    implementation ("com.google.firebase:firebase-firestore:25.1.1")
+
     implementation(libs.glide.v4110)
     annotationProcessor(libs.compiler)
     implementation(libs.appcompat)

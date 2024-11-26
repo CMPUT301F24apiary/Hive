@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.EventListActivity;
 import com.example.hive.Events.Event;
 import com.example.hive.Models.User;
 import com.example.hive.R;
@@ -125,7 +126,8 @@ public class UserEventPageActivity extends AppCompatActivity {
 
 
     private void setupButtonListeners() {
-        String userId = User.getInstance().getDeviceId(); // Retrieve deviceId
+        // Retrieve the userId (deviceId) from the User singleton instance
+        String userId = User.getInstance().getDeviceId();
 
         registerButton.setOnClickListener(v -> {
             if (userId == null || userId.isEmpty()) {
@@ -138,6 +140,7 @@ public class UserEventPageActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess() {
                     Toast.makeText(UserEventPageActivity.this, "Successfully registered for the event!", Toast.LENGTH_SHORT).show();
+                    navigateToEventListActivity(); // Navigate to EventListActivity
                 }
 
                 @Override
@@ -158,6 +161,7 @@ public class UserEventPageActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess() {
                     Toast.makeText(UserEventPageActivity.this, "Successfully unregistered from the event!", Toast.LENGTH_SHORT).show();
+                    navigateToEventListActivity(); // Navigate to EventListActivity
                 }
 
                 @Override
@@ -166,5 +170,12 @@ public class UserEventPageActivity extends AppCompatActivity {
                 }
             });
         });
+    }
+
+    private void navigateToEventListActivity() {
+        Intent intent = new Intent(UserEventPageActivity.this, EventListActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Ensure it clears the stack
+        startActivity(intent);
+        finish(); // Close the current activity
     }
 }
