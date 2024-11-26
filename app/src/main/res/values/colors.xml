@@ -8,6 +8,8 @@
     <color name="mainRed">#CF4242</color>
     <color name="darkBackground">#121212</color>
     <color name="gray">#BDBDBD</color>
+    <color name="transparent">#00000000</color>
+
 
 
 </resources>
