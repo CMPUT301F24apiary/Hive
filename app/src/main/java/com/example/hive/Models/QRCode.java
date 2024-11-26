@@ -46,6 +46,12 @@ public class QRCode {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error saving QR code to db"));
     }
 
+    /**
+     * retrieve the QR code from the db.
+     * can be used to confirm that the qr hash is in the db.
+     * @param eventId
+     * @param callback
+     */
     public static void retriveQRCodeFromDb(String eventId, QRCodeCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events").document(eventId).get()
@@ -66,5 +72,15 @@ public class QRCode {
     public interface QRCodeCallback {
         void onQRCodeRetrieved(String qrCodeBase64);
         void onError(Exception e);
+    }
+
+    /**
+     * Admin functionality: remove QR code from db.
+     * @param eventId
+     */
+    public static void  removeQRCodeFromDb(String eventId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("events").document(eventId)
+                .update("qrCode", null);
     }
 }
