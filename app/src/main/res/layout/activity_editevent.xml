@@ -347,6 +347,15 @@
                 android:contentDescription="Add Poster Image"
                 android:scaleType="centerCrop"
                 android:onClick="onAddPosterClick" />
+
+            <Button
+                android:id="@+id/remove_poster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="80dp"
+                android:backgroundTint="@color/mainRed"
+                android:text="Remove Poster"
+                android:visibility="gone" />
         </LinearLayout>
 
         <Button

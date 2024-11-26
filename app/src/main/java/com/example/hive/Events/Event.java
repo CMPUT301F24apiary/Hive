@@ -322,7 +322,9 @@ public class Event implements Parcelable {
         data.put("numParticipants", this.numParticipants);
         data.put("duration",this.duration);
         data.put("selectionDate",this.selectionDate);
-
+        data.put("geolocation", this.geolocationOn);
+        data.put("replacementDrawAllowed", this.replacementDrawOn);
+        data.put("entrantLimit", this.entrantLimit);
         data.put("poster", this.posterURL != null ? this.posterURL : "");
         return data;
     }
