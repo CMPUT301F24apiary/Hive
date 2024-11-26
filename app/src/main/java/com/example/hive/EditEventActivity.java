@@ -93,6 +93,8 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
             numParticipants.setText(String.valueOf(currentEvent.getNumParticipants()));
             eventDescription.setText(currentEvent.getDescription());
             entrantLimit.setText(String.valueOf(currentEvent.getEntrantLimit()));
+            toggleGeolocation.setChecked(currentEvent.isGeolocationOn());
+            toggleReplacementDraw.setChecked(currentEvent.isReplacementDrawOn());
             firebaseID = currentEvent.getFirebaseID();
             posterURL = currentEvent.getPosterURL();
             if (posterURL != null && !posterURL.isEmpty()) {

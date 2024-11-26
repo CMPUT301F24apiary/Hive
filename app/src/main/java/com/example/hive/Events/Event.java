@@ -348,6 +348,43 @@ public class Event implements Parcelable {
     }
 
     /**
+     * Getter for geolocation
+     *
+     * @return if geolocation is on or off
+     */
+    public boolean isGeolocationOn() {
+        return geolocationOn;
+    }
+
+    /**
+     * Setter for geolocation
+     *
+     * @param geolocationOn boolean: sets the value for geolocation
+     */
+    public void setGeolocationOn(boolean geolocationOn) {
+        this.geolocationOn = geolocationOn;
+    }
+
+
+    /**
+     * Getter for replacement draw
+     *
+     * @return if replacement draw is on or off
+     */
+    public boolean isReplacementDrawOn() {
+        return replacementDrawOn;
+    }
+
+    /**
+     * Setter for replacement draw
+     *
+     * @param replacementDrawOn boolean: sets the value for replacement draw
+     */
+    public void setReplacementDrawOn(boolean replacementDrawOn) {
+        this.replacementDrawOn = replacementDrawOn;
+    }
+
+    /**
      * Getter to return all members of this event.
      *
      * @return All of this event's data in a HashMap.
