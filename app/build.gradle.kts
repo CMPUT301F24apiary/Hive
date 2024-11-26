@@ -65,6 +65,7 @@ dependencies {
 
 
     // Firebase authentication
+    implementation(platform(libs.google.firebase.bom))
     implementation(libs.play.services.auth)
     implementation(libs.play.services.base)
 

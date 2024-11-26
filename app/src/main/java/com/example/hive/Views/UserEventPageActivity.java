@@ -23,7 +23,9 @@ public class UserEventPageActivity extends AppCompatActivity {
     private Button registerButton, unregisterButton;
     private FirebaseController firebaseController;
     private String eventId;
-    private TextView locationTextView, costTextView, selectionDateTextView;
+    private TextView locationTextView, costTextView;
+    private TextView dateTextView, timeTextView;
+
 
 
     @Override
@@ -38,6 +40,10 @@ public class UserEventPageActivity extends AppCompatActivity {
         eventDetails = findViewById(R.id.eventDetails);
         eventDescription = findViewById(R.id.eventDescription);
         participantsCount = findViewById(R.id.participantsCount);
+        locationTextView = findViewById(R.id.locationTextView); // Initialize this
+        costTextView = findViewById(R.id.costTextView); // Initialize this
+        dateTextView = findViewById(R.id.dateTextView);
+        timeTextView = findViewById(R.id.timeTextView); // Initialize this
         registerButton = findViewById(R.id.registerButton);
         unregisterButton = findViewById(R.id.unregisterButton);
 
@@ -55,65 +61,70 @@ public class UserEventPageActivity extends AppCompatActivity {
         setupButtonListeners();
     }
 
-    private void fetchEventDetails(String eventId) {
-        Log.d("UserEventPageActivity", "Fetching details for Event ID: " + eventId);
 
+    private void fetchEventDetails(String eventId) {
         firebaseController.getDb().collection("events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        Log.d("UserEventPageActivity", "Event found: " + documentSnapshot.getData());
-
                         Event event = documentSnapshot.toObject(Event.class);
                         if (event != null) {
-                            Log.d("UserEventPageActivity", "Event successfully parsed: " + event.getTitle());
                             updateUIWithEventDetails(event);
                         } else {
                             Log.e("UserEventPageActivity", "Event object is null.");
                             Toast.makeText(this, "Failed to load event details.", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Log.e("UserEventPageActivity", "Event not found in Firebase.");
+                        Log.e("UserEventPageActivity", "Event not found in Firestore.");
                         Toast.makeText(this, "Event not found.", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("UserEventPageActivity", "Firebase query failed: " + e.getMessage(), e);
+                    Log.e("UserEventPageActivity", "Error fetching event details: " + e.getMessage());
                     Toast.makeText(this, "Failed to fetch event details.", Toast.LENGTH_SHORT).show();
                 });
     }
 
 
 
-
     private void updateUIWithEventDetails(Event event) {
-        // Update the UI components with event details
+        Log.d("UserEventPageActivity", "Event Details: " + event.getTitle());
+        Log.d("UserEventPageActivity", "Waiting List ID: " + event.getWaitingListId());
+
+        if (event.getWaitingListId() == null || event.getWaitingListId().isEmpty()) {
+            Log.e("UserEventPageActivity", "Invalid waitingListId in event.");
+            Toast.makeText(this, "Invalid event data. Cannot register.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Update UI components
+        String[] startDateAndTime = event.getDateAndTimeFromMS(event.getStartDateInMS());
+        String[] endDateAndTime = event.getDateAndTimeFromMS(event.getEndDateInMS());
+
+        dateTextView.setText(String.format(Locale.ENGLISH, "Date: %s", startDateAndTime[0]));
+        timeTextView.setText(String.format(Locale.ENGLISH, "Time: %s - %s",
+                startDateAndTime[1], endDateAndTime[1]));
         eventTitle.setText(event.getTitle());
-        eventDescription.setText(event.getDescription());
-        eventDetails.setText("Start: " + event.getStartDate() + " - End: " + event.getEndDate());
-        //participantsCount.setText("Participants: " + event.getNumParticipants() + "/" + event.getEntrantLimit());
-        locationTextView.setText("Location: " + event.getLocation());
-        costTextView.setText("Cost: " + event.getCost());
+        eventDescription.setText(String.format(Locale.ENGLISH, "Event Description: %s",event.getDescription()));
+        participantsCount.setText(String.format(Locale.ENGLISH, "Participants: %d", event.getNumParticipants()));
+        locationTextView.setText(String.format(Locale.ENGLISH, "Location: %s", event.getLocation()));
+
+        timeTextView.setText(String.format(Locale.ENGLISH, "Time: %s - %s", event.getStartTime(), event.getEndTime()));
 
 
+        // Save the waitingListId for later actions
+        this.eventId = event.getWaitingListId();
 
-
-        // Load the event poster image using Glide if available
+        // Load image using Glide if applicable
         if (event.getPosterURL() != null && !event.getPosterURL().isEmpty()) {
-            Glide.with(this)
-                    .load(event.getPosterURL())
-                    .placeholder(android.R.drawable.ic_menu_gallery) // Replace with your placeholder
-                    .error(android.R.drawable.ic_menu_report_image) // Replace with your error image
-                    .into(eventImageView);
-        } else {
-            eventImageView.setImageResource(android.R.drawable.ic_menu_gallery); // Replace with your default image
+            Glide.with(this).load(event.getPosterURL()).into(eventImageView);
         }
     }
 
 
     private void setupButtonListeners() {
         registerButton.setOnClickListener(v -> {
-            String userId = "your_user_id_here"; // Replace with actual user ID logic
+            String userId = "your_user_id_here"; // Replace with actual logic to get the user's ID
             firebaseController.addUserToWaitingList(eventId, userId, new FirebaseController.Callback() {
                 @Override
                 public void onSuccess() {
@@ -128,7 +139,7 @@ public class UserEventPageActivity extends AppCompatActivity {
         });
 
         unregisterButton.setOnClickListener(v -> {
-            String userId = "your_user_id_here";
+            String userId = "your_user_id_here"; // Replace with actual logic to get the user's ID
             firebaseController.removeUserFromWaitingList(eventId, userId, new FirebaseController.Callback() {
                 @Override
                 public void onSuccess() {

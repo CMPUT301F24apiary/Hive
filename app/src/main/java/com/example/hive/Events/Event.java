@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import com.google.firebase.firestore.PropertyName;
 
 /**
  * Class to represent an event. Implements <code>Parcelable</code> in order to be passed via <code>
@@ -33,15 +34,29 @@ import java.util.Locale;
  */
 public class Event implements Parcelable {
 
-    private final String title;
-    private final String cost;
-    private final long startDate;
-    private final long endDate;
+    private String title;
+    private String cost;
+    private long startDate;
+    private long endDate;
     private String firebaseID;
-    private final String description;
-    private final String location;
-    private final int numParticipants;
+    private String description;
+    private String location;
+    private int numParticipants;
     private String posterURL;
+    private HashMap<String, String> waitingList;
+    private String waitingListId;
+    private String qrCode;
+    private int entrantLimit;
+    private boolean replacementDrawAllowed;
+    private long selectionDate;
+    private boolean geolocation;
+
+
+    // No-argument constructor for Firestore
+    public Event() {
+        // Default constructor required for calls to DataSnapshot.getValue(Event.class)
+    }
+
 
     /**
      * Event constructor. Creates a new event object with provided parameters.
@@ -58,6 +73,8 @@ public class Event implements Parcelable {
      * @param posterURL       String: Nullable: The download URL of the event poster related to this event that is stored
      *                        in Firebase cloud storage.
      */
+
+
     public Event(String title, String cost, long startDate, long endDate,
                  @Nullable String firebaseID, String description, int numParticipants,
                  String location, @Nullable String posterURL) {
@@ -70,6 +87,9 @@ public class Event implements Parcelable {
         this.location = location;
         this.numParticipants = numParticipants;
         this.posterURL = posterURL;
+        this.waitingList = new HashMap<>();
+        this.waitingListId = "";
+
     }
 
     /**
@@ -88,7 +108,10 @@ public class Event implements Parcelable {
         this.location = in.readString();
         this.numParticipants = in.readInt();
         this.posterURL = in.readString();
+        this.waitingList = in.readHashMap(String.class.getClassLoader());
+        this.waitingListId = in.readString();
     }
+
 
     /**
      * Required function to create or unpack an event parcel.
@@ -108,6 +131,9 @@ public class Event implements Parcelable {
     public String getTitle() {
         return title;
     }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     /**
      * Getter to get start date in human readable format. Returns date as "mmm dd" i.e. "Jan 01"
@@ -117,6 +143,9 @@ public class Event implements Parcelable {
     public String getStartDate() {
         return getDateAndTimeFromMS(this.startDate)[0];
     }
+    public void setStartDate(long startDate) {
+        this.startDate = startDate;
+    }
 
     /**
      * Getter to get end date in human readable format. Returns date as "mmm dd" i.e. "Jan 01"
@@ -125,6 +154,9 @@ public class Event implements Parcelable {
      */
     public String getEndDate() {
         return getDateAndTimeFromMS(this.endDate)[0];
+    }
+    public void setEndDate(long endDate) {
+        this.endDate = endDate;
     }
 
     /**
@@ -154,6 +186,9 @@ public class Event implements Parcelable {
      */
     public String getCost() {
         return cost;
+    }
+    public void setCost(String cost) {
+        this.cost = cost;
     }
 
     /**
@@ -200,6 +235,31 @@ public class Event implements Parcelable {
     public String getLocation() {
         return location;
     }
+    public HashMap<String, String> getWaitingList() {
+        return waitingList;
+    }
+    public void setWaitingList(HashMap<String, String> waitingList) {
+        this.waitingList = waitingList;
+    }
+    public void addToWaitingList(String userId, String userName) {
+        if (waitingList != null) {
+            waitingList.put(userId, userName);
+        }
+    }
+    public void removeFromWaitingList(String userId) {
+        if (waitingList != null) {
+            waitingList.remove(userId);
+        }
+    }
+    @PropertyName("waiting-list-id")
+    public void setWaitingListId(String waitingListId) {
+        this.waitingListId = waitingListId;
+    }
+
+    @PropertyName("waiting-list-id")
+    public String getWaitingListId() {
+        return waitingListId;
+    }
 
     /**
      * Getter for this events poster download URL.
@@ -212,6 +272,9 @@ public class Event implements Parcelable {
 
     public int getNumParticipants() {
         return numParticipants;
+    }
+    public void setNumParticipants(int numParticipants) {
+        this.numParticipants = numParticipants;
     }
 
     /**
@@ -266,6 +329,8 @@ public class Event implements Parcelable {
         dest.writeString(location);
         dest.writeInt(numParticipants);
         dest.writeString(posterURL);
+        dest.writeMap(waitingList);
+        dest.writeString(waitingListId);
     }
 
     /**
@@ -275,7 +340,7 @@ public class Event implements Parcelable {
      * @param dateInMS The date in MS since epoch to convert.
      * @return The String array containing the date and time.
      */
-    private String[] getDateAndTimeFromMS(long dateInMS) {
+    public String[] getDateAndTimeFromMS(long dateInMS) {
         Date dateAsDate = new Date(dateInMS);
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd-HH:mm", Locale.ENGLISH);
         String formatted = sdf.format(dateAsDate);
