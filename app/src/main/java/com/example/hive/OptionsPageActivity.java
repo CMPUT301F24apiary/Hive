@@ -62,7 +62,9 @@ public class OptionsPageActivity extends AppCompatActivity {
         });
 
         participantsButton.setOnClickListener(v -> {
-            // Placeholder for Participants logic
+            Intent intent = new Intent(OptionsPageActivity.this, FinalListActivity.class);
+            intent.putExtra("eventId", eventId); // Pass the eventId to WaitingListActivity
+            startActivity(intent);
         });
 
         viewEntrantMapButton.setOnClickListener(v -> {
