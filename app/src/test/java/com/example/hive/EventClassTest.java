@@ -31,7 +31,7 @@ public class EventClassTest {
                 20,
                 "Test Location",
                 "Test Image URL",
-            1731177806000L
+                1731177806000L
         );
         testEventWithNullID = new Event(
                 "Test Title Null ID",

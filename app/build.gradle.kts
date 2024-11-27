@@ -33,6 +33,10 @@ android {
 }
 
 dependencies {
+
+    // Notification library
+    implementation("androidx.core:core:1.12.0")
+
     implementation(libs.espresso.intents)
     implementation(libs.ext.junit)
 
@@ -86,6 +90,11 @@ dependencies {
     // QR code generation
     implementation(libs.core)
     implementation(libs.zxing.android.embedded)
+
+
+
+
+
 
     // JavaDoc
 //    implementation(files("C:/Users/Zach/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))

@@ -27,6 +27,19 @@
         android:paddingBottom="16dp"
         android:layout_gravity="center" />
 
+    <!-- No Notifications Message -->
+    <TextView
+        android:id="@+id/noNotificationsMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No notifications available."
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:textAlignment="center"
+        android:visibility="gone"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
     <!-- Notification 1 -->
     <LinearLayout
         android:layout_width="match_parent"
