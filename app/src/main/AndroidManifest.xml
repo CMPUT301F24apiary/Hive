@@ -48,6 +48,7 @@
             android:name=".OptionsPageActivity"
             android:exported="true" />
         <activity android:name=".WaitingListActivity" />
+        <activity android:name=".Views.InvitedListActivity" />
         <activity android:name="com.journeyapps.barcodescanner.CaptureActivity" />
 
 

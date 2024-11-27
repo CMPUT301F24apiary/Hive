@@ -31,6 +31,14 @@ public class OptionsPageActivity extends AppCompatActivity {
         TextView participantsButton = findViewById(R.id.participants_btn);
         TextView viewEntrantMapButton = findViewById(R.id.view_entrant_map_btn);
 
+        invitedEntrantsButton.setOnClickListener(v -> {
+            // Navigate to InvitedListActivity
+            Intent intent = new Intent(OptionsPageActivity.this, InvitedListActivity.class);
+            intent.putExtra("eventId", eventId); // Pass the eventId to InvitedListActivity
+            startActivity(intent);
+        });
+
+
         // Back button logic
         findViewById(R.id.back_button).setOnClickListener(v -> {
             Intent intent = new Intent(OptionsPageActivity.this, EventDetailActivity.class);
@@ -45,10 +53,6 @@ public class OptionsPageActivity extends AppCompatActivity {
             Intent intent = new Intent(OptionsPageActivity.this, WaitingListActivity.class);
             intent.putExtra("eventId", eventId); // Pass the eventId to WaitingListActivity
             startActivity(intent);
-        });
-
-        invitedEntrantsButton.setOnClickListener(v -> {
-            // Placeholder for Invited Entrants logic
         });
 
         cancelledEntrantsButton.setOnClickListener(v -> {

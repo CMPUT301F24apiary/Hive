@@ -171,20 +171,69 @@ public class ProfileEditActivity extends AppCompatActivity {
      * Sets up the click listeners for notification bell buttons to open the NotificationActivity.
      */
     void setupNotificationButtons() {
-        View.OnClickListener openNotificationActivity = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Open NotificationActivity
-                Intent intent = new Intent(ProfileEditActivity.this, NotificationActivity.class);
-                startActivity(intent);
+        // Listener to toggle icon and save state
+        View.OnClickListener toggleNotificationListener = v -> {
+            ImageButton button = (ImageButton) v;
+            boolean isEnabled = button.getTag() != null && (boolean) button.getTag();
+
+            // Toggle icon and state
+            if (isEnabled) {
+                button.setImageResource(R.drawable.bell); // Default white bell
+                button.setTag(false);
+                Toast.makeText(this, "Notification Disabled", Toast.LENGTH_SHORT).show();
+            } else {
+                button.setImageResource(R.drawable.bell2); // Filled green bell
+                button.setTag(true);
+                Toast.makeText(this, "Notification Enabled", Toast.LENGTH_SHORT).show();
             }
+
+            // Save updated state
+            saveNotificationPreferences();
         };
 
-        notificationBellButton.setOnClickListener(openNotificationActivity);
-        notificationChosenBellButton.setOnClickListener(openNotificationActivity);
-        notificationNotChosenBellButton.setOnClickListener(openNotificationActivity);
-        notificationOrganizerBellButton.setOnClickListener(openNotificationActivity);
+        // Attach the listener to each notification button
+        notificationChosenBellButton.setOnClickListener(toggleNotificationListener);
+        notificationNotChosenBellButton.setOnClickListener(toggleNotificationListener);
+        notificationOrganizerBellButton.setOnClickListener(toggleNotificationListener);
+
+        // Load saved preferences
+        loadNotificationPreferences();
     }
+
+    // Save preferences to SharedPreferences
+    private void saveNotificationPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("NotificationPreferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Save the state of each notification button
+        editor.putBoolean("notificationChosen", notificationChosenBellButton.getTag() != null && (boolean) notificationChosenBellButton.getTag());
+        editor.putBoolean("notificationNotChosen", notificationNotChosenBellButton.getTag() != null && (boolean) notificationNotChosenBellButton.getTag());
+        editor.putBoolean("notificationOrganizer", notificationOrganizerBellButton.getTag() != null && (boolean) notificationOrganizerBellButton.getTag());
+
+        editor.apply(); // Save the changes
+    }
+
+    // Load preferences from SharedPreferences
+    private void loadNotificationPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("NotificationPreferences", MODE_PRIVATE);
+
+        // Load the state of each notification button
+        boolean notificationChosen = sharedPreferences.getBoolean("notificationChosen", false);
+        boolean notificationNotChosen = sharedPreferences.getBoolean("notificationNotChosen", false);
+        boolean notificationOrganizer = sharedPreferences.getBoolean("notificationOrganizer", false);
+
+        // Set the icon and tag for each button based on the saved state
+        notificationChosenBellButton.setImageResource(notificationChosen ? R.drawable.bell2 : R.drawable.bell);
+        notificationChosenBellButton.setTag(notificationChosen);
+
+        notificationNotChosenBellButton.setImageResource(notificationNotChosen ? R.drawable.bell2 : R.drawable.bell);
+        notificationNotChosenBellButton.setTag(notificationNotChosen);
+
+        notificationOrganizerBellButton.setImageResource(notificationOrganizer ? R.drawable.bell2 : R.drawable.bell);
+        notificationOrganizerBellButton.setTag(notificationOrganizer);
+    }
+
+
 
     // Validation methods
     private boolean isValidInput() {

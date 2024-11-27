@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.hive.R;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
+import com.journeyapps.barcodescanner.camera.CameraSettings;
 
 public class CustomQrScannerActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSION = 1001;
@@ -49,6 +50,8 @@ public class CustomQrScannerActivity extends AppCompatActivity {
     }
 
     private void startScanner() {
+
+
         barcodeView.decodeContinuous(result -> {
             if (result != null && result.getText() != null) {
                 String scanData = result.getText();
@@ -121,4 +124,3 @@ public class CustomQrScannerActivity extends AppCompatActivity {
         }
     }
 }
-
