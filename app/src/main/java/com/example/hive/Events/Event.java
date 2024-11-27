@@ -89,6 +89,8 @@ public class Event implements Parcelable {
         this.posterURL = posterURL;
         this.waitingList = new HashMap<>();
         this.waitingListId = "";
+        this.geolocation = geolocation;
+
 
     }
 
@@ -110,6 +112,7 @@ public class Event implements Parcelable {
         this.posterURL = in.readString();
         this.waitingList = in.readHashMap(String.class.getClassLoader());
         this.waitingListId = in.readString();
+        this.geolocation = in.readByte() != 0;
     }
 
 
@@ -190,6 +193,30 @@ public class Event implements Parcelable {
     public void setCost(String cost) {
         this.cost = cost;
     }
+    /**
+     * Getter for geolocation.
+     *
+     * @return True if the event requires geolocation, false otherwise.
+     */
+    // Getter and Setter for geolocation
+
+    public boolean isGeolocationRequired() {
+        return geolocation;
+    }
+
+
+
+
+    /**
+     * Setter for geolocation.
+     *
+     * @param geolocation True if the event requires geolocation, false otherwise.
+     */
+
+    public void setGeolocationRequired(boolean geolocation) {
+        this.geolocation = geolocation;
+    }
+
 
     /**
      * Getter for start time, in MS since epoch.
@@ -331,6 +358,7 @@ public class Event implements Parcelable {
         dest.writeString(posterURL);
         dest.writeMap(waitingList);
         dest.writeString(waitingListId);
+        dest.writeByte((byte) (geolocation ? 1 : 0));
     }
 
     /**

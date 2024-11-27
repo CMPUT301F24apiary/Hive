@@ -1,6 +1,9 @@
 package com.example.hive.Views;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -16,8 +19,6 @@ import com.example.hive.EventListActivity;
 import com.example.hive.Events.Event;
 import com.example.hive.Models.User;
 import com.example.hive.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Locale;
 
@@ -30,7 +31,6 @@ public class UserEventPageActivity extends AppCompatActivity {
     private TextView locationTextView, costTextView;
     private TextView dateTextView, timeTextView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,18 +38,20 @@ public class UserEventPageActivity extends AppCompatActivity {
 
         firebaseController = new FirebaseController();
 
+        // Initialize views
         eventImageView = findViewById(R.id.eventImageView);
         eventTitle = findViewById(R.id.eventTitle);
         eventDetails = findViewById(R.id.eventDetails);
         eventDescription = findViewById(R.id.eventDescription);
         participantsCount = findViewById(R.id.participantsCount);
-        locationTextView = findViewById(R.id.locationTextView); // Initialize this
-        costTextView = findViewById(R.id.costTextView); // Initialize this
+        locationTextView = findViewById(R.id.locationTextView);
+        costTextView = findViewById(R.id.costTextView);
         dateTextView = findViewById(R.id.dateTextView);
-        timeTextView = findViewById(R.id.timeTextView); // Initialize this
+        timeTextView = findViewById(R.id.timeTextView);
         registerButton = findViewById(R.id.registerButton);
         unregisterButton = findViewById(R.id.unregisterButton);
 
+        // Get event ID from the Intent
         Intent intent = getIntent();
         eventId = intent.getStringExtra("SCAN_RESULT");
 
@@ -61,16 +63,15 @@ public class UserEventPageActivity extends AppCompatActivity {
             finish();
         }
 
-
         setupButtonListeners();
     }
-
 
     private void fetchEventDetails(String eventId) {
         firebaseController.getDb().collection("events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
+                        Log.d("UserEventPageActivity", "Document Snapshot: " + documentSnapshot.getData());
                         Event event = documentSnapshot.toObject(Event.class);
                         if (event != null) {
                             updateUIWithEventDetails(event);
@@ -79,7 +80,7 @@ public class UserEventPageActivity extends AppCompatActivity {
                             Toast.makeText(this, "Failed to load event details.", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Log.e("UserEventPageActivity", "Event not found in Firestore.");
+                        Log.e("UserEventPageActivity", "Event document not found in Firestore.");
                         Toast.makeText(this, "Event not found.", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -88,7 +89,6 @@ public class UserEventPageActivity extends AppCompatActivity {
                     Toast.makeText(this, "Failed to fetch event details.", Toast.LENGTH_SHORT).show();
                 });
     }
-
 
     private void updateUIWithEventDetails(Event event) {
         Log.d("UserEventPageActivity", "Event Details: " + event.getTitle());
@@ -109,24 +109,20 @@ public class UserEventPageActivity extends AppCompatActivity {
                 startDateAndTime[1], endDateAndTime[1]));
         eventTitle.setText(event.getTitle());
         eventDescription.setText(String.format(Locale.ENGLISH, "Event Description: %s", event.getDescription()));
-        participantsCount.setText(String.format(Locale.ENGLISH, "%d", event.getNumParticipants()));
+        participantsCount.setText(String.format(Locale.ENGLISH, "Participants: %d", event.getNumParticipants()));
         locationTextView.setText(String.format(Locale.ENGLISH, "Location: %s", event.getLocation()));
         costTextView.setText(String.format(Locale.ENGLISH, "$%s", event.getCost()));
-        timeTextView.setText(String.format(Locale.ENGLISH, "Time: %s - %s", event.getStartTime(), event.getEndTime()));
-
 
         // Save the waitingListId for later actions
         this.eventId = event.getWaitingListId();
 
-        // Load image using Glide if applicable
+        // Load image using Glide
         if (event.getPosterURL() != null && !event.getPosterURL().isEmpty()) {
             Glide.with(this).load(event.getPosterURL()).into(eventImageView);
         }
     }
 
-
     private void setupButtonListeners() {
-        // Retrieve the userId (deviceId) from the User singleton instance
         String userId = User.getInstance().getDeviceId();
 
         registerButton.setOnClickListener(v -> {
@@ -136,18 +132,32 @@ public class UserEventPageActivity extends AppCompatActivity {
                 return;
             }
 
-            firebaseController.addUserToWaitingList(eventId, userId, new FirebaseController.Callback() {
-                @Override
-                public void onSuccess() {
-                    Toast.makeText(UserEventPageActivity.this, "Successfully registered for the event!", Toast.LENGTH_SHORT).show();
-                    navigateToEventListActivity(); // Navigate to EventListActivity
-                }
-
-                @Override
-                public void onFailure(String errorMessage) {
-                    Toast.makeText(UserEventPageActivity.this, "Failed to register: " + errorMessage, Toast.LENGTH_SHORT).show();
-                }
-            });
+            // Fetch event details to check geolocation requirement
+            firebaseController.getDb().collection("events").document(eventId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            Event event = documentSnapshot.toObject(Event.class);
+                            if (event != null) {
+                                Log.d("UserEventPageActivity", "Geolocation required: " + event.isGeolocationRequired());
+                                if (Boolean.TRUE.equals(event.isGeolocationRequired())) {
+                                    showGeolocationWarning(() -> addUserToWaitingList(userId));
+                                } else {
+                                    addUserToWaitingList(userId);
+                                }
+                            } else {
+                                Log.e("UserEventPageActivity", "Event object is null.");
+                                Toast.makeText(this, "Failed to fetch event details.", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Log.e("UserEventPageActivity", "Event document not found in Firestore.");
+                            Toast.makeText(this, "Event not found.", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("UserEventPageActivity", "Error fetching event details: " + e.getMessage());
+                        Toast.makeText(this, "Failed to fetch event details.", Toast.LENGTH_SHORT).show();
+                    });
         });
 
         unregisterButton.setOnClickListener(v -> {
@@ -161,7 +171,7 @@ public class UserEventPageActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess() {
                     Toast.makeText(UserEventPageActivity.this, "Successfully unregistered from the event!", Toast.LENGTH_SHORT).show();
-                    navigateToEventListActivity(); // Navigate to EventListActivity
+                    navigateToEventListActivity();
                 }
 
                 @Override
@@ -172,10 +182,46 @@ public class UserEventPageActivity extends AppCompatActivity {
         });
     }
 
+    private void showGeolocationWarning(Runnable onAcceptAction) {
+        new AlertDialog.Builder(this)
+                .setTitle("Geolocation Required")
+                .setMessage("This event requires access to your location. Do you want to proceed?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    if (isLocationEnabled()) {
+                        onAcceptAction.run();
+                    } else {
+                        Toast.makeText(this, "Please enable location services to proceed.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private boolean isLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private void addUserToWaitingList(String userId) {
+        firebaseController.addUserToWaitingList(eventId, userId, new FirebaseController.Callback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(UserEventPageActivity.this, "Successfully registered for the event!", Toast.LENGTH_SHORT).show();
+                navigateToEventListActivity();
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(UserEventPageActivity.this, "Failed to register: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void navigateToEventListActivity() {
         Intent intent = new Intent(UserEventPageActivity.this, EventListActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Ensure it clears the stack
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        finish(); // Close the current activity
+        finish();
     }
 }
