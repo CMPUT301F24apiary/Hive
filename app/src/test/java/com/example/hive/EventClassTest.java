@@ -78,7 +78,7 @@ public class EventClassTest {
     public void testEventSetters() {
         testEventWithNullID.setFirebaseID("NewFirebaseID");
         assertEquals("NewFirebaseID", testEventWithNullID.getFirebaseID());
-        testEventWithNullURL.setPosterURL("NewPosterURL");
+        testEventWithNullURL.setPoster("NewPosterURL");
         assertEquals("NewPosterURL", testEventWithNullURL.getPosterURL());
     }
 

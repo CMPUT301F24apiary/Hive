@@ -135,9 +135,10 @@ public class EventController extends FirebaseController {
                 boolean geolocationOn = (boolean) doc.get("geolocation");
                 boolean replacementDrawOn = (boolean) doc.get("replacementDrawAllowed");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
+                boolean isLotteryDrawn = (boolean) doc.get("isLotteryDrawn");
                 Event newEvent = new Event(title, cost, startDate, endDate, id, description,
                         (int) numParticipants, location, posterURL, selectionDate, entrantLimit,
-                        duration, geolocationOn, replacementDrawOn);
+                        duration, geolocationOn, replacementDrawOn, isLotteryDrawn);
                 data.add(newEvent);
             }
             // Notify the callback with the fetched data
@@ -179,6 +180,7 @@ public class EventController extends FirebaseController {
                 boolean geolocationOn = (boolean) doc.get("geolocation");
                 boolean replacementDrawOn = (boolean) doc.get("replacementDrawAllowed");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
+                boolean isLotteryDrawn = (boolean) doc.get("isLotteryDrawn");
 
 
                 // Check if the required fields are null before creating the event object
@@ -186,7 +188,7 @@ public class EventController extends FirebaseController {
                     Event newEvent = new Event(title, cost, startDateLong, endDateLong, id,
                             description, (int) numParticipantsLong, location, posterURL,
                             selectionDateLong, entrantLimit, duration, geolocationOn,
-                            replacementDrawOn);
+                            replacementDrawOn, isLotteryDrawn);
                     data.add(newEvent);
                 } else {
                     Log.d("EventController", "One of the required fields is null for event: " + id);
@@ -228,6 +230,19 @@ public class EventController extends FirebaseController {
         }).addOnFailureListener(e -> {
             Log.e("ControllerDeleteEvent", "Error fetching document", e);
             callback.onSuccess(Boolean.FALSE);
+        });
+    }
+
+    public void getSingleEvent(String id, OnSuccessListener<Event> listener) {
+        CollectionReference eventsCollection = db.collection("events");
+
+        eventsCollection.document(id).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Event event = documentSnapshot.toObject(Event.class);
+                listener.onSuccess(event);
+            }
         });
     }
 
@@ -281,8 +296,12 @@ public class EventController extends FirebaseController {
 
         for (String uid:invited) {
             Log.d("AddInvitedList", uid);
-            eventsCollection.document(eventID).collection("invited-list").document(uid).set(new HashMap<>());
+            eventsCollection.document(eventID).collection("invited-list").document(uid)
+                    .set(new HashMap<>());
         }
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("isLotteryDrawn", Boolean.TRUE);
+        eventsCollection.document(eventID).update(data);
 
     }
 

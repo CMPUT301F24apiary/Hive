@@ -37,12 +37,13 @@
         android:id="@+id/search_container"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/title_waiting_list"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/title_waiting_list">
 
         <!-- Search Bar -->
         <SearchView
@@ -50,16 +51,16 @@
             android:layout_width="383dp"
             android:layout_height="48dp"
             android:backgroundTint="@color/white"
+            android:iconifiedByDefault="false"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:iconifiedByDefault="false"
             android:queryHint="Search people"
             android:searchIcon="@drawable/ic_white_search"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"  />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Search Button -->
 
@@ -70,12 +71,38 @@
         android:id="@+id/invited_list_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:cacheColorHint="@android:color/transparent"
         android:divider="@color/white"
         android:dividerHeight="1dp"
         android:padding="16dp"
-        android:cacheColorHint="@android:color/transparent"
-        app:layout_constraintTop_toBottomOf="@id/search_container"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/search_container" />
+
+    <TextView
+        android:id="@+id/lottery_draw_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/draw_lottery_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/mainGreen"
+        android:text="Draw Lottery"
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lottery_draw_message" />
 </androidx.constraintlayout.widget.ConstraintLayout>

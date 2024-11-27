@@ -217,7 +217,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
 
         Event event = new Event(title, cost, startDateTime, endDateTime, null, description,
                 numParticipantsCount, location, urlAndID == null ? null : urlAndID.first,
-                selectionDate,entrant, duration, geolocationOn, replacementDrawOn);
+                selectionDate,entrant, duration, geolocationOn, replacementDrawOn, false);
 
         EventController controller = new EventController();
         controller.addEvent(event, id -> {
