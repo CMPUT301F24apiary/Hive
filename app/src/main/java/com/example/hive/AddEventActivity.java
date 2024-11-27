@@ -1,7 +1,6 @@
 package com.example.hive;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -106,6 +104,7 @@ public class AddEventActivity extends AppCompatActivity {
         String cost = eventCost.getText().toString().trim();
         String participantsStr = numParticipants.getText().toString().trim();
         String description = eventDescription.getText().toString().trim();
+        boolean isGeolocationRequired = toggleGeolocation.isChecked();
 
         if (title.isEmpty() || date.isEmpty() || location.isEmpty() || time.isEmpty() ||
                 cost.isEmpty() || participantsStr.isEmpty() || description.isEmpty() ||
@@ -127,7 +126,7 @@ public class AddEventActivity extends AppCompatActivity {
 
         if (posterImageUri == null) {
             saveEvent(title, cost, startDateTime, endDateTime, description,
-                    numParticipantsCount, location, null);
+                    numParticipantsCount, location, null, isGeolocationRequired);
         } else {
             ImageController imgControl = new ImageController();
             try {
@@ -135,7 +134,7 @@ public class AddEventActivity extends AppCompatActivity {
                         .addOnSuccessListener(urlAndID -> {
 
                             saveEvent(title, cost, startDateTime, endDateTime, description,
-                                    numParticipantsCount, location, urlAndID);
+                                    numParticipantsCount, location, urlAndID, isGeolocationRequired);
 
                         }).addOnFailureListener(e -> {
                             // Handle the failure of the image upload
@@ -146,7 +145,7 @@ public class AddEventActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
 
                             saveEvent(title, cost, startDateTime, endDateTime, description,
-                                    numParticipantsCount, location, null);
+                                    numParticipantsCount, location, null, isGeolocationRequired);
 
                         });
             } catch(Exception e) {
@@ -159,10 +158,12 @@ public class AddEventActivity extends AppCompatActivity {
 
     private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
                            String description, int numParticipantsCount, String location,
-                           @Nullable Pair<String, String> urlAndID) {
+                           @Nullable Pair<String, String> urlAndID, boolean isGeolocationRequired) {
 
         Event event = new Event(title, cost, startDateTime, endDateTime, null, description,
-                numParticipantsCount, location, urlAndID == null ? null : urlAndID.first);
+                numParticipantsCount, location, urlAndID == null ? null : urlAndID.first, isGeolocationRequired);
+
+
 
         EventController controller = new EventController();
         controller.addEvent(event, id -> {

@@ -77,7 +77,7 @@ public class Event implements Parcelable {
 
     public Event(String title, String cost, long startDate, long endDate,
                  @Nullable String firebaseID, String description, int numParticipants,
-                 String location, @Nullable String posterURL) {
+                 String location, @Nullable String posterURL, boolean geolocation) {
         this.title = title;
         this.cost = cost;
         this.startDate = startDate;
@@ -90,6 +90,7 @@ public class Event implements Parcelable {
         this.waitingList = new HashMap<>();
         this.waitingListId = "";
         this.geolocation = geolocation;
+
 
 
     }
@@ -200,11 +201,9 @@ public class Event implements Parcelable {
      */
     // Getter and Setter for geolocation
 
-    public boolean isGeolocationRequired() {
+    public boolean getGeolocation() {
         return geolocation;
     }
-
-
 
 
     /**
@@ -213,7 +212,7 @@ public class Event implements Parcelable {
      * @param geolocation True if the event requires geolocation, false otherwise.
      */
 
-    public void setGeolocationRequired(boolean geolocation) {
+    public void setGeolocation(boolean geolocation) {
         this.geolocation = geolocation;
     }
 
@@ -337,6 +336,7 @@ public class Event implements Parcelable {
         data.put("startDateInMS", this.startDate);
         data.put("numParticipants", this.numParticipants);
         data.put("poster", this.posterURL != null ? this.posterURL : "");
+        data.put("geolocation", this.geolocation);
         return data;
     }
 

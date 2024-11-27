@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class EventController extends FirebaseController {
 
     public void addEvent(Event event, OnSuccessListener<String> listener) {
         HashMap<String, Object> data = event.getAll();
-
+        data.put("geolocation", event.getGeolocation());
         db.collection("events").add(data).addOnSuccessListener(documentReference -> {
             listener.onSuccess(documentReference.getId());
             lastSavedEvent = event;  // Store event for testing purposes
@@ -63,7 +64,7 @@ public class EventController extends FirebaseController {
         ArrayList<Event> data = new ArrayList<>();
         CollectionReference eventsCollection = db.collection("events");
 
-        eventsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+        eventsCollection.get(Source.SERVER).addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                 String id = doc.getId();
                 String title = (String) doc.get("title");
@@ -74,16 +75,23 @@ public class EventController extends FirebaseController {
                 String location = (String) doc.get("location");
                 String posterTemp = (String) doc.get("poster");
                 Long numParticipantsLong = (Long) doc.get("numParticipants");
+                boolean geolocation = doc.getBoolean("geolocation") != null && doc.getBoolean("geolocation");
+
+                // Debug Log
+                Log.d("EventController", "Fetched geolocation value for event: " + id + " is " + geolocation);
+
                 int numParticipants = numParticipantsLong.intValue();
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
+
                 Event newEvent = new Event(title, cost, startDate, endDate, id, description,
-                        numParticipants, location, posterURL);
+                        numParticipants, location, posterURL, geolocation);
                 data.add(newEvent);
             }
             // Notify the callback with the fetched data
             callback.onSuccess(data);
         }).addOnFailureListener(e -> Log.e("ModelGetAll", "Error fetching data", e));
     }
+
 
     /**
      * Gets all event information from events collection of database that were made by given user.
@@ -109,9 +117,10 @@ public class EventController extends FirebaseController {
                 String location = (String) doc.get("location");
                 String posterTemp = (String) doc.get("poster");
                 long numParticipants = (long) doc.get("numParticipants");
+                boolean geolocation = doc.getBoolean("geolocation") != null && doc.getBoolean("geolocation");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
                 Event newEvent = new Event(title, cost, startDate, endDate, id, description,
-                        (int) numParticipants, location, posterURL);
+                        (int) numParticipants, location, posterURL, geolocation);
                 data.add(newEvent);
             }
             // Notify the callback with the fetched data
