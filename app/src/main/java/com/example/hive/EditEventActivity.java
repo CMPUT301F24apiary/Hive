@@ -96,8 +96,8 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
             numParticipants.setText(String.valueOf(currentEvent.getNumParticipants()));
             eventDescription.setText(currentEvent.getDescription());
             entrantLimit.setText(String.valueOf(currentEvent.getEntrantLimit()));
-            toggleGeolocation.setChecked(currentEvent.isGeolocationOn());
-            toggleReplacementDraw.setChecked(currentEvent.isReplacementDrawOn());
+            toggleGeolocation.setChecked(currentEvent.isGeolocation());
+            toggleReplacementDraw.setChecked(currentEvent.isReplacementDrawAllowed());
             firebaseID = currentEvent.getFirebaseID();
             posterURL = currentEvent.getPosterURL();
             if (posterURL != null && !posterURL.isEmpty()) {
@@ -275,10 +275,10 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
         Event event;
         if (urlAndID != null) {
             event = new Event(title, cost, startDateTime, endDateTime, firebaseID, description,
-                    numParticipantsCount, location, urlAndID.first, selectionDate,entrantLimit,duration, geolocationOn, replacementDrawOn);  // Use the ID for the event if it's being updated
+                    numParticipantsCount, location, urlAndID.first, selectionDate,entrantLimit,duration, geolocationOn, replacementDrawOn, false);  // Use the ID for the event if it's being updated
         } else {
             event = new Event(title, cost, startDateTime, endDateTime, firebaseID, description,
-                    numParticipantsCount, location,  null, selectionDate,entrantLimit,duration, geolocationOn, replacementDrawOn);
+                    numParticipantsCount, location,  null, selectionDate,entrantLimit,duration, geolocationOn, replacementDrawOn, false);
         }
 
         EventController controller = new EventController();

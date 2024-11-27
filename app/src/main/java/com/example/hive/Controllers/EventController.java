@@ -1,18 +1,23 @@
 package com.example.hive.Controllers;
 
 import android.util.Log;
+import android.util.Pair;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.example.hive.Events.Event;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -130,9 +135,10 @@ public class EventController extends FirebaseController {
                 boolean geolocationOn = (boolean) doc.get("geolocation");
                 boolean replacementDrawOn = (boolean) doc.get("replacementDrawAllowed");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
+                boolean isLotteryDrawn = (boolean) doc.get("isLotteryDrawn");
                 Event newEvent = new Event(title, cost, startDate, endDate, id, description,
                         (int) numParticipants, location, posterURL, selectionDate, entrantLimit,
-                        duration, geolocationOn, replacementDrawOn);
+                        duration, geolocationOn, replacementDrawOn, isLotteryDrawn);
                 data.add(newEvent);
             }
             // Notify the callback with the fetched data
@@ -174,6 +180,7 @@ public class EventController extends FirebaseController {
                 boolean geolocationOn = (boolean) doc.get("geolocation");
                 boolean replacementDrawOn = (boolean) doc.get("replacementDrawAllowed");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
+                boolean isLotteryDrawn = (boolean) doc.get("isLotteryDrawn");
 
 
                 // Check if the required fields are null before creating the event object
@@ -181,7 +188,7 @@ public class EventController extends FirebaseController {
                     Event newEvent = new Event(title, cost, startDateLong, endDateLong, id,
                             description, (int) numParticipantsLong, location, posterURL,
                             selectionDateLong, entrantLimit, duration, geolocationOn,
-                            replacementDrawOn);
+                            replacementDrawOn, isLotteryDrawn);
                     data.add(newEvent);
                 } else {
                     Log.d("EventController", "One of the required fields is null for event: " + id);
@@ -224,6 +231,78 @@ public class EventController extends FirebaseController {
             Log.e("ControllerDeleteEvent", "Error fetching document", e);
             callback.onSuccess(Boolean.FALSE);
         });
+    }
+
+    public void getSingleEvent(String id, OnSuccessListener<Event> listener) {
+        CollectionReference eventsCollection = db.collection("events");
+
+        eventsCollection.document(id).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Event event = documentSnapshot.toObject(Event.class);
+                listener.onSuccess(event);
+            }
+        });
+    }
+
+    public void getField(String id, String whichField, OnSuccessListener<Object> listener) {
+        CollectionReference eventsCollection = db.collection("events");
+
+        eventsCollection.document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Object res = documentSnapshot.get(whichField);
+                if (res != null) {
+                    listener.onSuccess(res);
+                } else {
+                    Log.e("EventController - getField", whichField + " is not a field");
+                }
+            }
+        });
+
+    }
+
+    public void getInvitedList(String eventID,
+                               OnSuccessListener<Pair<Boolean, ArrayList<String>>> listener) {
+        CollectionReference eventsCollection = db.collection("events");
+
+        eventsCollection.document(eventID).collection("invited-list").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
+                        if (docs.isEmpty()) {
+                            listener.onSuccess(new Pair<>(Boolean.FALSE, null));
+                        } else {
+                            ArrayList<String> userIDs = new ArrayList<>();
+                            for (DocumentSnapshot doc:docs) {
+                                userIDs.add(doc.getId());
+                            }
+                            listener.onSuccess(new Pair<>(Boolean.TRUE, userIDs));
+                        }
+                    }
+        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onSuccess(new Pair<>(Boolean.FALSE, null));
+                    }
+                });
+
+    }
+
+    public void addInvitedList(String eventID, ArrayList<String> invited) {
+        CollectionReference eventsCollection = db.collection("events");
+
+        for (String uid:invited) {
+            Log.d("AddInvitedList", uid);
+            eventsCollection.document(eventID).collection("invited-list").document(uid)
+                    .set(new HashMap<>());
+        }
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("isLotteryDrawn", Boolean.TRUE);
+        eventsCollection.document(eventID).update(data);
+
     }
 
 }

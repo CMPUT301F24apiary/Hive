@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Events.EventDetailActivity;
+import com.example.hive.Views.InvitedEntrantsActivity;
 
 public class OptionsPageActivity extends AppCompatActivity {
 
@@ -48,7 +49,10 @@ public class OptionsPageActivity extends AppCompatActivity {
         });
 
         invitedEntrantsButton.setOnClickListener(v -> {
-            // Placeholder for Invited Entrants logic
+            // Navigate to invited entrants activity
+            Intent i = new Intent(this, InvitedEntrantsActivity.class);
+            i.putExtra("eventId", eventId);
+            startActivity(i);
         });
 
         cancelledEntrantsButton.setOnClickListener(v -> {
