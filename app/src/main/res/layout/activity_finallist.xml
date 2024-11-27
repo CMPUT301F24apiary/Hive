@@ -27,12 +27,12 @@
 
     <!-- Title -->
     <TextView
-        android:id="@+id/title_cancelled_list"
+        android:id="@+id/title_final_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Cancelled List"
+        android:text="Final List"
         android:textSize="24sp"
         android:textColor="@color/white"
         app:layout_constraintTop_toTopOf="parent"
@@ -46,7 +46,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/title_cancelled_list"
+        app:layout_constraintTop_toBottomOf="@id/title_final_list"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -71,7 +71,7 @@
 
     <!-- Waiting List -->
     <ListView
-        android:id="@+id/cancelled_list_view"
+        android:id="@+id/final_list_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:divider="@color/white"
