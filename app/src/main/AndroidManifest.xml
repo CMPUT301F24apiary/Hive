@@ -64,6 +64,7 @@
         <activity android:name=".FacilityActivity" />
         <activity android:name=".EditFacilityProfileActivity" />
         <activity android:name=".CancelledListActivity" />
+        <activity android:name=".FinalListActivity" />
 
         <activity android:name=".OrganizerEventListActivity" />
         <activity android:name=".AddEventActivity" />
