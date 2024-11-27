@@ -22,6 +22,7 @@ import com.example.hive.Controllers.EventController;
 import com.example.hive.EditEventActivity;
 import com.example.hive.OptionsPageActivity;
 import com.example.hive.R;
+import com.example.hive.Views.OrganizerNotificationActivity;
 import com.example.hive.Views.QRCodeActivity;
 import com.example.hive.Models.QRCode;
 
@@ -207,7 +208,10 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
         notificationSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(EventDetailActivity.this, "Notification Settings Clicked", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(EventDetailActivity.this,
+                        OrganizerNotificationActivity.class);
+                i.putExtra("eventID", event.getFirebaseID());
+                startActivity(i);
             }
         });
 
