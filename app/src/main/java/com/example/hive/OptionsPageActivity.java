@@ -11,7 +11,7 @@ import com.example.hive.Views.InvitedEntrantsActivity;
 
 public class OptionsPageActivity extends AppCompatActivity {
 
-    private String eventId;
+    private String eventId, title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +20,8 @@ public class OptionsPageActivity extends AppCompatActivity {
 
         // Get the eventId from the Intent
         eventId = getIntent().getStringExtra("eventId");
-        if (eventId == null) {
+        title = getIntent().getStringExtra("eventTitle");
+        if (eventId == null || title == null) {
             finish();
             return;
         }
@@ -52,6 +53,7 @@ public class OptionsPageActivity extends AppCompatActivity {
             // Navigate to invited entrants activity
             Intent i = new Intent(this, InvitedEntrantsActivity.class);
             i.putExtra("eventId", eventId);
+            i.putExtra("eventTitle", title);
             startActivity(i);
         });
 

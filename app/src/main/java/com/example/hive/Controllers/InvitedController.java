@@ -1,6 +1,19 @@
 package com.example.hive.Controllers;
 
+import static android.icu.number.NumberRangeFormatter.with;
+
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 import com.example.hive.Models.User;
+import com.example.hive.NotificationActivity;
+import com.example.hive.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,7 +62,8 @@ public class InvitedController extends FirebaseController {
         return invited;
     }
 
-    public void createInvitedUserList(ArrayList<String> invited, OnSuccessListener<ArrayList<User>> listener) {
+    public void createInvitedUserList(Context context, ArrayList<String> invited,
+                                      String eventID, OnSuccessListener<ArrayList<User>> listener) {
         ArrayList<User> userList = new ArrayList<>();
         int[] completedFetches = {0};  // Using array to modify in lambda
 
@@ -65,6 +79,26 @@ public class InvitedController extends FirebaseController {
                 public void onUserFetched(User user) {
                     userList.add(user);
                     completedFetches[0]++;
+
+//                    Intent i = new Intent(context, NotificationActivity.class);
+//                    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+//                            i, PendingIntent.FLAG_IMMUTABLE);
+//
+//                    NotificationCompat.Builder builder =
+//                            new NotificationCompat.Builder(context, "default_channel");
+//                    builder.setSmallIcon(R.drawable.hivelogo)
+//                            .setContentTitle("You have been chosen for an event!")
+//                            .setContentText("You have been selected to enrol in the "
+//                                    + title + " event.")
+//                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//                            .setContentIntent(pendingIntent);
+//
+//                    NotificationManager notificationManager =
+//                            (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                    // Give each notification a unique ID so they don't override each other
+//                    int notificationId = (int) System.currentTimeMillis();
+//                    notificationManager.notify(notificationId, builder.build());
 
                     // Only call listener when all fetches are complete
                     if (completedFetches[0] == invited.size()) {

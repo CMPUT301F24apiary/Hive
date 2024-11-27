@@ -1,5 +1,7 @@
 package com.example.hive;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -46,6 +48,22 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        // Set up notification channel
+        String channelId = "default_channel";
+        String channelName = "Default Channel";
+        String channelDescription = "Channel for default notifications";
+
+        NotificationChannel channel = new NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_DEFAULT // Controls alert level
+        );
+        channel.setDescription(channelDescription);
+
+        // Register channel with system
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
 
         // Retrieve the device ID
         String deviceId = retrieveDeviceId();

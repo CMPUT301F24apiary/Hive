@@ -199,6 +199,7 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
         entrantOptionsButton.setOnClickListener(v -> {
             Intent intent = new Intent(EventDetailActivity.this, OptionsPageActivity.class);
             intent.putExtra("eventId", id); // Pass the eventId (id) to OptionsPageActivity
+            intent.putExtra("eventTitle", event.getTitle());
             startActivity(intent);
         });
 

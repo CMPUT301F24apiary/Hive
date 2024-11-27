@@ -32,7 +32,7 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
     private TextView message;
     private Button drawLotteryButton;
     private EventController eventControl;
-    private String eventID;
+    private String eventID, title;
 
     public void update(ArrayList<User> newUsers) {
         message.setVisibility(View.GONE);
@@ -56,7 +56,8 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
         });
 
         eventID = getIntent().getStringExtra("eventId");
-        if (eventID == null) {
+        title = getIntent().getStringExtra("eventTitle");
+        if (eventID == null || title == null) {
             finish();
             return;
         }
@@ -89,7 +90,9 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             getInvitedUsers();
+                            drawLotteryButton.setVisibility(View.GONE);
                         }
+
                     });
                 }
             }
@@ -127,8 +130,8 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
         eventControl.getInvitedList(eventID, successAndList -> {
             if (successAndList.first) {
                 invitedUIDs = successAndList.second;
-                inviteControl.createInvitedUserList(invitedUIDs,
-                        InvitedEntrantsActivity.this::update);
+                inviteControl.createInvitedUserList(InvitedEntrantsActivity.this,
+                        invitedUIDs, title, InvitedEntrantsActivity.this::update);
             } else {
                 inviteControl.getWaitingListUIDs(eventID, entrants -> {
                     eventControl.getField(eventID, "numParticipants",
@@ -137,8 +140,8 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
                                 invitedUIDs = inviteControl.generateInvitedList(
                                         entrants, numParticipants.intValue());
                                 eventControl.addInvitedList(eventID, invitedUIDs);
-                                inviteControl.createInvitedUserList(invitedUIDs,
-                                        InvitedEntrantsActivity.this::update);
+                                inviteControl.createInvitedUserList(InvitedEntrantsActivity.this,
+                                        invitedUIDs, title, InvitedEntrantsActivity.this::update);
                             });
                 });
             }
