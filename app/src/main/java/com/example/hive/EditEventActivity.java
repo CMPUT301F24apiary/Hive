@@ -96,7 +96,7 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
             numParticipants.setText(String.valueOf(currentEvent.getNumParticipants()));
             eventDescription.setText(currentEvent.getDescription());
             entrantLimit.setText(String.valueOf(currentEvent.getEntrantLimit()));
-            toggleGeolocation.setChecked(currentEvent.isGeolocation());
+            toggleGeolocation.setChecked(currentEvent.getGeolocation());
             toggleReplacementDraw.setChecked(currentEvent.isReplacementDrawAllowed());
             firebaseID = currentEvent.getFirebaseID();
             posterURL = currentEvent.getPosterURL();
@@ -427,4 +427,3 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
         }
     }
 }
-

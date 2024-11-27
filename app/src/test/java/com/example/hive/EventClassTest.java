@@ -70,10 +70,10 @@ public class EventClassTest {
         assertEquals(20, testEvent.getNumParticipants());
         assertEquals("Test Location", testEvent.getLocation());
         assertEquals("Test Image URL", testEvent.getPosterURL());
-        assertEquals(true, testEvent.isGeolocationRequired());
+        assertEquals(true, testEvent.getGeolocation());
         assertNull(testEventWithNullID.getFirebaseID());
         assertNull(testEventWithNullURL.getPosterURL());
-        assertEquals(false, testEventWithNullID.isGeolocationRequired());
+        assertEquals(false, testEventWithNullID.getGeolocation());
     }
 
     @Test
@@ -82,8 +82,8 @@ public class EventClassTest {
         assertEquals("NewFirebaseID", testEventWithNullID.getFirebaseID());
         testEventWithNullURL.setPosterURL("NewPosterURL");
         assertEquals("NewPosterURL", testEventWithNullURL.getPosterURL());
-        testEventWithNullID.setGeolocationRequired(true);
-        assertEquals(true, testEventWithNullID.isGeolocationRequired());
+        testEventWithNullID.setGeolocation(true);
+        assertEquals(true, testEventWithNullID.getGeolocation());
     }
 
     @Test
