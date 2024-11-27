@@ -50,6 +50,7 @@ public class Event implements Parcelable {
     private boolean isLotteryDrawn;
 
 
+
     // No-argument constructor for Firestore
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
@@ -363,17 +364,17 @@ public class Event implements Parcelable {
      *
      * @return if geolocation is on or off
      */
-    public boolean isGeolocation() {
+    public boolean SetGeolocation() {
         return geolocation;
     }
 
     /**
      * Setter for geolocation
      *
-     * @param geolocation boolean: sets the value for geolocation
      */
-    public void setGeolocation(boolean geolocation) {
-        this.geolocation = geolocation;
+    public boolean getGeolocation() {
+
+        return geolocation;
     }
 
 

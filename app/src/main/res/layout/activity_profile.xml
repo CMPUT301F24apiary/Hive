@@ -24,58 +24,53 @@
         android:id="@+id/imageViewProfileImage"
         android:layout_width="165dp"
         android:layout_height="165dp"
-        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
-        android:layout_marginEnd="127dp"
         android:gravity="center"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_profile" />
 
+
     <TextView
         android:id="@+id/personName"
-        android:layout_width="118dp"
-        android:layout_height="57dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/imageViewProfileImage"
-        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"
-        android:layout_marginEnd="149dp"
         android:gravity="center"
         android:text="Person Name"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:textStyle="bold" />
 
+
     <TextView
         android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/personName"
-        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="6dp"
-        android:layout_marginEnd="167dp"
         android:gravity="center"
         android:text="User Name"
         android:textColor="#6C7A89"
-        android:textSize="18sp"
-        tools:ignore="UnknownId" />
+        android:textSize="18sp" />
 
     <LinearLayout
-        android:layout_width="306dp"
-        android:layout_height="94dp"
-        android:layout_alignTop="@+id/userName"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="81dp"
-        android:layout_marginEnd="54dp"
-        android:layout_marginBottom="277dp"
+        android:layout_width="348dp"
+        android:layout_height="173dp"
+        android:layout_below="@+id/userName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
         android:background="#136F63"
+        android:gravity="center"
         android:orientation="vertical"
-        android:padding="8dp"
-        android:gravity="center">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/emailLabel"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="E-mail: user@google.com"
@@ -84,7 +79,7 @@
 
         <TextView
             android:id="@+id/phoneLabel"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
@@ -92,6 +87,7 @@
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
     </LinearLayout>
+
 
     <Button
         android:id="@+id/editProfileButton"

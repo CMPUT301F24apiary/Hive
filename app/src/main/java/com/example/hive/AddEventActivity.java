@@ -3,7 +3,6 @@ package com.example.hive;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,7 +18,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,6 +26,8 @@ import com.example.hive.Controllers.ImageController;
 import com.example.hive.DateAndTimePickers.DatePickerFragment;
 import com.example.hive.DateAndTimePickers.TimePickerFragment;
 import com.example.hive.Events.Event;
+import com.example.hive.OrganizerEventListActivity;
+import com.example.hive.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;

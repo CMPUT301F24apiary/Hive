@@ -6,6 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <View
+        android:id="@+id/gradientView"
+        android:layout_width="415dp"
+        android:layout_height="62dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/gradient_background" />
+
     <!-- Back Button -->
     <ImageButton
         android:id="@+id/back_button"

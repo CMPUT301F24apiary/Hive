@@ -238,12 +238,12 @@ public class EventController extends FirebaseController {
 
         eventsCollection.document(id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Event event = documentSnapshot.toObject(Event.class);
-                listener.onSuccess(event);
-            }
-        });
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Event event = documentSnapshot.toObject(Event.class);
+                        listener.onSuccess(event);
+                    }
+                });
     }
 
     public void getField(String id, String whichField, OnSuccessListener<Object> listener) {
@@ -282,7 +282,7 @@ public class EventController extends FirebaseController {
                             listener.onSuccess(new Pair<>(Boolean.TRUE, userIDs));
                         }
                     }
-        }).addOnFailureListener(new OnFailureListener() {
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         listener.onSuccess(new Pair<>(Boolean.FALSE, null));

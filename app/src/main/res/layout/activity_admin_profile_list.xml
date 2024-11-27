@@ -1,93 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="0dp">
+    android:layout_height="match_parent">
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="126dp"
+        android:background="@drawable/gradient_background" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="12dp">
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="match_parent"
-            android:layout_height="41dp"
-            android:layout_marginBottom="8dp"
-            app:srcCompat="@drawable/hivelogo_white" />
+        android:padding="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
 
-            <Button
-                android:id="@+id/view_facilities_btn"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="match_parent"
+                android:layout_height="41dp"
+                android:layout_marginBottom="8dp"
+                app:srcCompat="@drawable/hivelogo_white" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/mainGreen"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:text="View Facilities" />
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/view_facilities_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainGreen"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="View Facilities" />
 
-            <Button
-                android:id="@+id/view_images_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/mainGreen"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:text="View Images" />
+                <Space
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content" />
 
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/view_images_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainGreen"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="View Images" />
 
-            <Button
-                android:id="@+id/view_events_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/mainGreen"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
-                android:text="View Events" />
+                <Space
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/view_events_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/mainGreen"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="View Events" />
+            </LinearLayout>
+
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <SearchView
+                android:id="@+id/adminProfileSearchView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:iconifiedByDefault="false"
+                android:layout_weight="1"
+                android:queryHint="Search by name"
+                android:searchIcon="@drawable/ic_white_search"
+                android:paddingBottom="8dp" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewAdminProfileList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:scrollbars="vertical" />
+
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <SearchView
-            android:id="@+id/adminProfileSearchView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:iconifiedByDefault="false"
-            android:layout_weight="1"
-            android:queryHint="Search by name"
-            android:searchIcon="@drawable/ic_white_search"
-            android:paddingBottom="8dp"/>
-
-    </LinearLayout>
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewAdminProfileList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"/>
-
-
-</LinearLayout>
+</FrameLayout>
