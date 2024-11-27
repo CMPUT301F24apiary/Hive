@@ -43,7 +43,7 @@ public class WaitingListActivity extends AppCompatActivity {
         }
 
         // Initialize ListView
-        ListView listView = findViewById(R.id.waiting_list_view);
+        ListView listView = findViewById(R.id.invited_list_view);
         entrantsList = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, R.layout.list_item, entrantsList);
         listView.setAdapter(adapter);

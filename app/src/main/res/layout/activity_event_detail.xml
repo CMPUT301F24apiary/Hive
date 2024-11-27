@@ -237,7 +237,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainGreen"
                 android:text="Edit Event"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/delete_event_button"

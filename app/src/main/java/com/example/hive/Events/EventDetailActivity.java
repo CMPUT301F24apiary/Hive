@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
+import com.example.hive.EditEventActivity;
 import com.example.hive.OptionsPageActivity;
 import com.example.hive.R;
 import com.example.hive.Views.QRCodeActivity;
@@ -101,6 +102,7 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
 
         // Get reference to deleteEvent button
         Button deleteEvent = findViewById(R.id.delete_event_button);
+        Button editEvent = findViewById(R.id.edit_event_btn);
 
         // Get reference to delete QR button
         Button deleteQR = findViewById(R.id.delete_qr_button);
@@ -179,6 +181,16 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             @Override
             public void onClick(View v) {
                 new ConfirmEventDelete().show(getSupportFragmentManager(), "Confirm Delete");
+            }
+        });
+
+        editEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EventDetailActivity.this, EditEventActivity.class);
+                intent.putExtra("event", event); // Assuming currentEvent is the Event object you want to pass
+                startActivity(intent);
+
             }
         });
 
