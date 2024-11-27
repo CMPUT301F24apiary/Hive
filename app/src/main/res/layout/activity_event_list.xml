@@ -3,13 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#1A2232"
     tools:context=".EventListActivity"
     tools:ignore="ExtraText">
 
-    // Notification Bell Icon
-
-    // Profile picture
+    <View
+        android:id="@+id/gradientView"
+        android:layout_width="match_parent"
+        android:layout_height="126dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/gradient_background" />
 
     <ImageButton
         android:id="@+id/notificationBellButton"
@@ -17,16 +21,11 @@
         android:layout_height="48dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-
-
-        android:layout_centerHorizontal="true"
         android:layout_marginStart="15dp"
         android:layout_marginTop="38dp"
         android:background="@android:color/transparent"
         android:contentDescription="Notification Bell"
         android:src="@drawable/bell" />
-    // Qr code button
-
 
     <Button
         android:id="@+id/scanQrCodeButton"
@@ -35,9 +34,9 @@
         android:layout_above="@+id/switchRolesButton"
         android:layout_marginTop="528dp"
         android:layout_marginBottom="16dp"
-        android:text="Scan QR Code"
-        android:backgroundTint="#136F63" />
-
+        android:backgroundTint="#136F63"
+        android:gravity="center"
+        android:text="Scan QR Code" />
 
     <ImageView
         android:id="@+id/qrCodeImageView"
@@ -69,10 +68,7 @@
         android:layout_marginTop="0dp"
         android:contentDescription="App Logo"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_app_logo" />
-
-
-    // Switch Roles Button
+        app:srcCompat="@drawable/hivelogo_white" />
 
     <Button
         android:id="@+id/switchRolesButton"
@@ -83,8 +79,9 @@
         android:layout_marginBottom="20dp"
         android:backgroundTint="#136F63"
         android:padding="12dp"
+        android:gravity="center"
         android:text="Switch Roles"
         android:textColor="#FFFFFF" />
 
-
 </RelativeLayout>
+

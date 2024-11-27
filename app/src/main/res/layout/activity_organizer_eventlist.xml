@@ -1,12 +1,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#1A2232">
 
     <RelativeLayout
         android:id="@+id/organizer_event_list_top_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/gradientView"
+            android:layout_width="match_parent"
+            android:layout_height="126dp"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/gradient_background" />
 
         <Button
             android:id="@+id/addEventButton"
@@ -25,7 +33,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="18dp"
+            android:layout_marginEnd="37dp"
             android:background="@android:color/transparent"
             android:contentDescription="Profile Picture"
             android:scaleType="centerCrop"
@@ -35,11 +43,13 @@
             android:id="@+id/appLogo"
             android:layout_width="104dp"
             android:layout_height="120dp"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="0dp"
             android:contentDescription="App Logo"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_app_logo" />
+            app:srcCompat="@drawable/hivelogo_white" />
+
     </RelativeLayout>
 
     <TextView

@@ -109,7 +109,7 @@ public class UserEventPageActivity extends AppCompatActivity {
                 startDateAndTime[1], endDateAndTime[1]));
         eventTitle.setText(event.getTitle());
         eventDescription.setText(String.format(Locale.ENGLISH, "Event Description: %s", event.getDescription()));
-        participantsCount.setText(String.format(Locale.ENGLISH, "Participants: %d", event.getNumParticipants()));
+        participantsCount.setText(String.format(Locale.ENGLISH, "%d", event.getNumParticipants()));
         locationTextView.setText(String.format(Locale.ENGLISH, "Location: %s", event.getLocation()));
         costTextView.setText(String.format(Locale.ENGLISH, "$%s", event.getCost()));
         timeTextView.setText(String.format(Locale.ENGLISH, "Time: %s - %s", event.getStartTime(), event.getEndTime()));
