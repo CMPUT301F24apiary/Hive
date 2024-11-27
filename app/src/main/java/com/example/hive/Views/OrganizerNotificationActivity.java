@@ -1,8 +1,10 @@
 package com.example.hive.Views;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Switch;
 
 import androidx.activity.EdgeToEdge;
@@ -19,6 +21,7 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
     private SwitchCompat selected, cancelled, waiting;
     private EditText message;
     private Button sendNotif;
+    private ImageButton back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,14 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
         waiting = findViewById(R.id.waiting_list_switch);
         message = findViewById(R.id.message_edit_text);
         sendNotif = findViewById(R.id.send_notif_button);
+        back = findViewById(R.id.back_arrow);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         String eventID = getIntent().getStringExtra("eventID");
         if (eventID == null) {
