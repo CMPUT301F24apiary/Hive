@@ -20,6 +20,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.hive.Controllers.EventController;
 import com.example.hive.Controllers.InvitedController;
+import com.example.hive.Events.Event;
+import com.example.hive.Models.User;
+
+import com.example.hive.Controllers.InvitedController;
 import com.example.hive.Models.User;
 import com.example.hive.R;
 
@@ -144,8 +148,8 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
                     eventControl.getField(eventID, "numParticipants",
                             res -> {
                                 Long numParticipants = (Long) res;
-                                invitedUIDs = inviteControl.generateInvitedList(
-                                        entrants, numParticipants.intValue());
+                                invitedUIDs = inviteControl.generateInvitedList(eventID, entrants, numParticipants.intValue());
+
                                 eventControl.addInvitedList(eventID, invitedUIDs);
                                 inviteControl.createInvitedUserList(invitedUIDs,
                                         InvitedEntrantsActivity.this::update);

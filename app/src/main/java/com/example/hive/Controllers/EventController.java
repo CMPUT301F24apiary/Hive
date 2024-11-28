@@ -30,7 +30,6 @@ import android.content.Context;
  */
 public class EventController extends FirebaseController {
 
-
     // Database reference
     private final FirebaseFirestore db;
     private Event lastSavedEvent;
@@ -44,7 +43,6 @@ public class EventController extends FirebaseController {
         this.db = super.getDb();
     }
 
-
     @VisibleForTesting
     public Event getLastSavedEvent() {
         return lastSavedEvent;
@@ -55,14 +53,12 @@ public class EventController extends FirebaseController {
 
         db.collection("events").add(data).addOnSuccessListener(documentReference -> {
             event.setFirebaseID(documentReference.getId());
-
             listener.onSuccess(documentReference.getId());
             lastSavedEvent = event;  // Store event for testing purposes
         }).addOnFailureListener(e -> {
             Log.w("EventController", "Error adding event", e);
         });
     }
-
 
     public void updateEvent(Event event, OnSuccessListener<String> listener) {
         if (event.getFirebaseID() == null) {
@@ -99,14 +95,11 @@ public class EventController extends FirebaseController {
                 .addOnFailureListener(e -> Log.w("EventController", "Error updating event", e));
     }
 
-
-
     /**
      * Gets all event information from events collection of database. Once all data is retrieved,
      * callback function is called.
      *
-     * @param callback
-     * The function to run after all data has been retrieved.
+     * @param callback The function to run after all data has been retrieved.
      */
     public void getAllEventsFromDB(OnSuccessListener<ArrayList<Event>> callback) {
         ArrayList<Event> data = new ArrayList<>();
@@ -120,16 +113,8 @@ public class EventController extends FirebaseController {
                 long endDate = (long) doc.get("endDateInMS");
                 String cost = (String) doc.get("cost");
                 Long entrantLimitLong = (Long) doc.get("entrantLimit");
-                Integer entrantLimit = null;  // Default to null in case there's no value
-                if (entrantLimitLong != null) {
-                    entrantLimit = entrantLimitLong.intValue();  // Convert to Integer if not null
-                } else {
-                    Log.d("EventController", "entrantLimit is null for event: " + doc.getId());
-                }
-
+                Integer entrantLimit = (entrantLimitLong != null) ? entrantLimitLong.intValue() : null;
                 String duration = (String) doc.get("duration");
-
-
                 String description = (String) doc.get("description");
                 String location = (String) doc.get("location");
                 String posterTemp = (String) doc.get("poster");
@@ -139,6 +124,7 @@ public class EventController extends FirebaseController {
                 boolean replacementDrawOn = (boolean) doc.get("replacementDrawAllowed");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
                 boolean isLotteryDrawn = (boolean) doc.get("isLotteryDrawn");
+
                 Event newEvent = new Event(title, cost, startDate, endDate, id, description,
                         (int) numParticipants, location, posterURL, selectionDate, entrantLimit,
                         duration, geolocationOn, replacementDrawOn, isLotteryDrawn);
@@ -183,7 +169,11 @@ public class EventController extends FirebaseController {
                 boolean geolocationOn = (boolean) doc.get("geolocation");
                 boolean replacementDrawOn = (boolean) doc.get("replacementDrawAllowed");
                 String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
-                boolean isLotteryDrawn = (boolean) doc.get("isLotteryDrawn");
+
+                // Corrected null handling for isLotteryDrawn
+                Boolean isLotteryDrawnObj = doc.getBoolean("isLotteryDrawn");
+                boolean isLotteryDrawn = (isLotteryDrawnObj != null) && isLotteryDrawnObj;
+
 
 
                 // Check if the required fields are null before creating the event object
@@ -202,16 +192,6 @@ public class EventController extends FirebaseController {
         }).addOnFailureListener(e -> Log.e("ModelGetAll", "Error fetching data", e));
     }
 
-
-    /**
-     * Deletes a single event from the database with provided id. Handles the case in which the
-     * document does not exist, or the deletion fails.
-     *
-     * @param id
-     * The id number created in firebase that refers to the event that is to be deleted.
-     * @param callback
-     * The callback function to call on either success or failure. Must have a Boolean parameter.
-     */
     public void deleteSingleEventFromDB(String id, OnSuccessListener<Boolean> callback) {
         CollectionReference eventsCollection = db.collection("events");
 
@@ -263,7 +243,6 @@ public class EventController extends FirebaseController {
                 }
             }
         });
-
     }
 
     public void getInvitedList(String eventID,
@@ -279,7 +258,7 @@ public class EventController extends FirebaseController {
                             listener.onSuccess(new Pair<>(Boolean.FALSE, null));
                         } else {
                             ArrayList<String> userIDs = new ArrayList<>();
-                            for (DocumentSnapshot doc:docs) {
+                            for (DocumentSnapshot doc : docs) {
                                 userIDs.add(doc.getId());
                             }
                             listener.onSuccess(new Pair<>(Boolean.TRUE, userIDs));
@@ -291,20 +270,13 @@ public class EventController extends FirebaseController {
                         listener.onSuccess(new Pair<>(Boolean.FALSE, null));
                     }
                 });
-
     }
 
-    /**
-     * Handles the lottery process for an event and notifies participants of the results.
-     *
-     * @param context         The application context.
-     * @param eventID         The event ID.
-     * @param numParticipants The number of participants to be selected.
-     */
     public void runLottery(Context context, String eventID, int numParticipants, InvitedController invitedController) {
         // Existing logic to get waiting list
         invitedController.getWaitingListUIDs(eventID, waitingList -> {
-            ArrayList<String> invitedList = invitedController.generateInvitedList(waitingList, numParticipants);
+            // Use the version of generateInvitedList that takes eventID as a parameter
+            ArrayList<String> invitedList = invitedController.generateInvitedList(eventID, waitingList, numParticipants);
             ArrayList<String> nonInvitedList = new ArrayList<>(waitingList);
             nonInvitedList.removeAll(invitedList);
 
@@ -325,14 +297,10 @@ public class EventController extends FirebaseController {
         });
     }
 
-
-
-
-
     public void addInvitedList(String eventID, ArrayList<String> invited) {
         CollectionReference eventsCollection = db.collection("events");
 
-        for (String uid:invited) {
+        for (String uid : invited) {
             Log.d("AddInvitedList", uid);
             eventsCollection.document(eventID).collection("invited-list").document(uid)
                     .set(new HashMap<>());
@@ -340,7 +308,5 @@ public class EventController extends FirebaseController {
         HashMap<String, Object> data = new HashMap<>();
         data.put("isLotteryDrawn", Boolean.TRUE);
         eventsCollection.document(eventID).update(data);
-
     }
-
 }
