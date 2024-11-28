@@ -7,6 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".AdminEvent.AdminEventListActivity">
 
+    <View
+        android:id="@+id/gradientView"
+        android:layout_width="match_parent"
+        android:layout_height="126dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/gradient_background"
+        tools:ignore="MissingConstraints" />
+
     <TextView
         android:id="@+id/event_list_loading_text"
         android:layout_width="wrap_content"

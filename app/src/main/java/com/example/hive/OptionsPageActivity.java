@@ -2,19 +2,28 @@ package com.example.hive;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Events.EventDetailActivity;
+import com.example.hive.Views.InvitedEntrantsActivity;
 
 public class OptionsPageActivity extends AppCompatActivity {
+
+    private String eventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_optionspage);
+
+        // Get the eventId from the Intent
+        eventId = getIntent().getStringExtra("eventId");
+        if (eventId == null) {
+            finish();
+            return;
+        }
 
         // Initialize TextViews
         TextView invitedEntrantsButton = findViewById(R.id.invited_entrants_btn);
@@ -26,31 +35,40 @@ public class OptionsPageActivity extends AppCompatActivity {
         // Back button logic
         findViewById(R.id.back_button).setOnClickListener(v -> {
             Intent intent = new Intent(OptionsPageActivity.this, EventDetailActivity.class);
+            intent.putExtra("eventId", eventId); // Pass eventId back to EventDetailActivity
             startActivity(intent);
             finish();
         });
 
         // Set click listeners for buttons
-        invitedEntrantsButton.setOnClickListener(v -> {
-            // Placeholder logic for Invited Entrants
-        });
-
         waitingListButton.setOnClickListener(v -> {
             // Navigate to WaitingListActivity
             Intent intent = new Intent(OptionsPageActivity.this, WaitingListActivity.class);
+            intent.putExtra("eventId", eventId); // Pass the eventId to WaitingListActivity
             startActivity(intent);
         });
 
+        invitedEntrantsButton.setOnClickListener(v -> {
+            // Navigate to invited entrants activity
+            Intent i = new Intent(this, InvitedEntrantsActivity.class);
+            i.putExtra("eventId", eventId);
+            startActivity(i);
+        });
+
         cancelledEntrantsButton.setOnClickListener(v -> {
-            // Placeholder logic for Cancelled Entrants
+            Intent intent = new Intent(OptionsPageActivity.this, CancelledListActivity.class);
+            intent.putExtra("eventId", eventId); // Pass the eventId to WaitingListActivity
+            startActivity(intent);
         });
 
         participantsButton.setOnClickListener(v -> {
-            // Placeholder logic for Participants
+            Intent intent = new Intent(OptionsPageActivity.this, FinalListActivity.class);
+            intent.putExtra("eventId", eventId); // Pass the eventId to WaitingListActivity
+            startActivity(intent);
         });
 
         viewEntrantMapButton.setOnClickListener(v -> {
-            // Placeholder logic for Viewing Entrant Map
+            // Placeholder for Viewing Entrant Map logic
         });
     }
 }

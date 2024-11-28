@@ -19,9 +19,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
+import com.example.hive.EditEventActivity;
 import com.example.hive.OptionsPageActivity;
 import com.example.hive.R;
+import com.example.hive.Views.OrganizerNotificationActivity;
 import com.example.hive.Views.QRCodeActivity;
+import com.example.hive.Models.QRCode;
+
 
 /**
  * Display event information and delete button for admin.
@@ -99,6 +103,7 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
 
         // Get reference to deleteEvent button
         Button deleteEvent = findViewById(R.id.delete_event_button);
+        Button editEvent = findViewById(R.id.edit_event_btn);
 
         // Get reference to delete QR button
         Button deleteQR = findViewById(R.id.delete_qr_button);
@@ -180,14 +185,22 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             }
         });
 
-        // Entrant Options button logic
-        TextView entrantOptionsButton = findViewById(R.id.entrant_options_btn);
-        entrantOptionsButton.setOnClickListener(new View.OnClickListener() {
+        editEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EventDetailActivity.this, OptionsPageActivity.class);
+                Intent intent = new Intent(EventDetailActivity.this, EditEventActivity.class);
+                intent.putExtra("event", event); // Assuming currentEvent is the Event object you want to pass
                 startActivity(intent);
+
             }
+        });
+
+        // Entrant Options button logic
+        TextView entrantOptionsButton = findViewById(R.id.entrant_options_btn);
+        entrantOptionsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EventDetailActivity.this, OptionsPageActivity.class);
+            intent.putExtra("eventId", id); // Pass the eventId (id) to OptionsPageActivity
+            startActivity(intent);
         });
 
         // Notification Settings button logic
@@ -195,7 +208,10 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
         notificationSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(EventDetailActivity.this, "Notification Settings Clicked", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(EventDetailActivity.this,
+                        OrganizerNotificationActivity.class);
+                i.putExtra("eventID", event.getFirebaseID());
+                startActivity(i);
             }
         });
 
@@ -218,7 +234,12 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
                     e.printStackTrace();
                     Toast.makeText(EventDetailActivity.this, "QR generation failed", Toast.LENGTH_LONG).show();
                 }
+
+
             }
+
+
         });
+
     }
 }
