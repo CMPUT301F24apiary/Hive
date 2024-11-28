@@ -5,8 +5,6 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
-import android.content.Context;
-
 
 import com.example.hive.Events.Event;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -21,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import android.content.Context;
+
 
 /**
  * Controller to handle retrieving all events from the firestore database. Extends
@@ -29,8 +29,6 @@ import java.util.Objects;
  * @author Zach
  */
 public class EventController extends FirebaseController {
-
-    private final InvitedController invitedController = new InvitedController();
 
 
     // Database reference
@@ -100,69 +98,6 @@ public class EventController extends FirebaseController {
                 })
                 .addOnFailureListener(e -> Log.w("EventController", "Error updating event", e));
     }
-
-    /**
-     * Handles the lottery process for an event and notifies participants of the results.
-     *
-     * @param context         The application context.
-     * @param eventID         The event ID.
-     * @param numParticipants The number of participants to be selected.
-     */
-    public void runLottery(Context context, String eventID, int numParticipants) {
-        invitedController.getWaitingListUIDs(eventID, waitingList -> {
-            ArrayList<String> invitedList = invitedController.generateInvitedList(waitingList, numParticipants);
-            ArrayList<String> nonInvitedList = new ArrayList<>(waitingList);
-            nonInvitedList.removeAll(invitedList);
-
-            // Add the invited list to Firestore
-            invitedController.createInvitedUserList(invitedList, userList -> {
-                addInvitedList(eventID, invitedList);
-
-                // Notify winners
-                for (String userId : invitedList) {
-                    invitedController.notifyUserWin(context, userId);
-                }
-
-                // Notify non-winners
-                for (String userId : nonInvitedList) {
-                    invitedController.notifyUserLose(context, userId);
-                }
-            });
-        });
-    }
-
-    /**
-     * Handles cases where a user declines an invitation.
-     *
-     * @param context       The application context.
-     * @param eventID       The event ID.
-     * @param declinedUser  The user ID of the person who declined.
-     */
-    public void handleDeclinedInvitation(Context context, String eventID, String declinedUser) {
-        getInvitedList(eventID, (resultPair) -> {
-            boolean result = resultPair.first;
-            ArrayList<String> invitedList = resultPair.second;
-
-            if (result) {
-                // Remove the declined user and get a replacement
-                invitedList.remove(declinedUser);
-                invitedController.getWaitingListUIDs(eventID, waitingList -> {
-                    waitingList.removeAll(invitedList); // Exclude already invited users
-                    if (!waitingList.isEmpty()) {
-                        String newInvitee = waitingList.get(0); // Select the next person
-                        invitedList.add(newInvitee);
-                        addInvitedList(eventID, invitedList);
-
-                        // Notify the new invitee
-                        invitedController.notifyUserReRegister(context, newInvitee);
-                    }
-                });
-            }
-        });
-    }
-
-
-
 
 
 
@@ -306,12 +241,12 @@ public class EventController extends FirebaseController {
 
         eventsCollection.document(id).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Event event = documentSnapshot.toObject(Event.class);
-                listener.onSuccess(event);
-            }
-        });
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Event event = documentSnapshot.toObject(Event.class);
+                        listener.onSuccess(event);
+                    }
+                });
     }
 
     public void getField(String id, String whichField, OnSuccessListener<Object> listener) {
@@ -350,7 +285,7 @@ public class EventController extends FirebaseController {
                             listener.onSuccess(new Pair<>(Boolean.TRUE, userIDs));
                         }
                     }
-        }).addOnFailureListener(new OnFailureListener() {
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         listener.onSuccess(new Pair<>(Boolean.FALSE, null));
@@ -358,6 +293,41 @@ public class EventController extends FirebaseController {
                 });
 
     }
+
+    /**
+     * Handles the lottery process for an event and notifies participants of the results.
+     *
+     * @param context         The application context.
+     * @param eventID         The event ID.
+     * @param numParticipants The number of participants to be selected.
+     */
+    public void runLottery(Context context, String eventID, int numParticipants, InvitedController invitedController) {
+        // Existing logic to get waiting list
+        invitedController.getWaitingListUIDs(eventID, waitingList -> {
+            ArrayList<String> invitedList = invitedController.generateInvitedList(waitingList, numParticipants);
+            ArrayList<String> nonInvitedList = new ArrayList<>(waitingList);
+            nonInvitedList.removeAll(invitedList);
+
+            // Add the invited list to Firestore
+            invitedController.createInvitedUserList(invitedList, userList -> {
+                addInvitedList(eventID, invitedList);
+
+                // Notify winners
+                for (String userId : invitedList) {
+                    invitedController.notifyUserWin(context, userId);
+                }
+
+                // Notify non-winners
+                for (String userId : nonInvitedList) {
+                    invitedController.notifyUserLose(context, userId);
+                }
+            });
+        });
+    }
+
+
+
+
 
     public void addInvitedList(String eventID, ArrayList<String> invited) {
         CollectionReference eventsCollection = db.collection("events");

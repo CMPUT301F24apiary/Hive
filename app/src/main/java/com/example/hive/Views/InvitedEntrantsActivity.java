@@ -9,6 +9,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.content.Context;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -88,9 +90,17 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
                     drawLotteryButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            getInvitedUsers();
+                            Log.d("InvitedEntrantsActivity", "Lottery draw button clicked.");
+
+                            // Create an instance of InvitedController
+                            InvitedController invitedController = new InvitedController();
+
+                            // Run the lottery with EventController
+                            eventControl.runLottery(InvitedEntrantsActivity.this, eventID, 10, invitedController);
                         }
                     });
+
+
                 }
             }
         });

@@ -3,6 +3,8 @@ package com.example.hive.Controllers;
 import android.content.Context;
 
 import com.example.hive.Models.User;
+
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -14,12 +16,11 @@ import java.util.List;
 public class InvitedController extends FirebaseController {
 
     private FirebaseFirestore db;
-    private EventController eventControl;
+
 
     public InvitedController() {
         super();
         this.db = getDb();
-        this.eventControl = new EventController();
     }
 
     public void getWaitingListUIDs(String eventID, OnSuccessListener<ArrayList<String>> listener) {
