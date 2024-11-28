@@ -174,8 +174,10 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filter
             @Override
             public void onClick(View v) {
                 Intent i;
-                if (User.getInstance().getRole() == "admin") {
-                    i = new Intent(getContext(), AdminEventDetailActivity.class);
+                if ("admin".equals(User.getInstance().getRole())) {
+                    // LINE BELOW CAUSES BUG; THIS IS FOR ADMIN EVENT DETAILS VIEW
+//                    i = new Intent(getContext(), AdminEventDetailActivity.class);
+                    i = new Intent(getContext(), EventDetailActivity.class);
                 } else {
                     i = new Intent(getContext(), EventDetailActivity.class);
                 }

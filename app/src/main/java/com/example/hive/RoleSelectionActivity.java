@@ -60,9 +60,9 @@ public class RoleSelectionActivity extends AppCompatActivity {
                     adminButton.setVisibility(View.VISIBLE);
                     // Navigate to the AdminEventListActivity when "Admin" is selected
                     adminButton.setOnClickListener(new View.OnClickListener() {
-                        String newRole = "admin";
                         @Override
                         public void onClick(View v) {
+                            String newRole = "admin";
                             User.getInstance().setRole(newRole);
                             firebaseController.updateUserRole(deviceId(), newRole, new FirebaseController.OnRoleUpdatedListener() {
                                         @Override
