@@ -138,8 +138,8 @@ public class AdminProfileViewActivity extends AppCompatActivity {
                             facilityName.setText(facility.getName());
                             facilityPicture.setVisibility(View.VISIBLE);
                             facilityInfo.setVisibility(View.VISIBLE);
-                            facilityEmail.setText(facility.getEmail());
-                            facilityPhone.setText(facility.getPhone());
+                            facilityEmail.setText("Email: " + facility.getEmail());
+                            facilityPhone.setText("Phone: " + facility.getPhone());
                             deleteFacilityButton.setVisibility(View.VISIBLE);
                             if (facility.getPictureURL() != null) {
                                 Glide.with(AdminProfileViewActivity.this)
