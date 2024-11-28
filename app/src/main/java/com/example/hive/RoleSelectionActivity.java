@@ -60,10 +60,23 @@ public class RoleSelectionActivity extends AppCompatActivity {
                     adminButton.setVisibility(View.VISIBLE);
                     // Navigate to the AdminEventListActivity when "Admin" is selected
                     adminButton.setOnClickListener(new View.OnClickListener() {
+                        String newRole = "admin";
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(RoleSelectionActivity.this, AdminEventListActivity.class);
-                            startActivity(intent);
+                            User.getInstance().setRole(newRole);
+                            firebaseController.updateUserRole(deviceId(), newRole, new FirebaseController.OnRoleUpdatedListener() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Log.d(TAG, "Role updated successfully to: " + newRole);
+                                            Intent intent = new Intent(RoleSelectionActivity.this, AdminEventListActivity.class);
+                                            startActivity(intent);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            Log.e(TAG, "Failed to update role", e);
+                                        }
+                                    });
                         }
                     });
                 }
@@ -74,13 +87,27 @@ public class RoleSelectionActivity extends AppCompatActivity {
             }
         });
 
-        // Navigate to the next screen when "User" is selected
+        // Navigate to the next screen when "entrant" is selected
         userButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate to EventListActivity if "User" role is selected
-                Intent intent = new Intent(RoleSelectionActivity.this, EventListActivity.class);
-                startActivity(intent);
+                String newRole = "entrant";
+                User.getInstance().setRole(newRole);
+
+                firebaseController.updateUserRole(deviceId(), newRole, new FirebaseController.OnRoleUpdatedListener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "Role updated successfully to: " + newRole);
+                        // Navigate to EventListActivity if "User" role is selected
+                        Intent intent = new Intent(RoleSelectionActivity.this, EventListActivity.class);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e(TAG, "Failed to update role", e);
+                    }
+                });
             }
         });
 
@@ -88,11 +115,24 @@ public class RoleSelectionActivity extends AppCompatActivity {
         organizerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RoleSelectionActivity.this, OrganizerEventListActivity.class);
-                startActivity(intent);
+                String newRole = "organizer";
+                User.getInstance().setRole(newRole);
+
+                firebaseController.updateUserRole(deviceId(), newRole, new FirebaseController.OnRoleUpdatedListener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "Role updated successfully to: " + newRole);
+                        Intent intent = new Intent(RoleSelectionActivity.this, OrganizerEventListActivity.class);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e(TAG, "Failed to update role", e);
+                    }
+                });
             }
         });
-
 
     }
 
