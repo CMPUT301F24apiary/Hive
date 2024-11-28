@@ -10,11 +10,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hive.Controllers.FacilityController;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,12 +30,15 @@ import com.example.hive.Models.User;
  */
 public class AdminProfileViewActivity extends AppCompatActivity {
 
-    private Button deleteProfileButton;
+    private Button deleteProfileButton, deleteFacilityButton;
     private ImageView backArrow;
-    private ImageView profilePicture;
-    private TextView personNameText, userNameText, emailText, phoneText;
+    private ImageView profilePicture, facilityPicture;
+    private TextView personNameText, userNameText, emailText, phoneText,
+                    facilityName, facilityEmail, facilityPhone;
+    private LinearLayout facilityInfo;
     private String deviceId;
     private FirebaseController firebaseController;
+    private FacilityController facilityController;
 
 
     /**
@@ -48,6 +53,7 @@ public class AdminProfileViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile_admin);
         firebaseController = new FirebaseController();
         FirebaseFirestore db = firebaseController.getDb();
+        facilityController = new FacilityController();
 
         // Initialize the views
         deleteProfileButton = findViewById(R.id.deleteProfileButton);
@@ -65,6 +71,12 @@ public class AdminProfileViewActivity extends AppCompatActivity {
             finish(); // go back; close activity
         }
 
+        facilityName = findViewById(R.id.facilityName);
+        facilityEmail = findViewById(R.id.facilityEmailLabel);
+        facilityPhone = findViewById(R.id.facilityPhoneLabel);
+        deleteFacilityButton = findViewById(R.id.deleteFacilityButton);
+        facilityPicture = findViewById(R.id.imageViewFacilityImage);
+        facilityInfo = findViewById(R.id.facility_details_linear_layout);
 
         deleteProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +86,11 @@ public class AdminProfileViewActivity extends AppCompatActivity {
                         .show();
             }
         });
+
+        deleteFacilityButton.setOnClickListener(v -> {
+            deleteFacility();
+        });
+
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,6 +132,26 @@ public class AdminProfileViewActivity extends AppCompatActivity {
                         profilePicture.setImageDrawable(user.getDisplayDrawable());
                     }
 
+                    if (!user.getFacilityID().isEmpty()) {
+                        new FacilityController().getUserFacilityDetails(deviceId, facility -> {
+                            facilityName.setVisibility(View.VISIBLE);
+                            facilityName.setText(facility.getName());
+                            facilityPicture.setVisibility(View.VISIBLE);
+                            facilityInfo.setVisibility(View.VISIBLE);
+                            facilityEmail.setText(facility.getEmail());
+                            facilityPhone.setText(facility.getPhone());
+                            deleteFacilityButton.setVisibility(View.VISIBLE);
+                            if (facility.getPictureURL() != null) {
+                                Glide.with(AdminProfileViewActivity.this)
+                                        .load(facility.getPictureURL())
+                                        .circleCrop()
+                                        .into(facilityPicture);
+                            } else {
+                                facilityPicture.setImageDrawable(facility.generateDefaultPic());
+                            }
+                        });
+                    }
+
                 } else {
                     Toast.makeText(AdminProfileViewActivity.this, "User is null", Toast.LENGTH_LONG).show();
                 }
@@ -148,6 +185,23 @@ public class AdminProfileViewActivity extends AppCompatActivity {
                         public void onError(Exception e) {
                             Log.e(TAG, "Error deleting user profile", e);
                             //Toast.makeText(AdminProfileViewActivity.this, "Error deleting profile", Toast.LENGTH_LONG).show();
+                        }
+
+                    });
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void deleteFacility() {
+        new AlertDialog.Builder(this).setTitle("Are you sure you want to delete this facility?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    facilityController.deleteFacility(deviceId, success -> {
+                        if (success) {
+                            facilityName.setVisibility(View.GONE);
+                            facilityPicture.setVisibility(View.GONE);
+                            facilityInfo.setVisibility(View.GONE);
+                            deleteFacilityButton.setVisibility(View.GONE);
                         }
 
                     });

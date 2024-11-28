@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
+import com.example.hive.Controllers.FacilityController;
 import com.example.hive.Controllers.ImageController;
 import com.example.hive.DateAndTimePickers.DatePickerFragment;
 import com.example.hive.DateAndTimePickers.TimePickerFragment;
@@ -42,7 +44,7 @@ import android.widget.ToggleButton;
 public class EditEventActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
     private static final int GALLERY_REQUEST_CODE = 100;
-    private EditText eventName, eventDuration, eventCost, numParticipants, entrantLimit, eventLocation, eventDescription;
+    private EditText eventName, eventDuration, eventCost, numParticipants, entrantLimit, eventDescription;
     private ImageView addPosterImage;
     private ToggleButton toggleReplacementDraw, toggleGeolocation;
     private Uri posterImageUri;
@@ -61,7 +63,6 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
 
         eventName = findViewById(R.id.eventName);
         eventDuration = findViewById(R.id.eventDuration);
-        eventLocation = findViewById(R.id.eventLocation);
         eventCost = findViewById(R.id.eventCost);
         numParticipants = findViewById(R.id.numParticipants);
         entrantLimit = findViewById(R.id.entrantLimit);
@@ -91,7 +92,6 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
             startDate = currentEvent.getDateInDashFormat("start");
             pickSelectionDate.setText(currentEvent.getDateInDashFormat("selection"));
             selectionDate = currentEvent.getDateInDashFormat("selection");
-            eventLocation.setText(currentEvent.getLocation());
             eventCost.setText(currentEvent.getCost());
             numParticipants.setText(String.valueOf(currentEvent.getNumParticipants()));
             eventDescription.setText(currentEvent.getDescription());
@@ -191,7 +191,6 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
 
     private void saveEventDetails() {
         String title = eventName.getText().toString().trim();
-        String location = eventLocation.getText().toString().trim();
         String duration = eventDuration.getText().toString().trim();
         String cost = eventCost.getText().toString().trim();
         String participantsStr = numParticipants.getText().toString().trim();
@@ -205,7 +204,7 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
 
         String description = eventDescription.getText().toString().trim();
 
-        if (title.isEmpty() || startDate.isEmpty() || location.isEmpty() || startTime.isEmpty() ||
+        if (title.isEmpty() || startDate.isEmpty() || startTime.isEmpty() ||
                 cost.isEmpty() || participantsStr.isEmpty() || description.isEmpty() ||
                 duration.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
@@ -242,7 +241,7 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
 
         if (posterImageUri == null) {
             updateEvent(firebaseID, title, cost, startDateTime, endDateTime, description,
-                    numParticipantsCount, location, null, selectionDateLong, entrant,
+                    numParticipantsCount, null, selectionDateLong, entrant,
                     duration, geolocationOn, replacementDrawOn);
         } else {
             ImageController imgControl = new ImageController();
@@ -250,14 +249,14 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
                 imgControl.saveImage(this, posterImageUri, "event poster")
                         .addOnSuccessListener(urlAndID -> {
                             updateEvent(firebaseID, title, cost, startDateTime, endDateTime, description,
-                                    numParticipantsCount, location, urlAndID, selectionDateLong,
+                                    numParticipantsCount, urlAndID, selectionDateLong,
                                     entrant, duration, geolocationOn, replacementDrawOn);
                         }).addOnFailureListener(e -> {
                             Toast.makeText(this, "Failed to upload image: " + e.getMessage() +
                                             "\nEvent will still be created - navigate to the event page and edit it to try uploading the poster again.",
                                     Toast.LENGTH_SHORT).show();
                             updateEvent(firebaseID, title, cost, startDateTime, endDateTime, description,
-                                    numParticipantsCount, location, null, selectionDateLong,
+                                    numParticipantsCount, null, selectionDateLong,
                                     entrant, duration, geolocationOn, replacementDrawOn);
                         });
             } catch (Exception e) {
@@ -269,29 +268,39 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
 
     private void updateEvent(String firebaseID, String title, String cost, long startDateTime,
                              long endDateTime, String description, int numParticipantsCount,
-                             String location, @Nullable Pair<String, String> urlAndID,
+                             @Nullable Pair<String, String> urlAndID,
                              long selectionDate, @Nullable Integer entrantLimit, String duration,
                              boolean geolocationOn, boolean replacementDrawOn) {
-        Event event;
-        if (urlAndID != null) {
-            event = new Event(title, cost, startDateTime, endDateTime, firebaseID, description,
-                    numParticipantsCount, location, urlAndID.first, selectionDate,entrantLimit,duration, geolocationOn, replacementDrawOn, false);  // Use the ID for the event if it's being updated
-        } else {
-            event = new Event(title, cost, startDateTime, endDateTime, firebaseID, description,
-                    numParticipantsCount, location,  null, selectionDate,entrantLimit,duration, geolocationOn, replacementDrawOn, false);
-        }
 
-        EventController controller = new EventController();
-        controller.updateEvent(event, id -> {
-            if (urlAndID != null && urlAndID.second != null) {
-                new ImageController().updateImageRef(urlAndID.second, id, false);
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        new FacilityController().getUserFacilityDetails(deviceID, facility -> {
+
+            Event event;
+            if (urlAndID != null) {
+                event = new Event(title, cost, startDateTime, endDateTime, firebaseID, description,
+                        numParticipantsCount, facility.getName(), urlAndID.first, selectionDate,
+                        entrantLimit, duration, geolocationOn, replacementDrawOn,
+                        false);  // Use the ID for the event if it's being updated
+            } else {
+                event = new Event(title, cost, startDateTime, endDateTime, firebaseID, description,
+                        numParticipantsCount, facility.getName(), null, selectionDate,
+                        entrantLimit, duration, geolocationOn, replacementDrawOn,
+                        false);
             }
 
-            // Display a toast message confirming the update
-            Toast.makeText(this, "Event updated: '" + event.getTitle() + "'", Toast.LENGTH_SHORT).show();
+            EventController controller = new EventController();
+            controller.updateEvent(event, id -> {
+                if (urlAndID != null && urlAndID.second != null) {
+                    new ImageController().updateImageRef(urlAndID.second, id);
+                }
 
-            // Finish the activity (or navigate as needed)
-            finish();
+                // Display a toast message confirming the update
+                Toast.makeText(this, "Event updated: '" + event.getTitle() + "'", Toast.LENGTH_SHORT).show();
+
+                // Finish the activity (or navigate as needed)
+                finish();
+            });
         });
     }
 
