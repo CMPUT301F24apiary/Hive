@@ -3,6 +3,8 @@ package com.example.hive;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -16,8 +18,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
+import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Events.Event;
+import com.example.hive.Models.User;
 
 import java.util.ArrayList;
 
@@ -34,10 +39,16 @@ public class OrganizerEventListActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
         return sharedPreferences.getBoolean("profileComplete", false);
     }
+
+    /**
+     * Reloads the profile picture to reflect any changes made in the ProfileEditActivity.
+     */
     @Override
     protected void onResume() {
         super.onResume();
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         updateProfileStatus();
+        loadProfileData(deviceId);
     }
 
     /**
@@ -129,6 +140,8 @@ public class OrganizerEventListActivity extends AppCompatActivity {
         addEventButton= findViewById(R.id.addEventButton);
         roleSelection=findViewById(R.id.bottom_button);
 
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        loadProfileData(deviceId);
 
         // Create activity result launcher for item addition - adds ability to get result from the
         // detail activity. If the result indicates addition was performed, add the event to arrays
@@ -292,6 +305,34 @@ public class OrganizerEventListActivity extends AppCompatActivity {
                 eventAdapter.getFilter().filter(newText);
                 return false;
             }
+        });
+    }
+
+    public void loadProfileData(String deviceId) {
+        FirebaseController controller = new FirebaseController();
+        controller.fetchUserByDeviceId(deviceId, new FirebaseController.OnUserFetchedListener() {
+            @Override
+            public void onUserFetched(User user) {
+                if (user != null) {
+                    String pfpUrl = user.getProfileImageUrl();
+                    Log.d("LoadProfileData", pfpUrl);
+
+                    if (!pfpUrl.isEmpty()) {
+                        Glide.with(OrganizerEventListActivity.this).load(pfpUrl).circleCrop().into(facilityprofileButton);
+                    } else {
+                        facilityprofileButton.setImageDrawable(user.getDisplayDrawable());
+                    }
+                } else {
+                    Toast.makeText(OrganizerEventListActivity.this, "User is null", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(OrganizerEventListActivity.this, "Error fetching user profile (ProfileActivity)",
+                        Toast.LENGTH_LONG).show();
+            }
+
         });
     }
 }

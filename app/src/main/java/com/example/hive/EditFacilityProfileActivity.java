@@ -8,7 +8,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Base64;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Models.User;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -45,6 +49,15 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
         facilityImageView = findViewById(R.id.img_edit_picture);
 
         setupButtons();
+        facilityData();
+    }
+
+    /**
+     * Called when the activity is resumed. Reloads the profile picture to reflect any changes made in the ProfileEditActivity.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
         facilityData();
     }
 
@@ -95,21 +108,21 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Sets the image for a facility from a specified URI by converting it
-     * into a bitmap.
-     * @param imageUri organizer's selection of image for the facility profile
-     */
-    private void setImageFromUri(Uri imageUri) {
-        try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-            facilityImageView.setImageBitmap(bitmap);
-            base64Image = bitmapToBase64(bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+//    /**
+//     * Sets the image for a facility from a specified URI by converting it
+//     * into a bitmap.
+//     * @param imageUri organizer's selection of image for the facility profile
+//     */
+//    private void setImageFromUri(Uri imageUri) {
+//        try {
+//            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+//            facilityImageView.setImageBitmap(bitmap);
+//            base64Image = bitmapToBase64(bitmap);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
     /**
      * Converts a Bitmap image to a Base64-encoded string
      * @param bitmap to be converted
@@ -121,16 +134,16 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
-
-    /**
-     * Converts a base64 string to bitmap
-     * @param base64Str to be converted
-     * @return the converted butmap
-     */
-    public Bitmap base64ToBitmap(String base64Str) {
-        byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-    }
+//
+//    /**
+//     * Converts a base64 string to bitmap
+//     * @param base64Str to be converted
+//     * @return the converted butmap
+//     */
+//    public Bitmap base64ToBitmap(String base64Str) {
+//        byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
+//        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+//    }
 
     /**
      * This is to show the data that has been set by the user previously and that
@@ -142,14 +155,49 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
         emailEditText.setText(sharedPreferences.getString("facilityEmail", ""));
         phoneEditText.setText(sharedPreferences.getString("facilityPhone", ""));
 
-        String facilityImageViewBase64 = sharedPreferences.getString("facility_profile_picture", "");
-        if (!facilityImageViewBase64.isEmpty()) {
-            Bitmap profileBitmap = base64ToBitmap(facilityImageViewBase64);
-            facilityImageView.setImageBitmap(profileBitmap);
-            base64Image = facilityImageViewBase64;
-        } else {
-            facilityImageView.setImageResource(R.drawable.image1);
-        }
+
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        loadProfileData(deviceId);
+
+//        String facilityImageViewBase64 = sharedPreferences.getString("facility_profile_picture", "");
+//        if (!facilityImageViewBase64.isEmpty()) {
+//            Bitmap profileBitmap = base64ToBitmap(facilityImageViewBase64);
+//            facilityImageView.setImageBitmap(profileBitmap);
+//            base64Image = facilityImageViewBase64;
+//        } else {
+//            facilityImageView.setImageResource(R.drawable.image1);
+//        }
+    }
+
+    /**
+     * Loads profile data from Firebase and displays it in the corresponding TextViews.
+     */
+    public void loadProfileData(String deviceId) {
+        FirebaseController controller = new FirebaseController();
+        controller.fetchUserByDeviceId(deviceId, new FirebaseController.OnUserFetchedListener() {
+            @Override
+            public void onUserFetched(User user) {
+                if (user != null) {
+                    String pfpUrl = user.getProfileImageUrl();
+                    Log.d("LoadProfileData", pfpUrl);
+
+                    if (!pfpUrl.isEmpty()) {
+                        Glide.with(EditFacilityProfileActivity.this).load(pfpUrl).circleCrop().into(facilityImageView);
+                    } else {
+                        facilityImageView.setImageDrawable(user.getDisplayDrawable());
+                    }
+                } else {
+                    Toast.makeText(EditFacilityProfileActivity.this, "User is null", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(EditFacilityProfileActivity.this, "Error fetching user profile (ProfileActivity)",
+                        Toast.LENGTH_LONG).show();
+            }
+
+        });
     }
 
     /**

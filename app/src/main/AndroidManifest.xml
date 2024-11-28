@@ -61,8 +61,18 @@
         <!-- Profile Activities -->
         <activity android:name=".ProfileActivity" />
         <activity android:name=".ProfileEditActivity" />
-        <activity android:name=".FacilityActivity" />
-        <activity android:name=".EditFacilityProfileActivity" />
+        <activity android:name=".FacilityActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".EditFacilityProfileActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <activity android:name=".CancelledListActivity" />
         <activity android:name=".FinalListActivity" />
         <activity android:name=".OrganizerEventListActivity"
