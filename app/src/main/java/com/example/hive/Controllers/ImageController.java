@@ -65,6 +65,7 @@ public class ImageController extends FirebaseController {
      * <ul>
      * <li>event poster</li>
      * <li>profile picture</li>
+     * <li>facility picture</li>
      * </ul>
      *
      * @return
@@ -73,9 +74,11 @@ public class ImageController extends FirebaseController {
      */
     public Task<Pair<String, String>> saveImage(Context context, Uri path, String typeOfImage) {
         // Ensure valid image type
-        if (!typeOfImage.equals("event poster") && !typeOfImage.equals("profile picture")) {
+        if (!typeOfImage.equals("event poster") &&
+            !typeOfImage.equals("profile picture") &&
+            !typeOfImage.equals("facility picture")) {
             throw new IllegalArgumentException("Invalid image type: " + typeOfImage + ". " +
-                    "Expected 'event poster' or 'profile picture'.");
+                    "Expected 'event poster', 'profile picture', or 'facility picture'.");
         }
 
         // Ensure image is less than 10MB
@@ -200,15 +203,9 @@ public class ImageController extends FirebaseController {
      * @param otherID
      * String: document ID of firebase document where this image is used
      */
-    public void updateImageRef(String imgID, String otherID, boolean isDeviceId) {
-        CollectionReference imagesCollection = db.collection("images");
-        if (isDeviceId) {
-            super.getUserDocId(otherID, userDocId -> {
-                imagesCollection.document(imgID).update("relatedDocID", userDocId);
-            });
-        } else {
-            imagesCollection.document(imgID).update("relatedDocID", otherID);
-        }
+    public void updateImageRef(String imgID, String otherID) {
+        db.collection("images").document(imgID).update("relatedDocID", otherID);
+
     }
 
     public void getImageDocIdByUrl(String url, OnSuccessListener<String> listener) {
@@ -306,11 +303,51 @@ public class ImageController extends FirebaseController {
                             // Update the field in the events collection document
                             updateEventDocument(relatedDocID, eventCollection, callback);
                         } else {
-                            // If not in events collection, try the images collection
-                            updateUserDocument(relatedDocID, callback);
+                            // If not in events, check facilities collection
+                            checkFacilitiesCollection(relatedDocID, callback);
                         }
                     } else {
                         Log.e("Fetch Document", "Error fetching related document",
+                                task.getException());
+                    }
+                });
+    }
+
+    /**
+     * Checks if document exists in facilities collection and updates if found
+     */
+    private void checkFacilitiesCollection(String docID, OnSuccessListener<Boolean> callback) {
+        CollectionReference facilitiesCollection = db.collection("facilities");
+        facilitiesCollection.document(docID).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        if (documentSnapshot.exists()) {
+                            updateFacilityDocument(docID, facilitiesCollection, callback);
+                        } else {
+                            // If not in facilities, try the users collection
+                            updateUserDocument(docID, callback);
+                        }
+                    } else {
+                        Log.e("Fetch Facility", "Error fetching facility document",
+                                task.getException());
+                    }
+                });
+    }
+
+    /**
+     * Removes the download URL from facility document.
+     */
+    private void updateFacilityDocument(String docID, CollectionReference facilitiesCollection,
+                                        OnSuccessListener<Boolean> callback) {
+        facilitiesCollection.document(docID)
+                .update("imageUrl", "")  // Adjust field name if different
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        callback.onSuccess(Boolean.TRUE);
+                        Log.d("Update Facility", "Facility document updated successfully");
+                    } else {
+                        Log.e("Update Facility", "Failed to update facility document",
                                 task.getException());
                     }
                 });

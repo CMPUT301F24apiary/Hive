@@ -8,7 +8,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Base64;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,6 +21,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.example.hive.Controllers.FacilityController;
+import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Controllers.ImageController;
+import com.example.hive.Models.User;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,13 +37,15 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
     public static final int PICK_IMAGE = 1;
     public ImageView facilityImageView;
     public EditText facilityNameEditText, emailEditText, phoneEditText;
-    private String base64Image = "";
-    private SharedPreferences sharedPreferences;
+    private Uri pictureUri;
+    private String deviceID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_facility);
+
+        deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         facilityNameEditText = findViewById(R.id.et_facility);
         emailEditText = findViewById(R.id.et_email);
@@ -72,8 +80,12 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
      * To remove the facility poster.
      */
     public void removePicture() {
-        facilityImageView.setImageResource(R.drawable.image1);
-        base64Image = "";
+        new FacilityController().getUserFacilityDetails(deviceID, facility -> {
+            new ImageController().deleteImageAndUpdateRelatedDoc(facility.getPictureURL(),
+                    null, facility.getID(), success -> {
+                facilityImageView.setImageDrawable(facility.generateDefaultPic());
+            });
+        });
     }
 
     /**
@@ -92,44 +104,8 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
                     .load(imageUri)
                     .transform(new CircleCrop())
                     .into(facilityImageView);
+            pictureUri = imageUri;
         }
-    }
-
-    /**
-     * Sets the image for a facility from a specified URI by converting it
-     * into a bitmap.
-     * @param imageUri organizer's selection of image for the facility profile
-     */
-    private void setImageFromUri(Uri imageUri) {
-        try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-            facilityImageView.setImageBitmap(bitmap);
-            base64Image = bitmapToBase64(bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Converts a Bitmap image to a Base64-encoded string
-     * @param bitmap to be converted
-     * @return string
-     */
-    public String bitmapToBase64(Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
-    }
-
-    /**
-     * Converts a base64 string to bitmap
-     * @param base64Str to be converted
-     * @return the converted butmap
-     */
-    public Bitmap base64ToBitmap(String base64Str) {
-        byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
     /**
@@ -137,19 +113,33 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
      * is to be edited.
      */
     public void facilityData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
-        facilityNameEditText.setText(sharedPreferences.getString("facilityName", ""));
-        emailEditText.setText(sharedPreferences.getString("facilityEmail", ""));
-        phoneEditText.setText(sharedPreferences.getString("facilityPhone", ""));
+        new FirebaseController().fetchUserByDeviceId(deviceID, new FirebaseController.OnUserFetchedListener() {
+            @Override
+            public void onUserFetched(User user) {
+                Log.d("UserFacilityDetails", user.getUserName());
+                if (!user.getFacilityID().isEmpty()) {
+                    new FacilityController().getUserFacilityDetails(deviceID, facility -> {
+                        facilityNameEditText.setText(facility.getName());
+                        emailEditText.setText(facility.getEmail());
+                        phoneEditText.setText(facility.getPhone());
+                        if (facility.getPictureURL() == null) {
+                            facilityImageView.setImageDrawable(facility.generateDefaultPic());
+                        } else {
+                            Glide.with(EditFacilityProfileActivity.this)
+                                    .load(facility.getPictureURL()).circleCrop()
+                                    .into(facilityImageView);
+                        }
+                    });
+                } else {
+                    facilityImageView.setImageResource(R.drawable.image1);
+                }
+            }
 
-        String facilityImageViewBase64 = sharedPreferences.getString("facility_profile_picture", "");
-        if (!facilityImageViewBase64.isEmpty()) {
-            Bitmap profileBitmap = base64ToBitmap(facilityImageViewBase64);
-            facilityImageView.setImageBitmap(profileBitmap);
-            base64Image = facilityImageViewBase64;
-        } else {
-            facilityImageView.setImageResource(R.drawable.image1);
-        }
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 
     /**
@@ -189,21 +179,17 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
             String updatedEmail = emailEditText.getText().toString();
             String updatedPhone = phoneEditText.getText().toString();
 
-            String facilityImageViewBase64 = bitmapToBase64(((BitmapDrawable) facilityImageView.getDrawable()).getBitmap());
-
-            SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("facilityName", updatedName);
-            editor.putString("facilityEmail", updatedEmail);
-            editor.putString("facilityPhone", updatedPhone);
-            editor.putString("facility_profile_picture", facilityImageViewBase64);
-            editor.apply();
-            setResult(RESULT_OK);
-            finish();
+            new FacilityController().addFacility(EditFacilityProfileActivity.this, deviceID,
+                    updatedName, updatedEmail, updatedPhone, pictureUri, success -> {
+                        if (success) {
+                            Intent result = new Intent();
+                            setResult(1, result);
+                            finish();
+                        } else {
+                            Toast.makeText(EditFacilityProfileActivity.this,
+                                    "Edit failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
-    }
-
-    public void setSharedPreferencesForTesting(SharedPreferences sharedPreferences) {
-        this.sharedPreferences = sharedPreferences;
     }
 }

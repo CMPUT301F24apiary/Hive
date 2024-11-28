@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -22,10 +23,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Controllers.EventController;
+import com.example.hive.Controllers.FacilityController;
+import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Controllers.ImageController;
 import com.example.hive.DateAndTimePickers.DatePickerFragment;
 import com.example.hive.DateAndTimePickers.TimePickerFragment;
 import com.example.hive.Events.Event;
+import com.example.hive.Models.User;
 import com.example.hive.OrganizerEventListActivity;
 import com.example.hive.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -46,7 +50,7 @@ import java.util.regex.Pattern;
 public class AddEventActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
 
     private static final int GALLERY_REQUEST_CODE = 100;
-    private EditText eventName, eventDuration, eventCost, numParticipants, entrantLimit,eventLocation, eventDescription;
+    private EditText eventName, eventDuration, eventCost, numParticipants, entrantLimit, eventDescription;
     private ToggleButton toggleReplacementDraw, toggleGeolocation;
     private ImageView addPosterImage;
     private Uri posterImageUri;
@@ -63,7 +67,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         ImageView backArrow = findViewById(R.id.backArrow);
         eventName = findViewById(R.id.eventName);
         eventDuration = findViewById(R.id.eventDuration);
-        eventLocation = findViewById(R.id.eventLocation);
+//        eventLocation = findViewById(R.id.eventLocation);
         eventCost = findViewById(R.id.eventCost);
         numParticipants = findViewById(R.id.numParticipants);
         entrantLimit = findViewById(R.id.entrantLimit);
@@ -134,7 +138,6 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
      */
     private void saveEventDetails() {
         String title = eventName.getText().toString().trim();
-        String location = eventLocation.getText().toString().trim();
         String duration = eventDuration.getText().toString().trim();
         String cost = eventCost.getText().toString().trim();
         String participantsStr = numParticipants.getText().toString().trim();
@@ -142,7 +145,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
 
         String description = eventDescription.getText().toString().trim();
 
-        if (title.isEmpty() || startDate.isEmpty() || location.isEmpty() || startTime.isEmpty() ||
+        if (title.isEmpty() || startDate.isEmpty() || startTime.isEmpty() ||
                 cost.isEmpty() || participantsStr.isEmpty() || description.isEmpty() ||
                 duration.isEmpty() || selectionDate.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields.",
@@ -177,7 +180,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
 
         if (posterImageUri == null) {
             saveEvent(title, cost, startDateTime, endDateTime, description,
-                    numParticipantsCount, location, null, selectionDateLong,entrantInt,
+                    numParticipantsCount, null, selectionDateLong,entrantInt,
                     duration, geolocationOn, replacementDrawOn);
         } else {
             ImageController imgControl = new ImageController();
@@ -186,7 +189,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
                         .addOnSuccessListener(urlAndID -> {
 
                             saveEvent(title, cost, startDateTime, endDateTime, description,
-                                    numParticipantsCount, location, urlAndID, selectionDateLong,
+                                    numParticipantsCount, urlAndID, selectionDateLong,
                                     entrantInt, duration, geolocationOn, replacementDrawOn);
 
                         }).addOnFailureListener(e -> {
@@ -198,7 +201,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
                                     Toast.LENGTH_SHORT).show();
 
                             saveEvent(title, cost, startDateTime, endDateTime, description,
-                                    numParticipantsCount, location, null, selectionDateLong,
+                                    numParticipantsCount, null, selectionDateLong,
                                     entrantInt, duration, geolocationOn, replacementDrawOn);
 
                         });
@@ -211,34 +214,39 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
     }
 
     private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
-                           String description, int numParticipantsCount, String location,
+                           String description, int numParticipantsCount,
                            @Nullable Pair<String, String> urlAndID, long selectionDate, int entrant,
                            String duration, boolean geolocationOn, boolean replacementDrawOn) {
 
-        Event event = new Event(title, cost, startDateTime, endDateTime, null, description,
-                numParticipantsCount, location, urlAndID == null ? null : urlAndID.first,
-                selectionDate,entrant, duration, geolocationOn, replacementDrawOn, false);
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        EventController controller = new EventController();
-        controller.addEvent(event, id -> {
-            event.setFirebaseID(id);
-            if (urlAndID != null) {
-                new ImageController().updateImageRef(urlAndID.second, id, false);
-            }
+        new FacilityController().getUserFacilityDetails(deviceID, facility -> {
 
-            // Create an empty waiting-list subcollection for the event
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("events").document(id).collection("waiting-list")
-                    .add(new HashMap<>()) // Adds an empty document to initialize the collection
-                    .addOnSuccessListener(documentReference -> Log.d("AddEventActivity", "Waiting list created successfully"))
-                    .addOnFailureListener(e -> Log.e("AddEventActivity", "Failed to create waiting list", e));
+                Event event = new Event(title, cost, startDateTime, endDateTime, null, description,
+                        numParticipantsCount, facility.getName(), urlAndID == null ? null : urlAndID.first,
+                        selectionDate,entrant, duration, geolocationOn, replacementDrawOn, false);
 
-            Toast.makeText(this, "Event created: " + event.toString(), Toast.LENGTH_SHORT).show();
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("event", event);
-            setResult(1, resultIntent);
-            finish();
-        });
+                EventController controller = new EventController();
+                controller.addEvent(event, id -> {
+                    event.setFirebaseID(id);
+                    if (urlAndID != null) {
+                        new ImageController().updateImageRef(urlAndID.second, id);
+                    }
+
+                    // Create an empty waiting-list subcollection for the event
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("events").document(id).collection("waiting-list")
+                            .add(new HashMap<>()) // Adds an empty document to initialize the collection
+                            .addOnSuccessListener(documentReference -> Log.d("AddEventActivity", "Waiting list created successfully"))
+                            .addOnFailureListener(e -> Log.e("AddEventActivity", "Failed to create waiting list", e));
+
+                    Toast.makeText(this, "Event created: " + event.toString(), Toast.LENGTH_SHORT).show();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("event", event);
+                    setResult(1, resultIntent);
+                    finish();
+                });
+            });
     }
 
     /**

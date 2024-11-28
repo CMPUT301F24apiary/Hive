@@ -1,91 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#1A2232"
     tools:context=".ProfileActivity"
-    tools:ignore="ExtraText">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-
-    <ImageButton
-        android:id="@+id/backArrow"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/arrow2"
-        android:contentDescription="Go back to events list"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_gravity="start"
-        android:paddingEnd="6dp" />
-
-
-    <ImageView
-        android:id="@+id/imageViewProfileImage"
-        android:layout_width="176dp"
-        android:layout_height="184dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="123dp"
-        android:scaleType="centerCrop"
-        android:src= "@drawable/ic_profile"
-        android:gravity="center"/>
-
-    <TextView
-        android:id="@+id/personName"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageViewProfileImage"
-        android:layout_marginTop="18dp"
-        android:textAlignment="center"
-        android:text="Person Name"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        android:layout_height="match_parent"
+        android:background="#1A2232"
+        tools:ignore="ExtraText">
 
-    <LinearLayout
-        android:layout_width="306dp"
-        android:layout_height="94dp"
-        android:layout_alignTop="@+id/personName"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="81dp"
-        android:layout_marginEnd="54dp"
-        android:layout_marginBottom="277dp"
-        android:background="#136F63"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/backArrow"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Go back to events list"
+            android:paddingEnd="6dp"
+            android:src="@drawable/arrow2" />
+
+
+        <ImageView
+            android:id="@+id/imageViewProfileImage"
+            android:layout_width="176dp"
+            android:layout_height="184dp"
+            android:layout_below="@+id/deleteProfileButton"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="123dp"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_profile" />
 
         <TextView
-            android:id="@+id/emailLabel"
+            android:id="@+id/personName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/imageViewProfileImage"
+            android:layout_marginTop="18dp"
             android:gravity="center"
-            android:text="E-mail: user@google.com"
+            android:text="Person Name"
+            android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="306dp"
+            android:layout_height="94dp"
+            android:layout_alignTop="@+id/personName"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="79dp"
+            android:layout_marginEnd="54dp"
+            android:background="#136F63"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/emailLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="E-mail: user@google.com"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/phoneLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="Phone: (780) xxx - xxxx"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/deleteProfileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="#136F63"
+            android:text="Delete Profile"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/deleteFacilityButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linearLayout2"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="#136F63"
+            android:text="Delete Facility"
+            android:textColor="#FFFFFF"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/imageViewFacilityImage"
+            android:layout_width="176dp"
+            android:layout_height="184dp"
+            android:layout_below="@+id/deleteFacilityButton"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="119dp"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_profile"
+            android:visibility="gone" />
 
         <TextView
-            android:id="@+id/phoneLabel"
+            android:id="@+id/facilityName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_below="@id/imageViewFacilityImage"
+            android:layout_marginTop="18dp"
             android:gravity="center"
-            android:text="Phone: (780) xxx - xxxx"
+            android:text="Facility Name"
+            android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
-    </LinearLayout>
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/deleteProfileButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#136F63"
-        android:text="Delete Profile"
-        android:textColor="#FFFFFF" />
+        <LinearLayout
+            android:id="@+id/facility_details_linear_layout"
+            android:layout_width="306dp"
+            android:layout_height="94dp"
+            android:layout_alignTop="@id/facilityName"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="79dp"
+            android:layout_marginEnd="54dp"
+            android:layout_marginBottom="54dp"
+            android:background="#136F63"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:visibility="gone">
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/facilityEmailLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="E-mail: user@google.com"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/facilityPhoneLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="Phone: (780) xxx - xxxx"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

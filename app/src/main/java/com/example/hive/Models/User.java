@@ -34,6 +34,7 @@ public class User {
     private String profileImageUrl;
     FirebaseFirestore db;
     private Drawable initialsDrawable;
+    private String facilityID;
 
     public static User getInstance() {
         if (instance == null) {
@@ -127,6 +128,14 @@ public class User {
 
     public String getProfileImageUrl() {
         return profileImageUrl;
+    }
+
+    public String getFacilityID() {
+        return facilityID;
+    }
+
+    public void setFacilityID(String facilityID) {
+        this.facilityID = facilityID;
     }
 
     public void setProfileImageUrl(String profileImageUrl) {
