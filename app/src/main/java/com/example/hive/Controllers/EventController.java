@@ -47,14 +47,20 @@ public class EventController extends FirebaseController {
         return lastSavedEvent;
     }
 
-    public void addEvent(Event event, OnSuccessListener<String> listener) {
+    public void addEvent(Event event, String deviceID, OnSuccessListener<String> listener) {
         HashMap<String, Object> data = event.getAll();
 
         db.collection("events").add(data).addOnSuccessListener(documentReference -> {
             event.setFirebaseID(documentReference.getId());
+            HashMap<String, Object> userData = new HashMap<>();
+            userData.put("events", documentReference.getId());
+            updateUserByDeviceId(deviceID, userData, success -> {
+                if (success) {
+                    listener.onSuccess(documentReference.getId());
+                    lastSavedEvent = event;  // Store event for testing purposes
+                }
+            });
 
-            listener.onSuccess(documentReference.getId());
-            lastSavedEvent = event;  // Store event for testing purposes
         }).addOnFailureListener(e -> {
             Log.w("EventController", "Error adding event", e);
         });
