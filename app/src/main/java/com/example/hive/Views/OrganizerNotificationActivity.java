@@ -14,6 +14,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Controllers.InvitedController;
 import com.example.hive.R;
 
 public class OrganizerNotificationActivity extends AppCompatActivity {
@@ -54,7 +56,18 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
             return;
         }
 
-        // Skeleton - add logic to send notifications here
+        InvitedController control = new InvitedController();
+
+        sendNotif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String notifMessage = message.getText().toString().trim();
+                if (selected.isChecked()) {
+                    // Send notification to selected entrants
+                    control.sendNotificationToSelected(notifMessage, eventID);
+                }
+            }
+        });
 
     }
 }

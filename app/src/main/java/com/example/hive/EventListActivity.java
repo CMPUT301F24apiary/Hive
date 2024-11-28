@@ -55,6 +55,8 @@ public class EventListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
 
+        // Check for notifications
+
         // Initialize UI components
         profileButton = findViewById(R.id.profileButton);
         notificationBellButton = findViewById(R.id.notificationBellButton);

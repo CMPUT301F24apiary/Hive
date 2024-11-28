@@ -15,11 +15,13 @@ import com.example.hive.Models.User;
 import com.example.hive.NotificationActivity;
 import com.example.hive.R;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Firebase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class InvitedController extends FirebaseController {
@@ -62,8 +64,8 @@ public class InvitedController extends FirebaseController {
         return invited;
     }
 
-    public void createInvitedUserList(Context context, ArrayList<String> invited,
-                                      String eventID, OnSuccessListener<ArrayList<User>> listener) {
+    public void createInvitedUserList(ArrayList<String> invited,
+                                      OnSuccessListener<ArrayList<User>> listener) {
         ArrayList<User> userList = new ArrayList<>();
         int[] completedFetches = {0};  // Using array to modify in lambda
 
@@ -116,6 +118,24 @@ public class InvitedController extends FirebaseController {
                 }
             });
         }
+    }
+
+    public void sendNotificationToSelected(String msg, String id) {
+
+        new EventController().getInvitedList(id, invited -> {
+            if (invited.first) {
+                for (String uid : invited.second) {
+                    HashMap<String, Object> data = new HashMap<>();
+                    data.put("eventID", id);
+                    data.put("message", msg);
+                    data.put("notificationType", "Invite");
+                    db.collection("users")
+                            .document(uid)
+                            .collection("notifications")
+                            .add(data);
+                }
+            }
+        });
     }
 
 }

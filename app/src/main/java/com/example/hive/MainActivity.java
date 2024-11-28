@@ -74,8 +74,10 @@ public class MainActivity extends AppCompatActivity {
             // Check if the user already exists in Firestore
             firebaseController.checkUserByDeviceId(deviceId).thenAccept(isUserExisting -> {
                 if (isUserExisting) {
-                    Intent roleSelectionIntent = new Intent(this, RoleSelectionActivity.class);
-                    startActivity(roleSelectionIntent);
+//                    Intent roleSelectionIntent = new Intent(this, RoleSelectionActivity.class);
+//                    startActivity(roleSelectionIntent);
+                    Intent eventListIntent = new Intent(this, EventListActivity.class);
+                    startActivity(eventListIntent);
                     finish();
                 } else {
                     Intent firstTimeIntent = new Intent(this, FirstTimeActivity.class);

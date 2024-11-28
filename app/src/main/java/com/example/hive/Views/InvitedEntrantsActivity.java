@@ -130,8 +130,8 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
         eventControl.getInvitedList(eventID, successAndList -> {
             if (successAndList.first) {
                 invitedUIDs = successAndList.second;
-                inviteControl.createInvitedUserList(InvitedEntrantsActivity.this,
-                        invitedUIDs, title, InvitedEntrantsActivity.this::update);
+                inviteControl.createInvitedUserList(invitedUIDs,
+                        InvitedEntrantsActivity.this::update);
             } else {
                 inviteControl.getWaitingListUIDs(eventID, entrants -> {
                     eventControl.getField(eventID, "numParticipants",
@@ -140,8 +140,8 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
                                 invitedUIDs = inviteControl.generateInvitedList(
                                         entrants, numParticipants.intValue());
                                 eventControl.addInvitedList(eventID, invitedUIDs);
-                                inviteControl.createInvitedUserList(InvitedEntrantsActivity.this,
-                                        invitedUIDs, title, InvitedEntrantsActivity.this::update);
+                                inviteControl.createInvitedUserList(invitedUIDs,
+                                        InvitedEntrantsActivity.this::update);
                             });
                 });
             }
