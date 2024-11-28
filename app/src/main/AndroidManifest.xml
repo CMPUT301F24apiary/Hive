@@ -3,10 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.hive">
 
+
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+
+
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -15,8 +20,6 @@
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -29,7 +32,7 @@
         android:theme="@style/Theme.Hive"
         tools:targetApi="31">
         <activity
-            android:name=".Views.OrganizerNotificationActivity"
+            android:name=".Views.InvitedEntrantsActivity"
             android:exported="false" />
         <activity android:name=".Views.CustomQrScannerActivity" />
         <activity
@@ -40,7 +43,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- NotificationActivity and EventListActivity without launcher intent for now -->
         <activity
@@ -57,16 +60,20 @@
         <!--
  Keep MainActivity for navigation, but no launcher intent
         <activity android:name=".MainActivity" />
+
         -->
+
         <!-- Profile Activities -->
         <activity android:name=".ProfileActivity" />
         <activity android:name=".ProfileEditActivity" />
         <activity android:name=".FacilityActivity" />
         <activity android:name=".EditFacilityProfileActivity" />
         <activity android:name=".CancelledListActivity" />
-        <activity android:name=".FinalListActivity" />
         <activity android:name=".OrganizerEventListActivity" />
         <activity android:name=".AddEventActivity" />
+        <activity android:name=".EditEventActivity" />
+
+
         <activity android:name=".Views.QRCodeActivity" />
         <activity android:name=".Views.UserEventPageActivity" /> <!-- Admin Event Activities -->
         <activity
@@ -92,6 +99,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- admin profile list activity -->
@@ -111,4 +119,6 @@
         </activity>
     </application>
 
+
 </manifest>
+

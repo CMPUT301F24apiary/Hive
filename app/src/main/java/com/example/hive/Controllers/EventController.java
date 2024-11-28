@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import android.content.Context;
+
 
 /**
  * Controller to handle retrieving all events from the firestore database. Extends
@@ -27,6 +29,7 @@ import java.util.Objects;
  * @author Zach
  */
 public class EventController extends FirebaseController {
+
 
     // Database reference
     private final FirebaseFirestore db;
@@ -290,6 +293,41 @@ public class EventController extends FirebaseController {
                 });
 
     }
+
+    /**
+     * Handles the lottery process for an event and notifies participants of the results.
+     *
+     * @param context         The application context.
+     * @param eventID         The event ID.
+     * @param numParticipants The number of participants to be selected.
+     */
+    public void runLottery(Context context, String eventID, int numParticipants, InvitedController invitedController) {
+        // Existing logic to get waiting list
+        invitedController.getWaitingListUIDs(eventID, waitingList -> {
+            ArrayList<String> invitedList = invitedController.generateInvitedList(waitingList, numParticipants);
+            ArrayList<String> nonInvitedList = new ArrayList<>(waitingList);
+            nonInvitedList.removeAll(invitedList);
+
+            // Add the invited list to Firestore
+            invitedController.createInvitedUserList(invitedList, userList -> {
+                addInvitedList(eventID, invitedList);
+
+                // Notify winners
+                for (String userId : invitedList) {
+                    invitedController.notifyUserWin(context, userId);
+                }
+
+                // Notify non-winners
+                for (String userId : nonInvitedList) {
+                    invitedController.notifyUserLose(context, userId);
+                }
+            });
+        });
+    }
+
+
+
+
 
     public void addInvitedList(String eventID, ArrayList<String> invited) {
         CollectionReference eventsCollection = db.collection("events");

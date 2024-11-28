@@ -31,7 +31,7 @@ public class EventClassTest {
                 20,
                 "Test Location",
                 "Test Image URL",
-                true // geolocation
+                1731177806000L
         );
         testEventWithNullID = new Event(
                 "Test Title Null ID",
@@ -43,7 +43,7 @@ public class EventClassTest {
                 30,
                 "Test Location Null ID",
                 "Test Image URL Null ID",
-                false // geolocation
+                1731177806000L
         );
         testEventWithNullURL = new Event(
                 "Test Title Null URL",
@@ -55,7 +55,7 @@ public class EventClassTest {
                 40,
                 "Test Location Null URL",
                 null,
-                true // geolocation
+                1731177806000L
         );
     }
 
@@ -70,20 +70,16 @@ public class EventClassTest {
         assertEquals(20, testEvent.getNumParticipants());
         assertEquals("Test Location", testEvent.getLocation());
         assertEquals("Test Image URL", testEvent.getPosterURL());
-        assertEquals(true, testEvent.getGeolocation());
         assertNull(testEventWithNullID.getFirebaseID());
         assertNull(testEventWithNullURL.getPosterURL());
-        assertEquals(false, testEventWithNullID.getGeolocation());
     }
 
     @Test
     public void testEventSetters() {
         testEventWithNullID.setFirebaseID("NewFirebaseID");
         assertEquals("NewFirebaseID", testEventWithNullID.getFirebaseID());
-        testEventWithNullURL.setPosterURL("NewPosterURL");
+        testEventWithNullURL.setPoster("NewPosterURL");
         assertEquals("NewPosterURL", testEventWithNullURL.getPosterURL());
-        testEventWithNullID.setGeolocation(true);
-        assertEquals(true, testEventWithNullID.getGeolocation());
     }
 
     @Test
@@ -93,4 +89,5 @@ public class EventClassTest {
         assertEquals("Nov 09", testEvent.getEndDate());
         assertEquals("11:41", testEvent.getEndTime());
     }
+
 }
