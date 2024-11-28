@@ -16,8 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-public class AdminEventDetailActivity extends AppCompatActivity {
+public abstract class AdminEventDetailActivity extends AppCompatActivity
+implements DeleteQRCodeListener {
+
     private static final String TAG = "AdminEventDetailActivity";
     private EventController controller;
     private Event event;
@@ -27,7 +30,7 @@ public class AdminEventDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_detail);
+        setContentView(R.layout.admin_event_detail);
 
         ImageView eventPoster = findViewById(R.id.event_poster);
         ImageButton backButton = findViewById(R.id.event_back_button);
@@ -111,8 +114,6 @@ public class AdminEventDetailActivity extends AppCompatActivity {
         controller.deleteSingleEventFromDB(event.getFirebaseID(), this::onDelete);
     }
 
-
-
     /**
      * The callback function for after the event is deleted.
      * <br/><br/>
@@ -138,5 +139,17 @@ public class AdminEventDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Event could not be deleted.", Toast.LENGTH_SHORT)
                     .show();
         }
+    }
+
+    public void deleteQRCode() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("events").document(event.getFirebaseID())
+                .update("qrCode", "")
+                .addOnSuccessListener(v -> {
+                    Toast.makeText(this, "QR Code deleted", Toast.LENGTH_LONG).show();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "FAILED QR Code Delete");
+                });
     }
 }
