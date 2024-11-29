@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,9 +24,13 @@ import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Models.User;
 
+import com.example.hive.Controllers.FacilityController;
+import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Events.Event;
+
 /**
  * This activity is to show the facility profile for an event.
- * Author: Hrittija
+ * @author Hrittija
  */
 
 public class FacilityActivity extends AppCompatActivity {
@@ -33,6 +39,7 @@ public class FacilityActivity extends AppCompatActivity {
     private ImageView backArrowButton;
     private ImageView facilityPoster;
     private TextView facilityNameText, emailText, phoneText;
+    private String deviceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +53,24 @@ public class FacilityActivity extends AppCompatActivity {
         emailText = findViewById(R.id.email_label);
         phoneText = findViewById(R.id.phone_label);
 
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
         facilityData();
+
+        ActivityResultLauncher<Intent> editFacilityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == 1) {
+                        facilityData();
+                    }
+                }
+        );
 
         editFacilityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FacilityActivity.this, EditFacilityProfileActivity.class);
-                startActivityForResult(intent, 1);
+                editFacilityLauncher.launch(intent);
             }
         });
 
@@ -110,68 +128,36 @@ public class FacilityActivity extends AppCompatActivity {
     public void facilityData() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
 
-        // Get the profile data
-        String facilityName = sharedPreferences.getString("facilityName", "Facility Name");
-        String email = sharedPreferences.getString("facilityEmail", "facility@google.com");
-        String phone = sharedPreferences.getString("facilityPhone", "(780) xxx - xxxx");
-        String facilityPosterBase64 = sharedPreferences.getString("facility_profile_picture", "");
+        FacilityController facilityControl = new FacilityController();
 
-        // Set the UI with profile data
-        facilityNameText.setText(facilityName);
-        emailText.setText("Email: " + email);
-        phoneText.setText("Phone: " + phone);
-
-        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        loadProfileData(deviceId);
-
-        // Set the facility poster image
-//        if (!facilityPosterBase64.isEmpty()) {
-//            Bitmap facilityBitmap = base64ToBitmap(facilityPosterBase64);
-//            facilityPoster.setImageBitmap(facilityBitmap);
-//        } else {
-//            facilityPoster.setImageResource(R.drawable.image1);
-//        }
-
-        updateProfileStatus();
-    }
-
-    /**
-     * Loads profile data from Firebase and displays it in the corresponding TextViews.
-     */
-    public void loadProfileData(String deviceId) {
-        FirebaseController controller = new FirebaseController();
-        controller.fetchUserByDeviceId(deviceId, new FirebaseController.OnUserFetchedListener() {
+        new FirebaseController().fetchUserByDeviceId(deviceId, new FirebaseController
+                .OnUserFetchedListener() {
             @Override
             public void onUserFetched(User user) {
-                if (user != null) {
-                    String pfpUrl = user.getProfileImageUrl();
-                    Log.d("LoadProfileData", pfpUrl);
+                if (!user.getFacilityID().isEmpty()) {
+                    facilityControl.getUserFacilityDetails(deviceId, facility -> {
+                        // Set the UI with profile data
+                        facilityNameText.setText(facility.getName());
+                        emailText.setText("Email: " + facility.getEmail());
+                        phoneText.setText("Phone: " + facility.getPhone());
 
-                    if (!pfpUrl.isEmpty()) {
-                        Glide.with(FacilityActivity.this).load(pfpUrl).circleCrop().into(facilityPoster);
-                    } else {
-                        facilityPoster.setImageDrawable(user.getDisplayDrawable());
-                    }
-                } else {
-                    Toast.makeText(FacilityActivity.this, "User is null", Toast.LENGTH_LONG).show();
+                        // Set the facility poster image
+                        if (facility.getPictureURL() == null) {
+                            facilityPoster.setImageDrawable(facility.generateDefaultPic());
+                        } else {
+                            Glide.with(FacilityActivity.this).load(facility.getPictureURL())
+                                    .circleCrop().into(facilityPoster);
+                        }
+                    });
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                Toast.makeText(FacilityActivity.this, "Error fetching user profile (ProfileActivity)",
-                        Toast.LENGTH_LONG).show();
+
             }
-
         });
-    }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            facilityData();
-        }
-    }
+}
 }

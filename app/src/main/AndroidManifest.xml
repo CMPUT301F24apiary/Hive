@@ -72,7 +72,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
-        </activity>
+        </activity><activity android:name=".Views.InvitedEntrantsActivity" />
+        <activity android:name=".EditEventActivity" />
         <activity android:name=".CancelledListActivity" />
         <activity android:name=".FinalListActivity" />
         <activity android:name=".OrganizerEventListActivity"
