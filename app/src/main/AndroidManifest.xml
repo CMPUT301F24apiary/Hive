@@ -68,12 +68,10 @@
         <activity android:name=".ProfileEditActivity" />
         <activity android:name=".FacilityActivity" />
         <activity android:name=".EditFacilityProfileActivity" />
-        <activity android:name=".Views.InvitedEntrantsActivity" />
         <activity android:name=".EditEventActivity" />
         <activity android:name=".CancelledListActivity" />
         <activity android:name=".OrganizerEventListActivity" />
         <activity android:name=".AddEventActivity" />
-        <activity android:name=".EditEventActivity" />
 
 
         <activity android:name=".Views.QRCodeActivity" />
