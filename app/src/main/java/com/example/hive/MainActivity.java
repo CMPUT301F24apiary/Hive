@@ -88,6 +88,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Other developer/debugging buttons can remain here
+    // Uncomment and add as needed
+        /*
+        Button eventsButton = findViewById(R.id.view_events_button);
+        eventsButton.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, AdminEventListActivity.class);
+            startActivity(i);
+        });
+        */
+
     @Override
     protected void onResume() {
         super.onResume();

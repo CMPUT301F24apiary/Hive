@@ -93,4 +93,5 @@ public class EventClassTest {
         assertEquals("Nov 09", testEvent.getEndDate());
         assertEquals("11:41", testEvent.getEndTime());
     }
+
 }
