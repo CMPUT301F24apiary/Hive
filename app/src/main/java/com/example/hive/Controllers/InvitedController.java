@@ -56,7 +56,7 @@ public class InvitedController extends FirebaseController {
         ArrayList<String> invited = new ArrayList<>();
         while (invited.size() < numParticipants) {
             // Get random entrant
-            double randomNum = Math.random() * entrants.size();
+            double randomNum = Math.random() % entrants.size();
             int pos = (int) Math.floor(randomNum);
             invited.add(entrants.remove(pos));
         }
@@ -74,8 +74,8 @@ public class InvitedController extends FirebaseController {
     // Create the invited user list in Firestore
     public void createInvitedUserList(ArrayList<String> invited, OnSuccessListener<ArrayList<User>> listener) {
         ArrayList<User> userList = new ArrayList<>();
-        int[] completedFetches = {0};  // Using an array to modify within the lambda
-
+        int[] completedFetches = {0};  // Using array to modify in lambda
+        // If invited list is empty, return immediately
         if (invited.isEmpty()) {
             listener.onSuccess(userList);
             return;
@@ -87,7 +87,7 @@ public class InvitedController extends FirebaseController {
                 public void onUserFetched(User user) {
                     userList.add(user);
                     completedFetches[0]++;
-
+                    // Only call listener when all fetches are complete
                     if (completedFetches[0] == invited.size()) {
                         listener.onSuccess(userList);
                     }
@@ -96,6 +96,7 @@ public class InvitedController extends FirebaseController {
                 @Override
                 public void onError(Exception e) {
                     completedFetches[0]++;
+                    // Even on error, check if all fetches are complete
                     if (completedFetches[0] == invited.size()) {
                         listener.onSuccess(userList);
                     }
