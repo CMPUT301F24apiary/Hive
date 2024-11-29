@@ -1,195 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#1A2232">
+    android:background="#1A2232"
+    android:padding="16dp">
 
-    <ImageButton
-        android:id="@+id/backButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/arrow2"
-        android:contentDescription="Go back to events list"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_gravity="start"
-        android:padding="12dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Notifications"
-        android:textSize="24sp"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:paddingBottom="16dp"
-        android:layout_gravity="center" />
-
-    <!-- No Notifications Message -->
-    <TextView
-        android:id="@+id/noNotificationsMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No notifications available."
-        android:textSize="18sp"
-        android:textColor="#FFFFFF"
-        android:textAlignment="center"
-        android:visibility="gone"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp" />
-
-    <!-- Notification 1 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:layout_marginBottom="16dp">
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/arrow2"
+            android:contentDescription="Go back to events list"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="12dp" />
 
         <TextView
-            android:id="@+id/notification1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notifications"
+            android:textSize="24sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:paddingBottom="16dp"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/noNotificationsMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#344055"
-            android:padding="16dp"
-            android:text="You have been chosen from the waiting list for Christmas Event."
+            android:text="No notifications available."
+            android:textSize="18sp"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
 
         <LinearLayout
+            android:id="@+id/notificationsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingTop="8dp">
-
-            <Button
-                android:id="@+id/acceptButton1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Accept"
-                android:backgroundTint="#136F63"
-                android:textColor="#FFFFFF"
-                android:layout_marginEnd="8dp"
-                android:padding="12dp" />
-
-            <Button
-                android:id="@+id/declineButton1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Decline"
-                android:backgroundTint="#E74C3C"
-                android:textColor="#FFFFFF"
-                android:padding="12dp" />
-        </LinearLayout>
+            android:orientation="vertical" />
     </LinearLayout>
-
-    <!-- Notification 2 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:layout_marginBottom="16dp">
-
-        <TextView
-            android:id="@+id/notification2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#344055"
-            android:padding="16dp"
-            android:text="You have not been chosen from the waiting list for Christmas Carol."
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/reRegisterButton2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#136F63"
-            android:text="Re-register"
-            android:textColor="#FFFFFF"
-            android:padding="12dp" />
-    </LinearLayout>
-
-    <!-- Notification 3 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:layout_marginBottom="16dp">
-
-        <TextView
-            android:id="@+id/notification3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#344055"
-            android:padding="16dp"
-            android:text="You have been chosen from the waiting list for Autumn Festival."
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingTop="8dp">
-
-            <Button
-                android:id="@+id/acceptButton3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Accept"
-                android:backgroundTint="#136F63"
-                android:textColor="#FFFFFF"
-                android:layout_marginEnd="8dp"
-                android:padding="12dp" />
-
-            <Button
-                android:id="@+id/declineButton3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Decline"
-                android:backgroundTint="#E74C3C"
-                android:textColor="#FFFFFF"
-                android:padding="12dp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- Notification 4 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:layout_marginBottom="16dp">
-
-        <TextView
-            android:id="@+id/notification4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#344055"
-            android:padding="16dp"
-            android:text="You have not been chosen from the waiting list for Autumn U-Pick."
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/reRegisterButton4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#136F63"
-            android:text="Re-register"
-            android:textColor="#FFFFFF"
-            android:padding="12dp" />
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

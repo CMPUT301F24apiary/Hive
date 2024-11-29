@@ -39,6 +39,9 @@ public class InvitedController extends FirebaseController {
     public ArrayList<String> generateInvitedList(String eventID, ArrayList<String> entrants, int numParticipants) {
         CollectionReference eventsCollection = db.collection("events");
 
+        Log.d("InvitedController", "Starting to generate invited list for eventID: " + eventID);
+        Log.d("InvitedController", "Number of entrants available: " + entrants.size() + ", Number of participants to select: " + numParticipants);
+
         // Set isLotteryDrawn to false before the lottery is drawn
         eventsCollection.document(eventID).update("isLotteryDrawn", Boolean.FALSE)
                 .addOnSuccessListener(aVoid -> Log.d("InvitedController", "Lottery status set to false."))
@@ -46,8 +49,10 @@ public class InvitedController extends FirebaseController {
 
         // Proceed with drawing the lottery
         if (entrants.size() < numParticipants) {
+            Log.d("InvitedController", "Number of entrants is less than the number of participants. Returning all entrants.");
             return entrants;
         }
+
         ArrayList<String> invited = new ArrayList<>();
         while (invited.size() < numParticipants) {
             // Get random entrant
@@ -55,6 +60,8 @@ public class InvitedController extends FirebaseController {
             int pos = (int) Math.floor(randomNum);
             invited.add(entrants.remove(pos));
         }
+
+        Log.d("InvitedController", "Invited users generated. Number of users invited: " + invited.size());
 
         // Set isLotteryDrawn to true after the lottery is drawn
         eventsCollection.document(eventID).update("isLotteryDrawn", Boolean.TRUE)
@@ -116,6 +123,7 @@ public class InvitedController extends FirebaseController {
             }
         });
     }
+
 
     // Notify a user that they have not been selected in the lottery
     public void notifyUserLose(Context context, String userId) {

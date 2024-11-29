@@ -192,6 +192,16 @@ public class EventController extends FirebaseController {
         }).addOnFailureListener(e -> Log.e("ModelGetAll", "Error fetching data", e));
     }
 
+    /**
+     * Deletes a single event from the database with provided id. Handles the case in which the
+     * document does not exist, or the deletion fails.
+     *
+     * @param id
+     * The id number created in firebase that refers to the event that is to be deleted.
+     * @param callback
+     * The callback function to call on either success or failure. Must have a Boolean parameter.
+     */
+
     public void deleteSingleEventFromDB(String id, OnSuccessListener<Boolean> callback) {
         CollectionReference eventsCollection = db.collection("events");
 
