@@ -120,10 +120,12 @@ public class User {
         this.role = role;
     }
 
+    @PropertyName("roleSet")
     public List<String> getRoleList() {
         return roleList;
     }
 
+    @PropertyName("roleSet")
     public void setRoleList(List<String> roleList) {
         this.roleList = roleList;
     }

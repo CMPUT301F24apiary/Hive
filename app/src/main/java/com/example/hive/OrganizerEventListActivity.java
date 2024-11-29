@@ -213,6 +213,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
                         Intent intent = new Intent(
                                 OrganizerEventListActivity.this,
                                 FacilityActivity.class);
+                        intent.putExtra("isEdit", false);
                         startActivity(intent);
                         finish();
                     } else if (user.getFacilityID().isEmpty()) {
@@ -223,6 +224,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
                         Intent intent = new Intent(
                                 OrganizerEventListActivity.this,
                                 FacilityActivity.class);
+                        intent.putExtra("isEdit", false);
                         startActivity(intent);
                         finish();
                     }else {
