@@ -164,10 +164,16 @@ public class ImageController extends FirebaseController {
                 newImg.put("relatedDocID", relatedID);
 
                 OnSuccessListener<DocumentSnapshot> onRelatedDocSuccess = relatedDoc -> {
-                    if (imageType.equals("event poster")) {
-                        newImg.put("info", "Event poster - " + relatedDoc.get("title"));
-                    } else {
-                        newImg.put("info", "Profile picture - " + relatedDoc.get("username"));
+                    switch (imageType) {
+                        case "event poster":
+                            newImg.put("info", "Event poster - " + relatedDoc.get("title"));
+                            break;
+                        case "profile picture":
+                            newImg.put("info", "Profile picture - " + relatedDoc.get("username"));
+                            break;
+                        case "facility picture":
+                            newImg.put("info", "Facility picture - " + relatedDoc.get("name"));
+                            break;
                     }
 
                     synchronized (data) {
@@ -182,12 +188,22 @@ public class ImageController extends FirebaseController {
                 };
 
                 // Fetch related document based on type
-                if (imageType.equals("event poster")) {
-                    db.collection("events").document(relatedID).get()
-                            .addOnSuccessListener(onRelatedDocSuccess);
-                } else {
-                    db.collection("users").document(relatedID).get()
-                            .addOnSuccessListener(onRelatedDocSuccess);
+                switch (imageType) {
+                    case "event poster": {
+                        db.collection("events").document(relatedID).get()
+                                .addOnSuccessListener(onRelatedDocSuccess);
+                        break;
+                    }
+                    case "profile picture": {
+                     db.collection("users").document(relatedID).get()
+                             .addOnSuccessListener(onRelatedDocSuccess);
+                     break;
+                 }
+                    case "facility picture": {
+                        db.collection("facilities").document(relatedID).get()
+                                .addOnSuccessListener(onRelatedDocSuccess);
+                        break;
+                    }
                 }
             }
         }).addOnFailureListener(e -> Log.e("ImageControllerGetAll",

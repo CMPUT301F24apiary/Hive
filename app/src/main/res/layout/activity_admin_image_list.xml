@@ -15,7 +15,7 @@
         android:textColor="@color/white"
         android:textSize="34sp"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/role_selection_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,10 +23,10 @@
     <LinearLayout
         android:id="@+id/admin_image_list_linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/role_selection_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -49,19 +49,6 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/view_facilities_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/mainGreen"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="View Facilities" />
-
-                <Space
-                    android:layout_width="20dp"
-                    android:layout_height="wrap_content" />
 
                 <Button
                     android:id="@+id/view_events_btn"
@@ -95,5 +82,17 @@
             android:layout_height="match_parent" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/role_selection_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:backgroundTint="@color/mainGreen"
+        android:text="Role Selection"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

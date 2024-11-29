@@ -218,7 +218,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainRed"
-                android:text="Remove QR Code" />
+                android:text="Remove QR Code"
+                android:visibility="gone" />
 
 
             <Button
@@ -228,7 +229,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainGreen"
                 android:text="Register"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/edit_event_btn"
@@ -237,7 +238,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainGreen"
                 android:text="Edit Event"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/delete_event_button"
@@ -245,7 +246,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainRed"
-                android:text="Remove Event" />
+                android:text="Remove Event"
+                android:visibility="gone" />
 
 
             <Button
@@ -254,7 +256,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainRed"
-                android:text="Unregister" />
+                android:text="Unregister"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

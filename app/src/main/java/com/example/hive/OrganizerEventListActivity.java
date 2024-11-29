@@ -203,28 +203,49 @@ public class OrganizerEventListActivity extends AppCompatActivity {
 
         FirebaseController fbControl = new FirebaseController();
         fbControl.fetchUserByDeviceId(deviceID,
-                new FirebaseController.OnUserFetchedListener() {
-                    @Override
-                    public void onUserFetched(User user) {
-                        if (!user.getFacilityID().isEmpty()) {
-                            // Use the getOrganizersEventsFromDB method from the controller to get all
-                            // the organizer's events in the database. Use this activity's updateList
-                            // method to display all the events in the app
-                            facilityControl.getUserFacilityDetails(deviceID, facility -> {
-                                if (facility.getPictureURL() == null) {
-                                    facilityprofileButton.setImageDrawable(
-                                            facility.generateDefaultPic());
-                                } else {
-                                    Glide
-                                            .with(OrganizerEventListActivity.this)
-                                            .load(facility.getPictureURL())
-                                            .circleCrop()
-                                            .into(facilityprofileButton);
-                                }
-                            });
+            new FirebaseController.OnUserFetchedListener() {
+                @Override
+                public void onUserFetched(User user) {
+                    if (user.getFacilityID() == null) {
+                        Toast.makeText(OrganizerEventListActivity.this,
+                                "Please complete your facility profile first.",
+                                Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(
+                                OrganizerEventListActivity.this,
+                                FacilityActivity.class);
+                        intent.putExtra("isEdit", false);
+                        startActivity(intent);
+                        finish();
+                    } else if (user.getFacilityID().isEmpty()) {
 
-                            controller.getOrganizersEventsFromDB(
-                                    OrganizerEventListActivity.this::updateList);
+                        Toast.makeText(OrganizerEventListActivity.this,
+                                "Please complete your facility profile first.",
+                                Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(
+                                OrganizerEventListActivity.this,
+                                FacilityActivity.class);
+                        intent.putExtra("isEdit", false);
+                        startActivity(intent);
+                        finish();
+                    }else {
+                        // Use the getOrganizersEventsFromDB method from the controller to get all
+                        // the organizer's events in the database. Use this activity's updateList
+                        // method to display all the events in the app
+                        facilityControl.getUserFacilityDetails(deviceID, facility -> {
+                            if (facility.getPictureURL() == null) {
+                                facilityprofileButton.setImageDrawable(
+                                        facility.generateDefaultPic());
+                            } else {
+                                Glide
+                                        .with(OrganizerEventListActivity.this)
+                                        .load(facility.getPictureURL())
+                                        .circleCrop()
+                                        .into(facilityprofileButton);
+                            }
+                        });
+
+                        controller.getOrganizersEventsFromDB(deviceID,
+                                OrganizerEventListActivity.this::updateList);
 
                             facilityprofileButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -245,15 +266,6 @@ public class OrganizerEventListActivity extends AppCompatActivity {
                                     addItemLauncher.launch(intent);
                                 }
                             });
-                        } else {
-                            Toast.makeText(OrganizerEventListActivity.this,
-                                    "Please complete your facility profile first.",
-                                    Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(
-                                    OrganizerEventListActivity.this,
-                                    FacilityActivity.class);
-                            startActivity(intent);
-                            finish();
                         }
                     }
 
@@ -343,3 +355,5 @@ public class OrganizerEventListActivity extends AppCompatActivity {
         });
     }
 }
+
+

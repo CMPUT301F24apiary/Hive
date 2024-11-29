@@ -70,6 +70,7 @@ public class FacilityActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FacilityActivity.this, EditFacilityProfileActivity.class);
+                intent.putExtra("isEdit", true);
                 editFacilityLauncher.launch(intent);
             }
         });
