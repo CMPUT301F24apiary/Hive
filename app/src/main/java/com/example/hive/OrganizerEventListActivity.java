@@ -349,29 +349,21 @@ public class OrganizerEventListActivity extends AppCompatActivity {
     }
 
     public void loadProfileData(String deviceId) {
-        FirebaseController controller = new FirebaseController();
-        controller.fetchUserByDeviceId(deviceId, new FirebaseController.OnUserFetchedListener() {
-            @Override
-            public void onUserFetched(User user) {
-                if (user != null) {
-                    String pfpUrl = user.getProfileImageUrl();
+        FacilityController controller = new FacilityController();
+        controller.getUserFacilityDetails(deviceId, facility -> {
+                if (facility != null) {
+                    String pfpUrl = facility.getPictureURL();
                     Log.d("LoadProfileData", pfpUrl);
 
                     if (!pfpUrl.isEmpty()) {
                         Glide.with(OrganizerEventListActivity.this).load(pfpUrl).circleCrop().into(facilityprofileButton);
                     } else {
-                        facilityprofileButton.setImageDrawable(user.getDisplayDrawable());
+                        facilityprofileButton.setImageDrawable(facility.generateDefaultPic());
                     }
                 } else {
-                    Toast.makeText(OrganizerEventListActivity.this, "User is null", Toast.LENGTH_LONG).show();
+                    Toast.makeText(OrganizerEventListActivity.this, "Facility is null", Toast.LENGTH_LONG).show();
                 }
-            }
 
-            @Override
-            public void onError(Exception e) {
-                Toast.makeText(OrganizerEventListActivity.this, "Error fetching user profile (ProfileActivity)",
-                        Toast.LENGTH_LONG).show();
-            }
 
         });
     }
