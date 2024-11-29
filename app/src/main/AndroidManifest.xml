@@ -61,13 +61,27 @@
         <!-- Profile Activities -->
         <activity android:name=".ProfileActivity" />
         <activity android:name=".ProfileEditActivity" />
-        <activity android:name=".FacilityActivity" />
-        <activity android:name=".EditFacilityProfileActivity" />
-        <activity android:name=".Views.InvitedEntrantsActivity" />
+        <activity android:name=".FacilityActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".EditFacilityProfileActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity><activity android:name=".Views.InvitedEntrantsActivity" />
         <activity android:name=".EditEventActivity" />
         <activity android:name=".CancelledListActivity" />
         <activity android:name=".FinalListActivity" />
-        <activity android:name=".OrganizerEventListActivity" />
+        <activity android:name=".OrganizerEventListActivity"
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+        </intent-filter>
+         </activity>
         <activity android:name=".AddEventActivity" />
         <activity android:name=".Views.QRCodeActivity" />
         <activity android:name=".Views.UserEventPageActivity" /> <!-- Admin Event Activities -->

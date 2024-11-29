@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Models.User;
 import com.example.hive.Controllers.FacilityController;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Controllers.ImageController;
@@ -53,6 +55,15 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
         facilityImageView = findViewById(R.id.img_edit_picture);
 
         setupButtons();
+        facilityData();
+    }
+
+    /**
+     * Called when the activity is resumed. Reloads the profile picture to reflect any changes made in the ProfileEditActivity.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
         facilityData();
     }
 
@@ -107,6 +118,43 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
             pictureUri = imageUri;
         }
     }
+
+//    /**
+//     * Sets the image for a facility from a specified URI by converting it
+//     * into a bitmap.
+//     * @param imageUri organizer's selection of image for the facility profile
+//     */
+//    private void setImageFromUri(Uri imageUri) {
+//        try {
+//            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+//            facilityImageView.setImageBitmap(bitmap);
+//            base64Image = bitmapToBase64(bitmap);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+    /**
+     * Converts a Bitmap image to a Base64-encoded string
+     * @param bitmap to be converted
+     * @return string
+     */
+    public String bitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+//
+//    /**
+//     * Converts a base64 string to bitmap
+//     * @param base64Str to be converted
+//     * @return the converted butmap
+//     */
+//    public Bitmap base64ToBitmap(String base64Str) {
+//        byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
+//        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+//    }
 
     /**
      * This is to show the data that has been set by the user previously and that
