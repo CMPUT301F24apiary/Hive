@@ -95,7 +95,7 @@ implements DeleteQRCodeListener, DeleteEventListener {
         delQRCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                new ConfirmQRCodeDelete().show(getSupportFragmentManager(), "Confirm Delete");
+                new ConfirmQRCodeDelete().show(getSupportFragmentManager(), "Confirm Delete");
             }
         });
 
