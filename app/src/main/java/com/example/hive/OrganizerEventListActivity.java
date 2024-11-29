@@ -353,7 +353,6 @@ public class OrganizerEventListActivity extends AppCompatActivity {
         controller.getUserFacilityDetails(deviceId, facility -> {
                 if (facility != null) {
                     String pfpUrl = facility.getPictureURL();
-                    Log.d("LoadProfileData", pfpUrl);
 
                     if (!pfpUrl.isEmpty()) {
                         Glide.with(OrganizerEventListActivity.this).load(pfpUrl).circleCrop().into(facilityprofileButton);
