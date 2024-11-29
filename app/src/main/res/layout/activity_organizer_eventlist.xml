@@ -20,10 +20,10 @@
             android:id="@+id/addEventButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="38dp"
             android:backgroundTint="#136F63"
-            android:text="Add new event"
+            android:text="Add event"
             android:textColor="#FFFFFF" />
 
         <ImageButton
@@ -33,7 +33,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="37dp"
+            android:layout_marginEnd="5dp"
             android:background="@android:color/transparent"
             android:contentDescription="Profile Picture"
             android:scaleType="centerCrop"

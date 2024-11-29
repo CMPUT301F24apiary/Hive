@@ -214,7 +214,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
                                 OrganizerEventListActivity.this,
                                 FacilityActivity.class);
                         startActivity(intent);
-
+                        finish();
                     } else if (user.getFacilityID().isEmpty()) {
 
                         Toast.makeText(OrganizerEventListActivity.this,
@@ -224,7 +224,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
                                 OrganizerEventListActivity.this,
                                 FacilityActivity.class);
                         startActivity(intent);
-
+                        finish();
                     }else {
                         // Use the getOrganizersEventsFromDB method from the controller to get all
                         // the organizer's events in the database. Use this activity's updateList
@@ -245,32 +245,33 @@ public class OrganizerEventListActivity extends AppCompatActivity {
                         controller.getOrganizersEventsFromDB(deviceID,
                                 OrganizerEventListActivity.this::updateList);
 
-                        facilityprofileButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(
-                                        OrganizerEventListActivity.this,
-                                        FacilityActivity.class);
-                                startActivity(intent);
-                            }
-                        });
-                        addEventButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(
-                                        OrganizerEventListActivity.this,
-                                        AddEventActivity.class);
-                                addItemLauncher.launch(intent);
-                            }
-                        });
+                            facilityprofileButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(
+                                            OrganizerEventListActivity.this,
+                                            FacilityActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+                            addEventButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(
+                                            OrganizerEventListActivity.this,
+                                            AddEventActivity.class);
+                                    addItemLauncher.launch(intent);
+                                }
+                            });
+                        }
                     }
-                }
 
-                @Override
-                public void onError(Exception e) {
+                    @Override
+                    public void onError(Exception e) {
 
-                }
-        });
+                    }
+                });
 
 
 

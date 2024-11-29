@@ -322,6 +322,19 @@ public class FirebaseController {
         void onSuccess();
         void onFailure(String errorMessage);
     }
+
+    public void updateUserRole(String deviceId, String newRole, OnRoleUpdatedListener listener) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(deviceId)
+                .update("role", newRole)
+                .addOnSuccessListener(v -> listener.onSuccess())
+                .addOnFailureListener(e -> listener.onFailure(e));
+    }
+
+    public interface OnRoleUpdatedListener {
+        void onSuccess();
+        void onFailure(Exception e);
+    }
 }
 
 
