@@ -5,126 +5,116 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
-import java.util.ArrayList;
 
-/**
- * NotificationActivity.java
- *
- * This activity displays a list of notifications to the user, providing options to
- * accept, decline, or re-register for specific events. Notifications inform users
- * of their status on event waiting lists and enable quick response actions.
- *
- * <p>Outstanding Issues:
- * - None at this time.</p>
- *
- * @author Aleena
- * @version 1.0
- */
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.hive.Models.Notification;
+import com.example.hive.Models.User;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 
 public class NotificationActivity extends AppCompatActivity {
 
-    private final ArrayList<String> notifications = new ArrayList<>();
-
-    /**
-     * Called when the activity is first created. Initializes the view, sets up notifications,
-     * and configures the event buttons.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
-     *                           this Bundle contains the most recent data.
-     */
+    private LinearLayout notificationsContainer;
+    private ArrayList<Notification> notifications = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
 
-        // Back button functionality
+        // Initialize views
+        notificationsContainer = findViewById(R.id.notificationsContainer);
         ImageButton backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate back to EventListActivity
-                Intent intent = new Intent(NotificationActivity.this, EventListActivity.class);
-                startActivity(intent);
-                finish(); // Optional: close the NotificationActivity
-            }
+
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(NotificationActivity.this, EventListActivity.class);
+            startActivity(intent);
+            finish();
         });
 
-        // Sample notifications to display
-        notifications.add("You have been chosen from the waiting list for Christmas Event.");
-        notifications.add("You have not been chosen for Christmas Carol.");
-        notifications.add("You have been chosen for Autumn Festival.");
-        notifications.add("You have not been chosen for Autumn U-Pick.");
-
-        // Setup the notifications and buttons
-        setupNotification(R.id.notification1, R.id.acceptButton1, R.id.declineButton1, notifications.get(0));
-        setupNotification(R.id.notification2, R.id.reRegisterButton2, notifications.get(1));
-        setupNotification(R.id.notification3, R.id.acceptButton3, R.id.declineButton3, notifications.get(2));
-        setupNotification(R.id.notification4, R.id.reRegisterButton4, notifications.get(3));
+        loadNotifications();
     }
 
-    /**
-     * Sets up a notification with accept and decline buttons.
-     *
-     * @param notificationId  The ID of the TextView that displays the notification message.
-     * @param acceptButtonId  The ID of the accept button for the notification.
-     * @param declineButtonId The ID of the decline button for the notification.
-     * @param message         The notification message to display.
-     */
-    protected void setupNotification(int notificationId, int acceptButtonId, int declineButtonId, String message) {
-        TextView notification = findViewById(notificationId);
-        notification.setText(message);
+    private void loadNotifications() {
+        String userId = getCurrentUserId(); // Retrieve the current user's ID
 
-        Button acceptButton = findViewById(acceptButtonId);
-        acceptButton.setOnClickListener(v -> acceptEvent(message));
-
-        Button declineButton = findViewById(declineButtonId);
-        declineButton.setOnClickListener(v -> declineEvent(message));
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("notification")
+                .whereEqualTo("userId", userId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    notifications.clear();
+                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                        Notification notification = document.toObject(Notification.class);
+                        if (notification != null) {
+                            notification.setFirebaseId(document.getId());
+                            notifications.add(notification);
+                        }
+                    }
+                    displayNotifications();
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors here, such as showing a Toast or logging the error
+                });
     }
 
-    /**
-     * Sets up a notification with a re-register button.
-     *
-     * @param notificationId     The ID of the TextView that displays the notification message.
-     * @param reRegisterButtonId The ID of the re-register button for the notification.
-     * @param message            The notification message to display.
-     */
-    protected void setupNotification(int notificationId, int reRegisterButtonId, String message) {
-        TextView notification = findViewById(notificationId);
-        notification.setText(message);
+    private void displayNotifications() {
+        notificationsContainer.removeAllViews();
 
-        Button reRegisterButton = findViewById(reRegisterButtonId);
-        reRegisterButton.setOnClickListener(v -> reRegisterEvent(message));
+        if (notifications.isEmpty()) {
+            findViewById(R.id.noNotificationsMessage).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.noNotificationsMessage).setVisibility(View.GONE);
+            for (Notification notification : notifications) {
+                addNotificationView(notification);
+            }
+        }
     }
 
-    /**
-     * Handles the event acceptance by navigating to the RegistrationActivity.
-     *
-     * @param eventName The name of the event being accepted.
-     */
-    protected void acceptEvent(String eventName) {
-        Intent intent = new Intent(NotificationActivity.this, RegistrationActivity.class);
-        intent.putExtra("eventName", eventName);
-        startActivity(intent);
+    private void addNotificationView(Notification notification) {
+        View notificationView = getLayoutInflater().inflate(R.layout.notification_item, notificationsContainer, false);
+
+        TextView notificationTextView = notificationView.findViewById(R.id.notification_text);
+        Button actionButton1 = notificationView.findViewById(R.id.action_button_1);
+        Button actionButton2 = notificationView.findViewById(R.id.action_button_2);
+
+        notificationTextView.setText(notification.getContent());
+
+        switch (notification.getType()) {
+            case "win":
+                actionButton1.setText("Accept");
+                actionButton2.setText("Decline");
+                actionButton1.setOnClickListener(v -> acceptEvent(notification));
+                actionButton2.setOnClickListener(v -> declineEvent(notification));
+                break;
+            case "lose":
+                actionButton1.setText("Re-register");
+                actionButton2.setVisibility(View.GONE);
+                actionButton1.setOnClickListener(v -> reRegisterEvent(notification));
+                break;
+        }
+
+        notificationsContainer.addView(notificationView);
     }
 
-    /**
-     * Handles the event decline action.
-     *
-     * @param eventName The name of the event being declined.
-     */
-    protected void declineEvent(String eventName) {
-        // Handle event decline logic
+    private void acceptEvent(Notification notification) {
+        // Handle acceptance logic, such as updating Firestore and navigating to a registration activity
     }
 
-    /**
-     * Handles the re-registration action for the given event.
-     *
-     * @param eventName The name of the event for which the user wants to re-register.
-     */
-    protected void reRegisterEvent(String eventName) {
-        // Handle re-registration logic
+    private void declineEvent(Notification notification) {
+        // Handle decline logic, such as updating Firestore
+    }
+
+    private void reRegisterEvent(Notification notification) {
+        // Handle re-registration logic, such as updating Firestore
+    }
+
+    private String getCurrentUserId() {
+        return User.getInstance().getDeviceId(); // Example to retrieve user ID from current user
     }
 }

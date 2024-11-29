@@ -137,7 +137,7 @@ public class FacilityActivity extends AppCompatActivity {
                 .OnUserFetchedListener() {
             @Override
             public void onUserFetched(User user) {
-                if (!user.getFacilityID().isEmpty()) {
+                if (user != null && user.getFacilityID() != null && !user.getFacilityID().isEmpty()) {
                     facilityControl.getUserFacilityDetails(deviceId, facility -> {
                         // Set the UI with profile data
                         facilityNameText.setText(facility.getName());
@@ -157,7 +157,7 @@ public class FacilityActivity extends AppCompatActivity {
 
             @Override
             public void onError(Exception e) {
-
+                Toast.makeText(FacilityActivity.this, "Error fetching user data.", Toast.LENGTH_SHORT).show();
             }
         });
 

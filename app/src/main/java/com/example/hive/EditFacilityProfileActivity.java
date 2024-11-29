@@ -169,7 +169,7 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
             @Override
             public void onUserFetched(User user) {
                 Log.d("UserFacilityDetails", user.getUserName());
-                if (!user.getFacilityID().isEmpty()) {
+                if (user != null && user.getFacilityID() != null && !user.getFacilityID().isEmpty()) {
                     new FacilityController().getUserFacilityDetails(deviceID, facility -> {
                         facilityNameEditText.setText(facility.getName());
                         emailEditText.setText(facility.getEmail());
