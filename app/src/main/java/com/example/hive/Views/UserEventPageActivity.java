@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.EventListActivity;
 import com.example.hive.Events.Event;
@@ -135,6 +136,11 @@ public class UserEventPageActivity extends AppCompatActivity {
         participantsCount.setText(String.format(Locale.ENGLISH, "%d", event.getNumParticipants()));
         locationTextView.setText(String.format(Locale.ENGLISH, "Location: %s", event.getLocation()));
         costTextView.setText(String.format(Locale.ENGLISH, "$%s", event.getCost()));
+        if (event.getPosterURL() != null && !event.getPosterURL().isEmpty()) {
+            Glide.with(this)
+                    .load(event.getPosterURL())
+                    .into(eventImageView);
+        }
 
         Log.d(TAG, "Event UI updated successfully.");
     }
