@@ -40,6 +40,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
         return sharedPreferences.getBoolean("profileComplete", false);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -66,40 +67,46 @@ public class OrganizerEventListActivity extends AppCompatActivity {
         editor.apply();
     }
 
-
-
     /**
      * Lays out search view and list view
      */
     private LinearLayout eventLinearContainer;
+
     /**
      * This activity's adapter
      */
     private OrganizerEventAdapter eventAdapter;
+
     /**
      * Reference to icon indicating sort direction for event date
      */
     private TextView sortByDateIcon;
+
     /**
      * Boolean value to represent direction in which we are sorting for event date
      */
     private boolean sortByDateAsc;
+
     /**
      * Reference to icon indicating sort direction for event title
      */
     private TextView sortByTitleIcon;
+
     /**
      * Boolean value to represent direction in which we are sorting for event title
      */
     private boolean sortByTitleAsc;
+
     /**
      * Reference to icon indicating sort direction for event cost
      */
     private TextView sortByCostIcon;
+
     /**
      * Boolean value to represent direction in which we are sorting for event cost
      */
     private boolean sortByCostAsc;
+
     /**
      * This activity's data list - holds all events
      */
@@ -111,8 +118,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
      * Updates the ListView by removing loading screen, clearing current list, adding the new items
      * and notifying the adapter.
      *
-     * @param data
-     * The list of events to display
+     * @param data The list of events to display
      */
     public void updateList(ArrayList<Event> data) {
         // Get reference to TextView that displays loading text and hide it
@@ -134,8 +140,8 @@ public class OrganizerEventListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_organizer_eventlist);
 
         facilityprofileButton = findViewById(R.id.facilityprofileButton);
-        addEventButton= findViewById(R.id.addEventButton);
-        roleSelection=findViewById(R.id.bottom_button);
+        addEventButton = findViewById(R.id.addEventButton);
+        roleSelection = findViewById(R.id.bottom_button);
 
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -167,8 +173,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
                         Intent data = result.getData();
                         if (data != null) {
                             String deletedItemId = data.getStringExtra("item_id");
-                            int deletedPos = Integer
-                                    .parseInt(data.getStringExtra("position"));
+                            int deletedPos = Integer.parseInt(data.getStringExtra("position"));
                             eventDataList.remove(deletedPos);
                             eventAdapter.updateData(eventDataList);
                             eventAdapter.notifyDataSetChanged();
@@ -178,7 +183,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
         );
 
         // Create new list to hold all events, and provide it to the adapter
-        eventDataList = new ArrayList<Event>();
+        eventDataList = new ArrayList<>();
         eventAdapter = new OrganizerEventAdapter(this, eventDataList, deleteItemLauncher);
 
         // Container that holds the list, search bar, and sort options
@@ -198,28 +203,34 @@ public class OrganizerEventListActivity extends AppCompatActivity {
 
         // Define controller that communicates with firebase
         EventController controller = new EventController();
-
         FacilityController facilityControl = new FacilityController();
-
         FirebaseController fbControl = new FirebaseController();
+
         fbControl.fetchUserByDeviceId(deviceID,
                 new FirebaseController.OnUserFetchedListener() {
                     @Override
                     public void onUserFetched(User user) {
-                        if (!user.getFacilityID().isEmpty()) {
+                        if (user != null && user.getFacilityID() != null && !user.getFacilityID().isEmpty()) {
                             // Use the getOrganizersEventsFromDB method from the controller to get all
                             // the organizer's events in the database. Use this activity's updateList
                             // method to display all the events in the app
                             facilityControl.getUserFacilityDetails(deviceID, facility -> {
-                                if (facility.getPictureURL() == null) {
-                                    facilityprofileButton.setImageDrawable(
-                                            facility.generateDefaultPic());
+                                if (facility != null) {
+                                    if (facility.getPictureURL() == null) {
+                                        facilityprofileButton.setImageDrawable(
+                                                facility.generateDefaultPic());
+                                    } else {
+                                        Glide
+                                                .with(OrganizerEventListActivity.this)
+                                                .load(facility.getPictureURL())
+                                                .circleCrop()
+                                                .into(facilityprofileButton);
+                                    }
                                 } else {
-                                    Glide
-                                            .with(OrganizerEventListActivity.this)
-                                            .load(facility.getPictureURL())
-                                            .circleCrop()
-                                            .into(facilityprofileButton);
+                                    // Handle the scenario when the facility details could not be fetched
+                                    Toast.makeText(OrganizerEventListActivity.this,
+                                            "Unable to fetch facility details. Please try again.",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             });
 
@@ -259,12 +270,9 @@ public class OrganizerEventListActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Exception e) {
-
+                        Log.e("OrganizerEventListActivity", "Error fetching user", e);
                     }
                 });
-
-
-
 
         roleSelection.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,6 +282,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         sortByDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
