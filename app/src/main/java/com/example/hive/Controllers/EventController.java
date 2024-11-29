@@ -10,6 +10,7 @@ import com.example.hive.Events.Event;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -49,21 +50,29 @@ public class EventController extends FirebaseController {
 
     public void addEvent(Event event, String deviceID, OnSuccessListener<String> listener) {
         HashMap<String, Object> data = event.getAll();
+        data.put("isLotteryDrawn", Boolean.FALSE);
 
-        db.collection("events").add(data).addOnSuccessListener(documentReference -> {
-            event.setFirebaseID(documentReference.getId());
-            HashMap<String, Object> userData = new HashMap<>();
-            userData.put("events", documentReference.getId());
-            updateUserByDeviceId(deviceID, userData, success -> {
-                if (success) {
-                    listener.onSuccess(documentReference.getId());
-                    lastSavedEvent = event;  // Store event for testing purposes
-                }
+        DocumentReference waitingListDoc = db.collection("waiting-list").document();
+        String waitingListDocID = waitingListDoc.getId();
+        waitingListDoc.set(new HashMap<>()).addOnSuccessListener(v -> {
+
+            data.put("waiting-list-id", waitingListDocID);
+            db.collection("events").add(data).addOnSuccessListener(documentReference -> {
+                event.setFirebaseID(documentReference.getId());
+                HashMap<String, Object> userData = new HashMap<>();
+                userData.put("events", documentReference.getId());
+                updateUserByDeviceId(deviceID, userData, success -> {
+                    if (success) {
+                        listener.onSuccess(documentReference.getId());
+                        lastSavedEvent = event;  // Store event for testing purposes
+                    }
+                });
+
+            }).addOnFailureListener(e -> {
+                Log.w("EventController", "Error adding event", e);
             });
-
-        }).addOnFailureListener(e -> {
-            Log.w("EventController", "Error adding event", e);
         });
+
     }
 
 
