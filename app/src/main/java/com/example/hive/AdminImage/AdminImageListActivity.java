@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hive.AdminEvent.AdminEventListActivity;
 import com.example.hive.Controllers.ImageController;
 import com.example.hive.R;
+import com.example.hive.RoleSelectionActivity;
 import com.example.hive.Views.AdminProfileListActivity;
 
 import java.util.ArrayList;
@@ -96,6 +97,12 @@ public class AdminImageListActivity extends AppCompatActivity implements DeleteI
             return insets;
         });
 
+        findViewById(R.id.role_selection_button).setOnClickListener(v -> {
+            Intent i = new Intent(this, RoleSelectionActivity.class);
+            startActivity(i);
+            finish();
+        });
+
         images = new ArrayList<>();
 
         adapter = new AdminImageAdapter(images);
@@ -112,7 +119,6 @@ public class AdminImageListActivity extends AppCompatActivity implements DeleteI
 
         // Get references to the three buttons to switch list views
         Button viewProfiles = findViewById(R.id.view_profiles_btn);
-        Button viewFacilities = findViewById(R.id.view_facilities_btn);
         Button viewEvents = findViewById(R.id.view_events_btn);
 
         // Logic to switch list activities on button presses

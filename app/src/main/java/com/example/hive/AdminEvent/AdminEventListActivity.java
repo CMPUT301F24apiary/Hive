@@ -21,6 +21,7 @@ import com.example.hive.AdminImage.AdminImageListActivity;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.Events.Event;
 import com.example.hive.R;
+import com.example.hive.RoleSelectionActivity;
 import com.example.hive.Views.AdminProfileListActivity;
 
 import java.util.ArrayList;
@@ -101,6 +102,12 @@ public class AdminEventListActivity extends AppCompatActivity {
             return insets;
         });
 
+        findViewById(R.id.role_selection_button).setOnClickListener(v -> {
+            Intent i = new Intent(this, RoleSelectionActivity.class);
+            startActivity(i);
+            finish();
+        });
+
         // Create activity result launcher for item deletion - adds ability to get result from the
         // detail activity. If the result indicates deletion was performed, remove the event from
         // arrays and notify the adapter
@@ -149,7 +156,6 @@ public class AdminEventListActivity extends AppCompatActivity {
 
         // Get references to the three buttons to switch list views
         Button viewProfiles = findViewById(R.id.view_profiles_btn);
-        Button viewFacilities = findViewById(R.id.view_facilities_btn);
         Button viewImages = findViewById(R.id.view_images_btn);
 
         // Logic to switch list activities on button presses

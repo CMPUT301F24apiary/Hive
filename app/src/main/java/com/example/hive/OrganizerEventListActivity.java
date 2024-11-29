@@ -242,7 +242,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
                             }
                         });
 
-                        controller.getOrganizersEventsFromDB(
+                        controller.getOrganizersEventsFromDB(deviceID,
                                 OrganizerEventListActivity.this::updateList);
 
                         facilityprofileButton.setOnClickListener(new View.OnClickListener() {

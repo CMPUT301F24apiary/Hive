@@ -21,6 +21,7 @@ import com.example.hive.AdminImage.AdminImageListActivity;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Models.User;
 import com.example.hive.R;
+import com.example.hive.RoleSelectionActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,9 +70,14 @@ public class AdminProfileListActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.role_selection_button).setOnClickListener(v -> {
+            Intent i = new Intent(this, RoleSelectionActivity.class);
+            startActivity(i);
+            finish();
+        });
+
         // Get references to the three buttons to switch list views
         Button viewEvents = findViewById(R.id.view_events_btn);
-        Button viewFacilities = findViewById(R.id.view_facilities_btn);
         Button viewImages = findViewById(R.id.view_images_btn);
 
         // Logic to switch list activities on button presses

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.example.hive.Events.Event;
+import com.example.hive.Models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Controller to handle retrieving all events from the firestore database. Extends
@@ -170,48 +172,107 @@ public class EventController extends FirebaseController {
      * @param callback
      * The function to run after all data has been retrieved.
      */
-    public void getOrganizersEventsFromDB(OnSuccessListener<ArrayList<Event>> callback) {
+    public void getOrganizersEventsFromDB(String deviceID,
+                                          OnSuccessListener<ArrayList<Event>> callback) {
         ArrayList<Event> data = new ArrayList<>();
         CollectionReference eventsCollection = db.collection("events");
 
-        eventsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                String id = doc.getId();
-                String title = (String) doc.get("title");
-                Long startDateLong = (Long) doc.get("startDateInMS");
-                Long endDateLong = (Long) doc.get("endDateInMS");
-                String cost = (String) doc.get("cost");
-                Long entrantLimitLong = (Long) doc.get("entrantLimit");
-                Integer entrantLimit = null;
-                if (entrantLimitLong != null) {
-                    entrantLimit = entrantLimitLong.intValue(); // Convert to Integer if not null
+        fetchUserByDeviceId(deviceID, new OnUserFetchedListener() {
+            @Override
+            public void onUserFetched(User user) {
+                ArrayList<String> eventIDs = user.getEventIDs();
+                int totalEvents = eventIDs.size();
+                if (totalEvents == 0) {
+                    callback.onSuccess(data);
+                    return;
                 }
-                String duration = (String) doc.get("duration");
-                String description = (String) doc.get("description");
-                String location = (String) doc.get("location");
-                String posterTemp = (String) doc.get("poster");
-                long numParticipantsLong = (long) doc.get("numParticipants");
-                Long selectionDateLong = (Long) doc.get("selectionDate");
-                boolean geolocationOn = (boolean) doc.get("geolocation");
-                boolean replacementDrawOn = (boolean) doc.get("replacementDrawAllowed");
-                String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
-                boolean isLotteryDrawn = (boolean) doc.get("isLotteryDrawn");
+                AtomicInteger eventsFetched = new AtomicInteger();
+                for (String eventID : eventIDs) {
+                    eventsCollection.document(eventID).get().addOnSuccessListener(doc -> {
+                        String id = doc.getId();
+                        String title = (String) doc.get("title");
+                        Long startDateLong = (Long) doc.get("startDateInMS");
+                        Long endDateLong = (Long) doc.get("endDateInMS");
+                        String cost = (String) doc.get("cost");
+                        Long entrantLimitLong = (Long) doc.get("entrantLimit");
+                        Integer entrantLimit = null;
+                        if (entrantLimitLong != null) {
+                            entrantLimit = entrantLimitLong.intValue(); // Convert to Integer if not null
+                        }
+                        String duration = (String) doc.get("duration");
+                        String description = (String) doc.get("description");
+                        String location = (String) doc.get("location");
+                        String posterTemp = (String) doc.get("poster");
+                        long numParticipantsLong = (long) doc.get("numParticipants");
+                        Long selectionDateLong = (Long) doc.get("selectionDate");
+                        boolean geolocationOn = (boolean) doc.get("geolocation");
+                        boolean replacementDrawOn = (boolean) doc.get("replacementDrawAllowed");
+                        String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
+                        boolean isLotteryDrawn = (boolean) doc.get("isLotteryDrawn");
 
 
-                // Check if the required fields are null before creating the event object
-                if (startDateLong != null && endDateLong != null && selectionDateLong != null) {
-                    Event newEvent = new Event(title, cost, startDateLong, endDateLong, id,
-                            description, (int) numParticipantsLong, location, posterURL,
-                            selectionDateLong, entrantLimit, duration, geolocationOn,
-                            replacementDrawOn, isLotteryDrawn);
-                    data.add(newEvent);
-                } else {
-                    Log.d("EventController", "One of the required fields is null for event: " + id);
+                        // Check if the required fields are null before creating the event object
+                        if (startDateLong != null && endDateLong != null && selectionDateLong != null) {
+                            Event newEvent = new Event(title, cost, startDateLong, endDateLong, id,
+                                    description, (int) numParticipantsLong, location, posterURL,
+                                    selectionDateLong, entrantLimit, duration, geolocationOn,
+                                    replacementDrawOn, isLotteryDrawn);
+                            data.add(newEvent);
+                        } else {
+                            Log.d("EventController", "One of the required fields is null for event: " + id);
+                        }
+                        eventsFetched.getAndIncrement();
+                        if (eventsFetched.get() == totalEvents) {
+                            callback.onSuccess(data);
+                        }
+                    });
                 }
             }
-            // Notify the callback with the fetched data
-            callback.onSuccess(data);
-        }).addOnFailureListener(e -> Log.e("ModelGetAll", "Error fetching data", e));
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
+//        eventsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
+//            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+//                String id = doc.getId();
+//                String title = (String) doc.get("title");
+//                Long startDateLong = (Long) doc.get("startDateInMS");
+//                Long endDateLong = (Long) doc.get("endDateInMS");
+//                String cost = (String) doc.get("cost");
+//                Long entrantLimitLong = (Long) doc.get("entrantLimit");
+//                Integer entrantLimit = null;
+//                if (entrantLimitLong != null) {
+//                    entrantLimit = entrantLimitLong.intValue(); // Convert to Integer if not null
+//                }
+//                String duration = (String) doc.get("duration");
+//                String description = (String) doc.get("description");
+//                String location = (String) doc.get("location");
+//                String posterTemp = (String) doc.get("poster");
+//                long numParticipantsLong = (long) doc.get("numParticipants");
+//                Long selectionDateLong = (Long) doc.get("selectionDate");
+//                boolean geolocationOn = (boolean) doc.get("geolocation");
+//                boolean replacementDrawOn = (boolean) doc.get("replacementDrawAllowed");
+//                String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
+//                boolean isLotteryDrawn = (boolean) doc.get("isLotteryDrawn");
+//
+//
+//                // Check if the required fields are null before creating the event object
+//                if (startDateLong != null && endDateLong != null && selectionDateLong != null) {
+//                    Event newEvent = new Event(title, cost, startDateLong, endDateLong, id,
+//                            description, (int) numParticipantsLong, location, posterURL,
+//                            selectionDateLong, entrantLimit, duration, geolocationOn,
+//                            replacementDrawOn, isLotteryDrawn);
+//                    data.add(newEvent);
+//                } else {
+//                    Log.d("EventController", "One of the required fields is null for event: " + id);
+//                }
+//            }
+//            // Notify the callback with the fetched data
+//            callback.onSuccess(data);
+//        }).addOnFailureListener(e -> Log.e("ModelGetAll", "Error fetching data", e));
     }
 
 

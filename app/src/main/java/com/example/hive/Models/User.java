@@ -35,6 +35,8 @@ public class User {
     FirebaseFirestore db;
     private Drawable initialsDrawable;
     private String facilityID;
+    @PropertyName("events")
+    private ArrayList<String> eventIDs;
 
     public static User getInstance() {
         if (instance == null) {
@@ -141,6 +143,16 @@ public class User {
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
         generateInitialsDrawable();
+    }
+
+    @PropertyName("events")
+    public ArrayList<String> getEventIDs() {
+        return eventIDs;
+    }
+
+    @PropertyName("events")
+    public void setEventIDs(ArrayList<String> eventIDs) {
+        this.eventIDs = eventIDs;
     }
 
     public String getInitials() {
