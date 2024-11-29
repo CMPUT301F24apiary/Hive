@@ -169,14 +169,20 @@
 
     <ImageView
         android:id="@+id/img_edit_picture"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="74dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:scaleType="centerCrop"
+        android:layout_width="153dp"
+        android:layout_height="153dp"
         android:src="@drawable/image1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginTop="64dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.hive.AdminImage.AdminImageListActivity;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.Events.Event;
+import com.example.hive.Models.User;
 import com.example.hive.R;
 import com.example.hive.Views.AdminProfileListActivity;
 
@@ -123,7 +124,7 @@ public class AdminEventListActivity extends AppCompatActivity {
 
         // Create new list to hold all events, and provide it to the adapter
         eventDataList = new ArrayList<Event>();
-        eventAdapter = new AdminEventListAdapter(this, eventDataList, deleteItemLauncher);
+        eventAdapter = new AdminEventListAdapter(this, eventDataList, deleteItemLauncher, User.getInstance().getRole());
 
         // Container that holds the list, search bar, and sort options
         eventLinearContainer = findViewById(R.id.admin_event_list_linear_layout);

@@ -203,64 +203,65 @@ public class OrganizerEventListActivity extends AppCompatActivity {
 
         FirebaseController fbControl = new FirebaseController();
         fbControl.fetchUserByDeviceId(deviceID,
-            new FirebaseController.OnUserFetchedListener() {
-                @Override
-                public void onUserFetched(User user) {
-                    if (!user.getFacilityID().isEmpty()) {
-                        // Use the getOrganizersEventsFromDB method from the controller to get all
-                        // the organizer's events in the database. Use this activity's updateList
-                        // method to display all the events in the app
-                        facilityControl.getUserFacilityDetails(deviceID, facility -> {
-                            if (facility.getPictureURL() == null) {
-                                facilityprofileButton.setImageDrawable(
-                                        facility.generateDefaultPic());
-                            } else {
-                                Glide
-                                    .with(OrganizerEventListActivity.this)
-                                    .load(facility.getPictureURL())
-                                    .circleCrop()
-                                    .into(facilityprofileButton);
-                            }
-                        });
+                new FirebaseController.OnUserFetchedListener() {
+                    @Override
+                    public void onUserFetched(User user) {
+                        if (!user.getFacilityID().isEmpty()) {
+                            // Use the getOrganizersEventsFromDB method from the controller to get all
+                            // the organizer's events in the database. Use this activity's updateList
+                            // method to display all the events in the app
+                            facilityControl.getUserFacilityDetails(deviceID, facility -> {
+                                if (facility.getPictureURL() == null) {
+                                    facilityprofileButton.setImageDrawable(
+                                            facility.generateDefaultPic());
+                                } else {
+                                    Glide
+                                            .with(OrganizerEventListActivity.this)
+                                            .load(facility.getPictureURL())
+                                            .circleCrop()
+                                            .into(facilityprofileButton);
+                                }
+                            });
 
-                        controller.getOrganizersEventsFromDB(
-                                OrganizerEventListActivity.this::updateList);
+                            controller.getOrganizersEventsFromDB(
+                                    OrganizerEventListActivity.this::updateList);
 
-                        facilityprofileButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(
-                                        OrganizerEventListActivity.this,
-                                        FacilityActivity.class);
-                                startActivity(intent);
-                            }
-                        });
-                        addEventButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(
-                                        OrganizerEventListActivity.this,
-                                        AddEventActivity.class);
-                                addItemLauncher.launch(intent);
-                            }
-                        });
-                    } else {
-                        Toast.makeText(OrganizerEventListActivity.this,
-                                "Please complete your facility profile first.",
-                                Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(
-                                OrganizerEventListActivity.this,
-                                FacilityActivity.class);
-                        startActivity(intent);
+                            facilityprofileButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(
+                                            OrganizerEventListActivity.this,
+                                            FacilityActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+                            addEventButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(
+                                            OrganizerEventListActivity.this,
+                                            AddEventActivity.class);
+                                    addItemLauncher.launch(intent);
+                                }
+                            });
+                        } else {
+                            Toast.makeText(OrganizerEventListActivity.this,
+                                    "Please complete your facility profile first.",
+                                    Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(
+                                    OrganizerEventListActivity.this,
+                                    FacilityActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
 
                     }
-                }
-
-                @Override
-                public void onError(Exception e) {
-
-                }
-        });
+                });
 
 
 
@@ -342,5 +343,3 @@ public class OrganizerEventListActivity extends AppCompatActivity {
         });
     }
 }
-
-

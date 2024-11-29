@@ -23,7 +23,7 @@
         android:id="@+id/userButton"
         android:layout_width="220dp"
         android:layout_height="60dp"
-        android:text="User"
+        android:text="Entrant"
         android:textColor="#FFFFFF"
         android:textSize="22sp"
         android:textStyle="bold"

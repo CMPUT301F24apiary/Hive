@@ -16,8 +16,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.hive.Events.AdminEventDetailActivity;
 import com.example.hive.Events.EventDetailActivity;
 import com.example.hive.Events.Event;
+import com.example.hive.Models.User;
 import com.example.hive.R;
 
 import java.util.ArrayList;
@@ -49,6 +51,8 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filter
      */
     private final ActivityResultLauncher<Intent> deleteItemLauncher;
 
+    private final String role;
+
     /**
      * Constructor for the adapter. Calls ArrayAdapter's instructor with given data
      *
@@ -61,11 +65,13 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filter
      */
     public AdminEventListAdapter(Context context,
                                  ArrayList<Event> events,
-                                 ActivityResultLauncher<Intent> deleteItemLauncher) {
+                                 ActivityResultLauncher<Intent> deleteItemLauncher,
+                                 String role) {
         super(context, 0, events);
         this.ogList = new ArrayList<Event>(events);
         this.filtered = new ArrayList<Event>(events);
         this.deleteItemLauncher = deleteItemLauncher;
+        this.role = role;
     }
 
     /**
@@ -167,7 +173,14 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filter
         detailsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getContext(), EventDetailActivity.class);
+                Intent i;
+                if ("admin".equals(User.getInstance().getRole())) {
+                    // LINE BELOW CAUSES BUG; THIS IS FOR ADMIN EVENT DETAILS VIEW
+//                    i = new Intent(getContext(), AdminEventDetailActivity.class);
+                    i = new Intent(getContext(), EventDetailActivity.class);
+                } else {
+                    i = new Intent(getContext(), EventDetailActivity.class);
+                }
                 i.putExtra("event", event);
                 i.putExtra("position", String.valueOf(position));
                 deleteItemLauncher.launch(i);

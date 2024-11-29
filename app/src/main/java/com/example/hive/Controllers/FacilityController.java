@@ -2,6 +2,7 @@ package com.example.hive.Controllers;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
@@ -30,6 +31,7 @@ public class FacilityController extends FirebaseController {
         fetchUserByDeviceId(deviceId, new OnUserFetchedListener() {
             @Override
             public void onUserFetched(User user) {
+                Log.d("GetFacilityDetails", user.getFacilityID());
                 db.collection("facilities").document(user.getFacilityID()).get()
                         .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
