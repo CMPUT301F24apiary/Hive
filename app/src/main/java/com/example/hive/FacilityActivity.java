@@ -77,6 +77,8 @@ public class FacilityActivity extends AppCompatActivity {
         backArrowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent i = new Intent(FacilityActivity.this, OrganizerEventListActivity.class);
+                startActivity(i);
                 finish();
             }
         });
