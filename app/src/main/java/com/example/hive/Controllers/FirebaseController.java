@@ -20,11 +20,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -293,6 +291,40 @@ public class FirebaseController {
                     callback.onFailure("Failed to add user to waiting list.");
                 });
     }
+    public void removeUserFromWaitingListWithLocation(String waitingListId, String userId, Callback location) {
+        DocumentReference waitingListRef = db.collection("waiting-list").document(waitingListId);
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("user-ids", FieldValue.arrayRemove(userId));
+        updates.put("user-locations." + userId, FieldValue.delete());
+
+        waitingListRef.update(updates)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "User and geolocation removed from waiting list successfully."))
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to remove user and geolocation: " + e.getMessage()));
+    }
+
+    public void addUserToWaitingListWithLocation(String waitingListId, String userId, Map<String, Object> locationData, Callback callback) {
+        // Reference the specific waiting list document in Firestore
+        DocumentReference waitingListRef = db.collection("waiting-list").document(waitingListId);
+
+        // Prepare the updates: add user ID to array and location data to map
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("user-ids", FieldValue.arrayUnion(userId)); // Add user ID to array
+        updates.put("user-locations." + userId, locationData); // Add geolocation data
+
+        // Perform the update operation
+        waitingListRef.update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "User and geolocation added to waiting list successfully.");
+                    callback.onSuccess(); // Trigger success callback
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to add user and geolocation to waiting list: " + e.getMessage(), e);
+                    callback.onFailure("Failed to add user with geolocation to waiting list.");
+                });
+    }
+
+
 
     /**
      * Removes a user from the waiting list of a specific event in Firestore.
@@ -314,6 +346,7 @@ public class FirebaseController {
                     callback.onFailure("Failed to remove user from waiting list.");
                 });
     }
+
 
     /**
      * Callback interface for Firestore operations.
