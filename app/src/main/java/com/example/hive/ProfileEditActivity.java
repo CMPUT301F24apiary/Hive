@@ -401,8 +401,7 @@ public class ProfileEditActivity extends AppCompatActivity {
                             data.put("profileImageUrl", urlAndID.first);
                             fbControl.updateUserByDeviceId(deviceId, data, didUpdate -> {
                                 if (didUpdate) {
-                                    imgControl.updateImageRef(urlAndID.second, deviceId,
-                                            true);
+                                    imgControl.updateImageRef(urlAndID.second, deviceId);
                                     finish();
                                 } else {
                                     Toast.makeText(ProfileEditActivity.this,

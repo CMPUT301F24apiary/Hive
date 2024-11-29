@@ -147,31 +147,6 @@
             android:layout_marginTop="16dp">
 
             <TextView
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="Location"
-                android:textColor="@color/mainGreen"
-                android:textSize="20sp"
-                android:gravity="center_vertical" />
-
-            <EditText
-                android:id="@+id/eventLocation"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="text"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
-
-            <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="Cost:"
