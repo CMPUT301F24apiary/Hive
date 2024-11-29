@@ -176,8 +176,8 @@ public class AdminEventListAdapter extends ArrayAdapter<Event> implements Filter
                 Intent i;
                 if ("admin".equals(User.getInstance().getRole())) {
                     // LINE BELOW CAUSES BUG; THIS IS FOR ADMIN EVENT DETAILS VIEW
-//                    i = new Intent(getContext(), AdminEventDetailActivity.class);
-                    i = new Intent(getContext(), EventDetailActivity.class);
+                    i = new Intent(getContext(), AdminEventDetailActivity.class);
+//                    i = new Intent(getContext(), EventDetailActivity.class);
                 } else {
                     i = new Intent(getContext(), EventDetailActivity.class);
                 }

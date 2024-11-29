@@ -18,8 +18,8 @@ import com.example.hive.Controllers.EventController;
 import com.example.hive.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public abstract class AdminEventDetailActivity extends AppCompatActivity
-implements DeleteQRCodeListener {
+public class AdminEventDetailActivity extends AppCompatActivity
+implements DeleteQRCodeListener, DeleteEventListener {
 
     private static final String TAG = "AdminEventDetailActivity";
     private EventController controller;
@@ -44,7 +44,7 @@ implements DeleteQRCodeListener {
 
         controller = new EventController();  // used to communicate with Firebase controller
         event = getIntent().getParcelableExtra("event");
-        if (event == null) {
+        if (event != null) {
             eventId = event.getFirebaseID();
             String title = event.getTitle();
             eventTitleView.setText(title);
