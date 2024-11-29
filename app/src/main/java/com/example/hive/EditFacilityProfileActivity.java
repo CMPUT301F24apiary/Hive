@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Models.User;
 import com.example.hive.Controllers.FacilityController;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Controllers.ImageController;
@@ -28,6 +30,7 @@ import com.example.hive.Models.User;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * This activity is to edit a facility profile(Picture, name,email and phone)
@@ -39,6 +42,7 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
     public EditText facilityNameEditText, emailEditText, phoneEditText;
     private Uri pictureUri;
     private String deviceID;
+    boolean isEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +51,23 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
 
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        isEdit = getIntent().getBooleanExtra("isEdit", true);
+
         facilityNameEditText = findViewById(R.id.et_facility);
         emailEditText = findViewById(R.id.et_email);
         phoneEditText = findViewById(R.id.et_phone);
         facilityImageView = findViewById(R.id.img_edit_picture);
 
         setupButtons();
+        facilityData();
+    }
+
+    /**
+     * Called when the activity is resumed. Reloads the profile picture to reflect any changes made in the ProfileEditActivity.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
         facilityData();
     }
 
@@ -108,6 +123,43 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
         }
     }
 
+//    /**
+//     * Sets the image for a facility from a specified URI by converting it
+//     * into a bitmap.
+//     * @param imageUri organizer's selection of image for the facility profile
+//     */
+//    private void setImageFromUri(Uri imageUri) {
+//        try {
+//            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+//            facilityImageView.setImageBitmap(bitmap);
+//            base64Image = bitmapToBase64(bitmap);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+    /**
+     * Converts a Bitmap image to a Base64-encoded string
+     * @param bitmap to be converted
+     * @return string
+     */
+    public String bitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+//
+//    /**
+//     * Converts a base64 string to bitmap
+//     * @param base64Str to be converted
+//     * @return the converted butmap
+//     */
+//    public Bitmap base64ToBitmap(String base64Str) {
+//        byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
+//        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+//    }
+
     /**
      * This is to show the data that has been set by the user previously and that
      * is to be edited.
@@ -117,7 +169,7 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
             @Override
             public void onUserFetched(User user) {
                 Log.d("UserFacilityDetails", user.getUserName());
-                if (!user.getFacilityID().isEmpty()) {
+                if (user != null && user.getFacilityID() != null && !user.getFacilityID().isEmpty()) {
                     new FacilityController().getUserFacilityDetails(deviceID, facility -> {
                         facilityNameEditText.setText(facility.getName());
                         emailEditText.setText(facility.getEmail());
@@ -179,17 +231,39 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
             String updatedEmail = emailEditText.getText().toString();
             String updatedPhone = phoneEditText.getText().toString();
 
-            new FacilityController().addFacility(EditFacilityProfileActivity.this, deviceID,
-                    updatedName, updatedEmail, updatedPhone, pictureUri, success -> {
-                        if (success) {
-                            Intent result = new Intent();
-                            setResult(1, result);
-                            finish();
-                        } else {
-                            Toast.makeText(EditFacilityProfileActivity.this,
-                                    "Edit failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            FacilityController controller = new FacilityController();
+
+            if (isEdit) {
+                HashMap<String, Object> data = new HashMap<>();
+                data.put("name", updatedName);
+                data.put("email", updatedEmail);
+                data.put("phone", updatedPhone);
+                data.put("pictureUri", pictureUri);
+                controller.editFacility(EditFacilityProfileActivity.this, deviceID, data, success -> {
+                    if (success) {
+                        Intent result = new Intent();
+                        setResult(1, result);
+                        finish();
+                    } else {
+                        Toast.makeText(EditFacilityProfileActivity.this,
+                                "Edit failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            } else {
+
+                controller.addFacility(EditFacilityProfileActivity.this, deviceID,
+                        updatedName, updatedEmail, updatedPhone, pictureUri, success -> {
+                            if (success) {
+                                Intent result = new Intent();
+                                setResult(1, result);
+                                finish();
+                            } else {
+                                Toast.makeText(EditFacilityProfileActivity.this,
+                                        "Edit failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -26,6 +27,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Models.User;
 import com.example.hive.Views.CustomQrScannerActivity;
 import com.example.hive.Views.UserEventPageActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -64,6 +68,7 @@ public class EventListActivity extends AppCompatActivity {
 
         // Set click listeners for each button
         String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        loadProfileData(deviceId);
 
         profileButton.setOnClickListener(v -> {
             Intent intent = new Intent(EventListActivity.this, ProfileActivity.class);
@@ -89,27 +94,59 @@ public class EventListActivity extends AppCompatActivity {
      */
     @Override
     protected void onResume() {
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         super.onResume();
-        loadProfilePicture();
+        loadProfileData(deviceId);
     }
 
     /**
-     * Loads the profile picture from SharedPreferences and updates the profile button image.
+     * Loads profile data from Firebase and displays it in the corresponding TextViews.
      */
-    private void loadProfilePicture() {
-        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
-        String profilePictureBase64 = sharedPreferences.getString("profilePicture", "");
+    public void loadProfileData(String deviceId) {
+        FirebaseController controller = new FirebaseController();
+        controller.fetchUserByDeviceId(deviceId, new FirebaseController.OnUserFetchedListener() {
+            @Override
+            public void onUserFetched(User user) {
+                if (user != null) {
+                    String pfpUrl = user.getProfileImageUrl();
+                    Log.d("LoadProfileData", pfpUrl);
 
-        if (!profilePictureBase64.isEmpty()) {
-            // Convert Base64 string to Bitmap and set it on the profile button
-            byte[] decodedBytes = Base64.decode(profilePictureBase64, Base64.DEFAULT);
-            Bitmap profileBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-            profileButton.setImageBitmap(profileBitmap);
-        } else {
-            // Set default profile picture
-            profileButton.setImageResource(R.drawable.ic_profile); // Replace with your default image resource
-        }
+                    if (!pfpUrl.isEmpty()) {
+                        Glide.with(EventListActivity.this).load(pfpUrl).circleCrop().into(profileButton);
+                    } else {
+                        profileButton.setImageDrawable(user.getDisplayDrawable());
+                    }
+                } else {
+                    Toast.makeText(EventListActivity.this, "User is null", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(EventListActivity.this, "Error fetching user profile (ProfileActivity)",
+                        Toast.LENGTH_LONG).show();
+            }
+
+        });
     }
+
+//    /**
+//     * Loads the profile picture from SharedPreferences and updates the profile button image.
+//     */
+//    private void loadProfilePicture() {
+//        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+//        String profilePictureBase64 = sharedPreferences.getString("profilePicture", "");
+//
+//        if (!profilePictureBase64.isEmpty()) {
+//            // Convert Base64 string to Bitmap and set it on the profile button
+//            byte[] decodedBytes = Base64.decode(profilePictureBase64, Base64.DEFAULT);
+//            Bitmap profileBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+//            profileButton.setImageBitmap(profileBitmap);
+//        } else {
+//            // Set default profile picture
+//            profileButton.setImageResource(R.drawable.ic_profile); // Replace with your default image resource
+//        }
+//    }
 
     /**
      * Initiates a QR code scanner and handles the scanned result.

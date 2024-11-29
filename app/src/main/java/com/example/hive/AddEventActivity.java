@@ -228,7 +228,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
                         selectionDate,entrant, duration, geolocationOn, replacementDrawOn, false);
 
                 EventController controller = new EventController();
-                controller.addEvent(event, id -> {
+                controller.addEvent(event, deviceID, id -> {
                     event.setFirebaseID(id);
                     if (urlAndID != null) {
                         new ImageController().updateImageRef(urlAndID.second, id);

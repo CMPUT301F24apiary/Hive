@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageButton
             android:id="@+id/event_back_button"
@@ -137,108 +137,24 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/event_detail_button_container"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/mainGreen" />
-
-            <TextView
-                android:id="@+id/entrant_options_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Entrant Options"
-                android:gravity="center"
-                android:padding="12dp"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:clickable="true"
-                android:focusable="true" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/mainGreen" />
-
-            <TextView
-                android:id="@+id/event_noti_settings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Notification Settings"
-                android:gravity="center"
-                android:padding="12dp"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:clickable="true"
-                android:focusable="true" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/mainGreen" />
-
-            <TextView
-                android:id="@+id/textViewClickQRCode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="QR Code"
-                android:gravity="center"
-                android:padding="12dp"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:clickable="true"
-                android:focusable="true" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/mainGreen" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/event_detail_button_container"
+            android:id="@+id/admin_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:paddingTop="40dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <Button
                 android:id="@+id/delete_qr_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@color/mainRed"
-                android:text="Remove QR Code"
-                android:visibility="gone" />
-
-
-            <Button
-                android:id="@+id/register_for_event_btn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="@color/mainGreen"
-                android:text="Register"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/edit_event_btn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="@color/mainGreen"
-                android:text="Edit Event"
-                android:visibility="gone" />
+                android:backgroundTint="@color/common_google_signin_btn_text_dark_focused"
+                android:text="X QR Code" />
 
             <Button
                 android:id="@+id/delete_event_button"
@@ -246,18 +162,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainRed"
-                android:text="Remove Event"
-                android:visibility="gone" />
-
-
-            <Button
-                android:id="@+id/unregister_event_btn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="@color/mainRed"
-                android:text="Unregister"
-                android:visibility="gone" />
+                android:text="X Event" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

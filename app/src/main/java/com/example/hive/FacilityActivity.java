@@ -8,10 +8,12 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -19,10 +21,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Models.User;
+
 import com.example.hive.Controllers.FacilityController;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Events.Event;
-import com.example.hive.Models.User;
 
 /**
  * This activity is to show the facility profile for an event.
@@ -51,13 +55,13 @@ public class FacilityActivity extends AppCompatActivity {
 
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        FacilityData();
+        facilityData();
 
         ActivityResultLauncher<Intent> editFacilityLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == 1) {
-                        FacilityData();
+                        facilityData();
                     }
                 }
         );
@@ -66,6 +70,7 @@ public class FacilityActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FacilityActivity.this, EditFacilityProfileActivity.class);
+                intent.putExtra("isEdit", true);
                 editFacilityLauncher.launch(intent);
             }
         });
@@ -73,15 +78,58 @@ public class FacilityActivity extends AppCompatActivity {
         backArrowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent i = new Intent(FacilityActivity.this, OrganizerEventListActivity.class);
+                startActivity(i);
                 finish();
             }
         });
     }
 
     /**
+     * Called when the activity is resumed. Reloads the profile picture to reflect any changes made in the ProfileEditActivity.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        facilityData();
+    }
+
+    /**
+     * This is to keep a track of if the facility profile has been completed
+     */
+    public void updateProfileStatus() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String facilityName = sharedPreferences.getString("facilityName", "Facility Name");
+        String email = sharedPreferences.getString("facilityEmail", "facility@google.com");
+        String phone = sharedPreferences.getString("facilityPhone", "(780) xxx - xxxx");
+
+        if (!facilityName.equals("Facility Name") && !email.equals("facility@google.com") && !phone.equals("(780) xxx - xxxx")) {
+            editor.putBoolean("profileComplete", true);
+        } else {
+            editor.putBoolean("profileComplete", false);
+        }
+
+        editor.apply();
+    }
+
+
+//    /**
+//     * Converts Base64 string to bitmap
+//     * @param base64Str string to be converted
+//     * @return the converted bitmap
+//     */
+//    private Bitmap base64ToBitmap(String base64Str) {
+//        byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
+//        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+//    }
+
+    /**
      * Shows the facility information.
      */
-    public void FacilityData() {
+    public void facilityData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
 
         FacilityController facilityControl = new FacilityController();
 
@@ -89,7 +137,7 @@ public class FacilityActivity extends AppCompatActivity {
                 .OnUserFetchedListener() {
             @Override
             public void onUserFetched(User user) {
-                if (!user.getFacilityID().isEmpty()) {
+                if (user != null && user.getFacilityID() != null && !user.getFacilityID().isEmpty()) {
                     facilityControl.getUserFacilityDetails(deviceId, facility -> {
                         // Set the UI with profile data
                         facilityNameText.setText(facility.getName());
@@ -109,11 +157,10 @@ public class FacilityActivity extends AppCompatActivity {
 
             @Override
             public void onError(Exception e) {
-
+                Toast.makeText(FacilityActivity.this, "Error fetching user data.", Toast.LENGTH_SHORT).show();
             }
         });
 
 
     }
-
 }
