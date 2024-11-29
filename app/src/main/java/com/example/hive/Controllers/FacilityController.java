@@ -89,6 +89,47 @@ public class FacilityController extends FirebaseController {
         }
     }
 
+    public void editFacility(Context context, String deviceID, HashMap<String, Object> data,
+                             OnSuccessListener<Boolean> listener) {
+        Uri picture = (Uri) data.get("pictureUri");
+        CollectionReference coll = db.collection("facilities");
+        ImageController imgControl = new ImageController();
+        getUserFacilityDetails(deviceID, facility -> {
+            if (picture != null) {
+                if (facility.getPictureURL() == null) {
+                    imgControl.saveImage(context, picture, "facility picture")
+                        .addOnSuccessListener(urlAndID -> {
+                            data.put("pictureURL", urlAndID.first);
+                            coll.document(facility.getID()).update(data).addOnSuccessListener(documentReference -> {
+                                    imgControl.updateImageRef(urlAndID.second, facility.getID());
+                                    listener.onSuccess(Boolean.TRUE);
+                                }
+                            );
+                        });
+                } else {
+                    imgControl.deleteImageAndUpdateRelatedDoc(picture.toString(), null, facility.getID(), success -> {
+                        if (success) {
+                            imgControl.saveImage(context, picture, "facility picture")
+                                    .addOnSuccessListener(urlAndID -> {
+                                        data.put("pictureURL", urlAndID.first);
+                                        coll.document(facility.getID()).update(data).addOnSuccessListener(documentReference -> {
+                                                    imgControl.updateImageRef(urlAndID.second, facility.getID());
+                                                    listener.onSuccess(Boolean.TRUE);
+                                                }
+                                        );
+                                    });
+                        }
+                    });
+                }
+            } else {
+                data.put("pictureURL", null);
+                coll.document(facility.getID()).update(data).addOnSuccessListener(documentReference -> {
+                    listener.onSuccess(Boolean.TRUE);
+                });
+            }
+        });
+    }
+
     public void deleteFacility(String deviceID, OnSuccessListener<Boolean> listener) {
         fetchUserByDeviceId(deviceID, new OnUserFetchedListener() {
             @Override

@@ -30,6 +30,7 @@ import com.example.hive.Models.User;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * This activity is to edit a facility profile(Picture, name,email and phone)
@@ -41,6 +42,7 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
     public EditText facilityNameEditText, emailEditText, phoneEditText;
     private Uri pictureUri;
     private String deviceID;
+    boolean isEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,8 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_facility);
 
         deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        isEdit = getIntent().getBooleanExtra("isEdit", true);
 
         facilityNameEditText = findViewById(R.id.et_facility);
         emailEditText = findViewById(R.id.et_email);
@@ -227,17 +231,39 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
             String updatedEmail = emailEditText.getText().toString();
             String updatedPhone = phoneEditText.getText().toString();
 
-            new FacilityController().addFacility(EditFacilityProfileActivity.this, deviceID,
-                    updatedName, updatedEmail, updatedPhone, pictureUri, success -> {
-                        if (success) {
-                            Intent result = new Intent();
-                            setResult(1, result);
-                            finish();
-                        } else {
-                            Toast.makeText(EditFacilityProfileActivity.this,
-                                    "Edit failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            FacilityController controller = new FacilityController();
+
+            if (isEdit) {
+                HashMap<String, Object> data = new HashMap<>();
+                data.put("name", updatedName);
+                data.put("email", updatedEmail);
+                data.put("phone", updatedPhone);
+                data.put("pictureUri", pictureUri);
+                controller.editFacility(EditFacilityProfileActivity.this, deviceID, data, success -> {
+                    if (success) {
+                        Intent result = new Intent();
+                        setResult(1, result);
+                        finish();
+                    } else {
+                        Toast.makeText(EditFacilityProfileActivity.this,
+                                "Edit failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            } else {
+
+                controller.addFacility(EditFacilityProfileActivity.this, deviceID,
+                        updatedName, updatedEmail, updatedPhone, pictureUri, success -> {
+                            if (success) {
+                                Intent result = new Intent();
+                                setResult(1, result);
+                                finish();
+                            } else {
+                                Toast.makeText(EditFacilityProfileActivity.this,
+                                        "Edit failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
         }
     }
 }

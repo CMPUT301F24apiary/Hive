@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
 import com.example.hive.EditEventActivity;
+import com.example.hive.Models.User;
 import com.example.hive.OptionsPageActivity;
 import com.example.hive.R;
 import com.example.hive.Views.OrganizerNotificationActivity;
@@ -55,6 +56,8 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
      * The event object that is displayed in this activity
      */
     private Event event;
+
+    private User user;
 
     /**
      * Calls on the controller to delete this event from firebase
@@ -101,6 +104,8 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             return insets;
         });
 
+        user = User.getInstance();
+
         // Get reference to deleteEvent button
         Button deleteEvent = findViewById(R.id.delete_event_button);
         Button editEvent = findViewById(R.id.edit_event_btn);
@@ -121,6 +126,24 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
         TextView eventCostView = findViewById(R.id.event_detail_cost);
         TextView eventDescriptionView = findViewById(R.id.event_detail_description);
         TextView eventNumParticipantsView = findViewById(R.id.event_detail_number_participants);
+
+        Button register = findViewById(R.id.register_for_event_btn);
+        Button unregister = findViewById(R.id.unregister_event_btn);
+
+        switch (user.getRole()) {
+            case "organizer":
+                deleteEvent.setVisibility(View.VISIBLE);
+                editEvent.setVisibility(View.VISIBLE);
+                break;
+            case "admin":
+                deleteEvent.setVisibility(View.VISIBLE);
+                deleteQR.setVisibility(View.VISIBLE);
+                break;
+            case "entrant":
+                register.setVisibility(View.VISIBLE);
+                unregister.setVisibility(View.VISIBLE);
+                break;
+        }
 
         // Create new instance of EventController to communicate with firebase
         controller = new EventController();

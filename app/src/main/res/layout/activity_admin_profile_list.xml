@@ -15,6 +15,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="48dp"
         android:orientation="vertical"
         android:padding="0dp">
 
@@ -36,19 +37,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/view_facilities_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/mainGreen"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="View Facilities" />
-
-                <Space
-                    android:layout_width="20dp"
-                    android:layout_height="wrap_content" />
 
                 <Button
                     android:id="@+id/view_images_btn"
@@ -84,11 +72,11 @@
                 android:id="@+id/adminProfileSearchView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:iconifiedByDefault="false"
                 android:layout_weight="1"
+                android:iconifiedByDefault="false"
+                android:paddingBottom="8dp"
                 android:queryHint="Search by name"
-                android:searchIcon="@drawable/ic_white_search"
-                android:paddingBottom="8dp" />
+                android:searchIcon="@drawable/ic_white_search" />
 
         </LinearLayout>
 
@@ -100,4 +88,14 @@
             android:scrollbars="vertical" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/role_selection_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:backgroundTint="@color/mainGreen"
+        android:text="Role Selection" />
 </FrameLayout>
