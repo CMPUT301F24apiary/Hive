@@ -313,18 +313,56 @@ public class UserEventPageActivity extends AppCompatActivity {
      * @return The last known location or null if unavailable.
      */
     private Location getLastKnownLocation() {
+        Log.d(TAG, "getLastKnownLocation: Checking location permissions...");
+        // Check for location permission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.e(TAG, "getLastKnownLocation: Location permission not granted.");
             checkLocationPermission();
             return null;
         }
 
+        Location location = null;
+
+        // Check if GPS provider is enabled
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        } else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            return locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            Log.d(TAG, "getLastKnownLocation: GPS provider is enabled. Fetching location...");
+            try {
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location != null) {
+                    Log.d(TAG, "getLastKnownLocation: GPS Location fetched. Lat: " + location.getLatitude() + ", Lon: " + location.getLongitude());
+                    return location;
+                } else {
+                    Log.w(TAG, "getLastKnownLocation: GPS Location is null.");
+                }
+            } catch (SecurityException e) {
+                Log.e(TAG, "getLastKnownLocation: SecurityException when accessing GPS provider: " + e.getMessage());
+            }
+        } else {
+            Log.w(TAG, "getLastKnownLocation: GPS provider is disabled.");
         }
+
+        // Check if Network provider is enabled
+        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            Log.d(TAG, "getLastKnownLocation: Network provider is enabled. Fetching location...");
+            try {
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if (location != null) {
+                    Log.d(TAG, "getLastKnownLocation: Network Location fetched. Lat: " + location.getLatitude() + ", Lon: " + location.getLongitude());
+                    return location;
+                } else {
+                    Log.w(TAG, "getLastKnownLocation: Network Location is null.");
+                }
+            } catch (SecurityException e) {
+                Log.e(TAG, "getLastKnownLocation: SecurityException when accessing Network provider: " + e.getMessage());
+            }
+        } else {
+            Log.w(TAG, "getLastKnownLocation: Network provider is disabled.");
+        }
+
+        Log.e(TAG, "getLastKnownLocation: Unable to fetch location. Both GPS and Network providers returned null.");
         return null;
     }
+
 
     /**
      * Checks and requests location permissions if not already granted.
