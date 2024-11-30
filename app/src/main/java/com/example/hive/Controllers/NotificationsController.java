@@ -45,8 +45,6 @@ public class NotificationsController {
      */
     public static void showNotification(Context context, int notificationId, String title, String message) {
         // Check if the app has the required permission to post notifications
-        Log.d("NotificationsController", "Checking Android version and notification permission");
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+ (API level 33)
             if (context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
                     != android.content.pm.PackageManager.PERMISSION_GRANTED) {
@@ -78,11 +76,14 @@ public class NotificationsController {
             }
         }
 
-        // Show the notification
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(notificationId, builder.build());
-
-        Log.d("NotificationsController", "Notification with ID: " + notificationId + " has been posted.");
+        // Show the notification, with a try-catch block to handle potential SecurityException
+        try {
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            notificationManager.notify(notificationId, builder.build());
+            Log.d("NotificationsController", "Notification with ID: " + notificationId + " has been posted.");
+        } catch (SecurityException e) {
+            Log.e("NotificationsController", "Failed to post notification due to missing permissions", e);
+        }
     }
 
     /**
@@ -94,6 +95,17 @@ public class NotificationsController {
      * @param message The content of the notification.
      */
     public static void showNotification(Context context, String title, String message) {
+        // Check if the app has the required permission to post notifications
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+ (API level 33)
+            if (context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                // Log permission denial and return
+                Log.e("NotificationsController", "Permission to post notifications is not granted.");
+                return;
+            }
+        }
+
+        // Create the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_dialog_info)  // Use your app's icon here
                 .setContentTitle(title)
@@ -101,10 +113,14 @@ public class NotificationsController {
                 .setPriority(NotificationCompat.PRIORITY_HIGH) // Use high priority for system tray notifications
                 .setAutoCancel(true); // Notification will disappear when clicked
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        int notificationId = (int) System.currentTimeMillis(); // Generate a unique ID using the current time
-        notificationManager.notify(notificationId, builder.build());
-
-        Log.d("NotificationsController", "Dynamic notification posted with title: " + title);
+        // Show the notification, with a try-catch block to handle potential SecurityException
+        try {
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            int notificationId = (int) System.currentTimeMillis(); // Generate a unique ID using the current time
+            notificationManager.notify(notificationId, builder.build());
+            Log.d("NotificationsController", "Dynamic notification posted with title: " + title);
+        } catch (SecurityException e) {
+            Log.e("NotificationsController", "Failed to post notification due to missing permissions", e);
+        }
     }
 }

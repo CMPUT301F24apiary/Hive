@@ -131,6 +131,9 @@ public class FirebaseController {
         //    userData.put("phoneNumber", phoneNumber);
         //}
 
+        userData.put("notificationChosen", true);  // Default to true, can be set to false as needed
+        userData.put("notificationNotChosen", true);
+        userData.put("notificationOrganizer", true);
 
         return db.collection("users").document(deviceId)
                 .set(userData)
@@ -226,6 +229,24 @@ public class FirebaseController {
             }
         });
     }
+
+    public void addNotificationToUser(String userId, String content, String eventId, String type) {
+        Map<String, Object> notificationData = new HashMap<>();
+        notificationData.put("content", content);
+        notificationData.put("eventid", eventId);
+        notificationData.put("type", type);
+        notificationData.put("timestamp", FieldValue.serverTimestamp());
+
+        db.collection("users").document(userId).collection("notifications")
+                .add(notificationData)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d(TAG, "Notification successfully added to user: " + userId);
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error adding notification to user: " + userId, e);
+                });
+    }
+
 
     public void getUserDocId(String deviceId, OnSuccessListener<String> listener) {
         db.collection("users").whereEqualTo("deviceId", deviceId).get()

@@ -2,6 +2,7 @@ package com.example.hive;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -14,11 +15,14 @@ import com.example.hive.Models.Notification;
 import com.example.hive.Models.User;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 
 public class NotificationActivity extends AppCompatActivity {
 
+
+    private static final String TAG = NotificationActivity.class.getSimpleName();
     private LinearLayout notificationsContainer;
     private ArrayList<Notification> notifications = new ArrayList<>();
 
@@ -44,8 +48,8 @@ public class NotificationActivity extends AppCompatActivity {
         String userId = getCurrentUserId(); // Retrieve the current user's ID
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("notification")
-                .whereEqualTo("userId", userId)
+        db.collection("users").document(userId).collection("notifications")
+                .orderBy("timestamp", Query.Direction.DESCENDING) // Order by the newest first
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     notifications.clear();
@@ -59,7 +63,7 @@ public class NotificationActivity extends AppCompatActivity {
                     displayNotifications();
                 })
                 .addOnFailureListener(e -> {
-                    // Handle errors here, such as showing a Toast or logging the error
+                    Log.e(TAG, "Failed to load notifications", e);
                 });
     }
 
