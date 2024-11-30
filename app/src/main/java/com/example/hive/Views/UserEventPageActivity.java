@@ -184,10 +184,10 @@ public class UserEventPageActivity extends AppCompatActivity {
                                     }
                                 }, () -> {
                                     if (isRegistration) {
-                                        addUserToWaitingList(waitingListId, userId);
-                                    } else {
-                                        removeUserFromWaitingList(waitingListId, userId);
+                                        removeUserFromWaitingList(waitingListId, userId); // Ensure removal on decline
                                     }
+                                    Log.d(TAG, "Exiting activity after geolocation decline.");
+                                    finish(); // Exit the activity
                                 });
                             } else {
                                 if (isRegistration) {
@@ -200,6 +200,8 @@ public class UserEventPageActivity extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Error fetching event details: " + e.getMessage()));
+
+
     }
 
     /**
@@ -212,10 +214,18 @@ public class UserEventPageActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Geolocation Required")
                 .setMessage("This event requires location access. Do you want to proceed?")
-                .setPositiveButton("Yes", (dialog, which) -> onAcceptAction.run())
-                .setNegativeButton("No", (dialog, which) -> onDeclineAction.run())
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    Log.d(TAG, "User accepted geolocation access.");
+                    onAcceptAction.run();
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    Log.d(TAG, "User declined geolocation access. Removing and exiting.");
+                    onDeclineAction.run();
+                })
                 .show();
     }
+
+
 
     /**
      * Registers the user for an event without location.
