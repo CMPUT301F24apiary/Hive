@@ -51,31 +51,23 @@ public class CustomQrScannerActivity extends AppCompatActivity {
     private void startScanner() {
         barcodeView.decodeContinuous(result -> {
             if (result != null && result.getText() != null) {
-                String scanData = result.getText();
+                String scanData = result.getText(); // Directly use the scanned data
                 Log.d(TAG, "Decoded QR Code Data: " + scanData);
 
-                if (scanData.startsWith("eventId:")) {
-                    // Extract the event ID
-                    String eventId = scanData.replace("eventId:", "");
-                    Log.d(TAG, "Extracted Event ID: " + eventId);
+                // Start UserEventPageActivity directly with the scanned data as event ID
+                Intent intent = new Intent(CustomQrScannerActivity.this, UserEventPageActivity.class);
+                intent.putExtra("SCAN_RESULT", scanData); // Use scanData directly
+                startActivity(intent);
 
-                    // Start UserEventPageActivity directly with the event ID
-                    Intent intent = new Intent(CustomQrScannerActivity.this, UserEventPageActivity.class);
-                    intent.putExtra("SCAN_RESULT", eventId);
-                    startActivity(intent);
-
-                    // Finish the scanner activity
-                    finish();
-                } else {
-                    Log.e(TAG, "Invalid QR Code format: " + scanData);
-                    Toast.makeText(CustomQrScannerActivity.this, "Invalid QR Code format.", Toast.LENGTH_SHORT).show();
-                }
+                // Finish the scanner activity
+                finish();
             } else {
                 Log.e(TAG, "QR Code not detected.");
                 Toast.makeText(CustomQrScannerActivity.this, "No QR Code detected. Try again.", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
 
     @Override
