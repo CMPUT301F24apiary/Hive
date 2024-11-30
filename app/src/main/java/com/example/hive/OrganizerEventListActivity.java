@@ -212,7 +212,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(
                                 OrganizerEventListActivity.this,
-                                FacilityActivity.class);
+                                EditFacilityProfileActivity.class);
                         intent.putExtra("isEdit", false);
                         startActivity(intent);
                         finish();
@@ -223,7 +223,7 @@ public class OrganizerEventListActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(
                                 OrganizerEventListActivity.this,
-                                FacilityActivity.class);
+                                EditFacilityProfileActivity.class);
                         intent.putExtra("isEdit", false);
                         startActivity(intent);
                         finish();
