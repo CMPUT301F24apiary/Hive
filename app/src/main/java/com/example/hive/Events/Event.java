@@ -456,21 +456,4 @@ public class Event implements Parcelable {
         return formatted.split("-");
     }
 
-    /**
-     * Generates a QR code image from event data.
-     *
-     * @param width  The width of the QR code.
-     * @param height The height of the QR code.
-     * @return The generated QR code as a Bitmap.
-     * @throws WriterException If an error occurs during QR code generation.
-     */
-    public Bitmap generateQRCode(int width, int height) throws WriterException {
-        // Include event data for entrants to scan
-        String data = "eventId:" + firebaseID;
-
-        MultiFormatWriter writer = new MultiFormatWriter();
-        BitMatrix matrix = writer.encode(data, BarcodeFormat.QR_CODE, width, height);
-        BarcodeEncoder encoder = new BarcodeEncoder();
-        return encoder.createBitmap(matrix);
-    }
 }
