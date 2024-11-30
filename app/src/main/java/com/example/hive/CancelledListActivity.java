@@ -165,13 +165,5 @@ public class CancelledListActivity extends AppCompatActivity implements ConfirmD
         }
     }
 
-
-
-
-
-
-
-
-
 }
 

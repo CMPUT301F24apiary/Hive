@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ListController extends FirebaseController {
@@ -24,28 +25,30 @@ public class ListController extends FirebaseController {
 
     // Method to get waiting list user IDs
     public void getWaitingListUIDs(String eventID, OnSuccessListener<ArrayList<String>> listener) {
-        db.collection("events").document(eventID).collection("waiting-list")
-                .get().addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<DocumentSnapshot> docs = queryDocumentSnapshots.getDocuments();
-                    ArrayList<String> userIDs = new ArrayList<>();
-                    for (DocumentSnapshot doc : docs) {
-                        userIDs.add(doc.getId());
-                    }
-                    listener.onSuccess(userIDs);
-                });
+        new EventController().getSingleEvent(eventID, event -> {
+            if (event == null) {
+                Log.d("getWaitingListUIDs", "Error getting event " + eventID);
+            }
+            db.collection("waiting-list").document(event.getWaitingListId())
+                    .get().addOnSuccessListener(documentSnapshot -> {
+                        ArrayList<String> userIDs = (ArrayList) documentSnapshot.get("user-ids");
+                        if (userIDs == null) {
+                            Log.d("GetWaitingListUIDs",
+                                    "Waiting List user ids do not exist for event " + eventID);
+                        } else {
+                            listener.onSuccess(userIDs);
+                        }
+                    });
+        });
     }
 
     // Method to generate an invited list based on a lottery
-    public ArrayList<String> generateInvitedList(String eventID, ArrayList<String> entrants, int numParticipants) {
+    public ArrayList<String> generateInvitedList(String eventID, ArrayList<String> entrants,
+                                                 int numParticipants) {
         CollectionReference eventsCollection = db.collection("events");
 
         Log.d("ListController", "Starting to generate invited list for eventID: " + eventID);
         Log.d("ListController", "Number of entrants available: " + entrants.size() + ", Number of participants to select: " + numParticipants);
-
-        // Set isLotteryDrawn to false before the lottery is drawn
-        eventsCollection.document(eventID).update("isLotteryDrawn", Boolean.FALSE)
-                .addOnSuccessListener(aVoid -> Log.d("ListController", "Lottery status set to false."))
-                .addOnFailureListener(e -> Log.e("ListController", "Failed to set lottery status to false", e));
 
         // Proceed with drawing the lottery
         if (entrants.size() < numParticipants) {
@@ -181,73 +184,77 @@ public class ListController extends FirebaseController {
                 });
     }
 
-    public void addNotification(String userID, String type, String message) {
-
+    public void addNotification(String userID, String eventID, String type, String message) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("type", type);
+        data.put("eventid", eventID);
+        data.put("content", message);
+        db.collection("users").document(userID).collection("notifications").add(data);
     }
 
     public void fetchCancelledList(String eventId, OnSuccessListener<ArrayList<String>> listener) {
         Log.d("CancelledListActivity", "Fetching cancelled list for eventId: " + eventId);
 
-        db.collection("events").document(eventId).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        DocumentSnapshot eventDocument = task.getResult();
-                        String cancelledListId = eventDocument.getString("cancelledlistID");
+        db.collection("events").document(eventId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot eventDocument = task.getResult();
+                String cancelledListId = eventDocument.getString("cancelledlistID");
 
-                        if (cancelledListId != null) {
-                            Log.d("CancelledListActivity", "CancelledListID retrieved: " + cancelledListId);
+                if (cancelledListId != null) {
+                    Log.d("CancelledListActivity", "CancelledListID retrieved: " + cancelledListId);
 
-                            db.collection("cancelled-list").document(cancelledListId).get()
-                                    .addOnCompleteListener(cancelledTask -> {
-                                        if (cancelledTask.isSuccessful() && cancelledTask.getResult() != null) {
-                                            DocumentSnapshot cancelledDocument = cancelledTask.getResult();
-                                            ArrayList<String> deviceIds = (ArrayList<String>) cancelledDocument.get("userIds");
+                    db.collection("cancelled-list").document(cancelledListId).get()
+                        .addOnCompleteListener(cancelledTask -> {
+                            if (cancelledTask.isSuccessful() && cancelledTask.getResult() != null) {
+                                DocumentSnapshot cancelledDocument = cancelledTask.getResult();
+                                ArrayList<String> deviceIds = (ArrayList<String>) cancelledDocument.get("userIds");
 
-                                            if (deviceIds != null) {
-                                                Log.d("CancelledListActivity", "Device IDs retrieved: " + deviceIds.toString());
+                                if (deviceIds != null) {
+                                    Log.d("CancelledListActivity", "Device IDs retrieved: " + deviceIds.toString());
 
-                                                // List to hold usernames
-                                                ArrayList<String> usernames = new ArrayList<>();
+                                    // List to hold usernames
+                                    ArrayList<String> usernames = new ArrayList<>();
 
-                                                // Fetch usernames corresponding to each deviceId
-                                                for (String deviceId : deviceIds) {
-                                                    Log.d("CancelledListActivity", "Fetching username for deviceId: " + deviceId);
+                                    // Fetch usernames corresponding to each deviceId
+                                    for (String deviceId : deviceIds) {
+                                        Log.d("CancelledListActivity", "Fetching username for deviceId: " + deviceId);
 
-                                                    db.collection("users").document(deviceId).get()
-                                                            .addOnCompleteListener(userTask -> {
-                                                                if (userTask.isSuccessful() && userTask.getResult() != null) {
-                                                                    DocumentSnapshot userDocument = userTask.getResult();
-                                                                    String username = userDocument.getString("username");
-                                                                    if (username != null) {
-                                                                        usernames.add(username);
-                                                                        Log.d("CancelledListActivity", "Username retrieved: " + username);
-                                                                    } else {
-                                                                        Log.e("CancelledListActivity", "No username found for deviceId " + deviceId);
-                                                                    }
-                                                                } else {
-                                                                    Log.e("CancelledListActivity", "Error fetching user for deviceId " + deviceId, userTask.getException());
-                                                                }
-
-                                                                // Check if all usernames have been fetched
-                                                                if (usernames.size() == deviceIds.size()) {
-                                                                    listener.onSuccess(usernames);
-                                                                }
-                                                            });
+                                        db.collection("users").document(deviceId).get()
+                                            .addOnCompleteListener(userTask -> {
+                                                if (userTask.isSuccessful() && userTask.getResult() != null) {
+                                                    DocumentSnapshot userDocument = userTask.getResult();
+                                                    String username = userDocument.getString("username");
+                                                    if (username != null) {
+                                                        usernames.add(username);
+                                                        Log.d("CancelledListActivity", "Username retrieved: " + username);
+                                                    } else {
+                                                        Log.e("CancelledListActivity", "No username found for deviceId " + deviceId);
+                                                    }
+                                                } else {
+                                                    Log.e("CancelledListActivity", "Error fetching user for deviceId " + deviceId, userTask.getException());
                                                 }
-                                            } else {
-                                                Log.e("CancelledListActivity", "No userIds found in cancelled list document");
-                                            }
-                                        } else {
-                                            Log.e("CancelledListActivity", "Error fetching cancelled list document: ", cancelledTask.getException());
-                                        }
-                                    });
-                        } else {
-                            Log.e("CancelledListActivity", "No cancelledListId found in event document");
-                        }
-                    } else {
-                        Log.e("CancelledListActivity", "Error fetching event document: ", task.getException());
-                    }
-                });
+
+                                                // Check if all usernames have been fetched
+                                                if (usernames.size() == deviceIds.size()) {
+                                                    listener.onSuccess(usernames);
+                                                }
+                                            });
+                                    }
+                                } else {
+                                    Log.e("CancelledListActivity", "No userIds found in cancelled list document");
+                                }
+                            } else {
+                                Log.e("CancelledListActivity", "Error fetching cancelled list document: ", cancelledTask.getException());
+                            }
+                        });
+                } else {
+                    Log.e("CancelledListActivity", "No cancelledListId found in event document");
+                    listener.onSuccess(null);
+                }
+            } else {
+                Log.e("CancelledListActivity", "Error fetching event document: ", task.getException());
+            }
+        });
     }
 
 }

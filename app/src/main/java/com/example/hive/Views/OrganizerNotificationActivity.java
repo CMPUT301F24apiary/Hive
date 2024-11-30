@@ -1,8 +1,10 @@
 package com.example.hive.Views;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
@@ -27,6 +29,7 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
     private ImageButton back;
     private ListController listController;
     private EventController eventController;
+    private boolean sendToSelected, sendToCancelled, sendToWaiting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +46,17 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
         eventController = new EventController();
 
         selected = findViewById(R.id.selected_entrants_switch);
+
+        selected.setOnCheckedChangeListener((buttonView, isChecked) -> sendToSelected = isChecked);
+
         cancelled = findViewById(R.id.cancelled_entrants_switch);
+
+        cancelled.setOnCheckedChangeListener((buttonView, isChecked) -> sendToCancelled = isChecked);
+
         waiting = findViewById(R.id.waiting_list_switch);
+
+        waiting.setOnCheckedChangeListener((buttonView, isChecked) -> sendToWaiting = isChecked);
+
         message = findViewById(R.id.message_edit_text);
         sendNotif = findViewById(R.id.send_notif_button);
         back = findViewById(R.id.back_arrow);
@@ -64,9 +76,6 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
 
         // Skeleton - add logic to send notifications here
         sendNotif.setOnClickListener(v -> {
-            boolean sendToSelected = selected.isSelected();
-            boolean sendToCancelled = cancelled.isSelected();
-            boolean sendToWaiting = waiting.isSelected();
             String notificationMessage = message.getText().toString().trim();
 
             if (notificationMessage.isEmpty()) {
@@ -86,8 +95,43 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
                 eventController.getInvitedList(eventID, successAndList -> {
                     if (successAndList.first) {
                         for (String uid : successAndList.second) {
-                            listController.addNotification(uid, "selected", notificationMessage);
+                            listController.addNotification(uid, eventID, "selected", notificationMessage);
                         }
+                        Toast.makeText(this,
+                                "Successfully sent notification to selected users", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this,
+                                "No invited list for this event", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            if (sendToCancelled) {
+                listController.fetchCancelledList(eventID, uids -> {
+                    if (uids != null) {
+                        for (String uid : uids) {
+                            listController.addNotification(uid, eventID, "cancelled", notificationMessage);
+                        }
+                        Toast.makeText(this,
+                                "Successfully sent notification to cancelled users", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this,
+                                "No cancelled list for this event", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            if (sendToWaiting) {
+                listController.getWaitingListUIDs(eventID, uids -> {
+                    if (uids != null) {
+                        for (String uid : uids) {
+                            listController.addNotification(uid, eventID, "waiting", notificationMessage);
+                        }
+                        Toast.makeText(this,
+                                "Successfully sent notification to waiting users", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this,
+                                "No waiting list for this event", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
