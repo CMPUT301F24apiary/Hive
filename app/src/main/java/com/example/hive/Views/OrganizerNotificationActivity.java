@@ -15,6 +15,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.hive.Controllers.EventController;
+import com.example.hive.Controllers.ListController;
 import com.example.hive.R;
 
 public class OrganizerNotificationActivity extends AppCompatActivity {
@@ -23,6 +25,8 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
     private EditText message;
     private Button sendNotif;
     private ImageButton back;
+    private ListController listController;
+    private EventController eventController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,9 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        listController = new ListController();
+        eventController = new EventController();
 
         selected = findViewById(R.id.selected_entrants_switch);
         cancelled = findViewById(R.id.cancelled_entrants_switch);
@@ -76,7 +83,13 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
             }
 
             if (sendToSelected) {
-
+                eventController.getInvitedList(eventID, successAndList -> {
+                    if (successAndList.first) {
+                        for (String uid : successAndList.second) {
+                            listController.addNotification(uid, "selected", notificationMessage);
+                        }
+                    }
+                });
             }
 
         });

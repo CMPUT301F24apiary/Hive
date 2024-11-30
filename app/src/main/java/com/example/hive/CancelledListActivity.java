@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hive.Controllers.ListController;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +40,8 @@ public class CancelledListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cancelledlist);
 
         db = FirebaseFirestore.getInstance();
+
+        ListController listController = new ListController();
 
         eventId = getIntent().getStringExtra("eventId");
         if (eventId == null) {
@@ -80,79 +83,14 @@ public class CancelledListActivity extends AppCompatActivity {
         });
 
         // Fetch waiting list
-        fetchCancelledList();
+        listController.fetchCancelledList(eventId, users -> {
+            entrantsList.clear();
+            entrantsList.addAll(users);
+            adapter.notifyDataSetChanged();
+        });
     }
 
-    private void fetchCancelledList() {
-        Log.d("CancelledListActivity", "Fetching cancelled list for eventId: " + eventId);
 
-        db.collection("events").document(eventId).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        DocumentSnapshot eventDocument = task.getResult();
-                        String cancelledListId = eventDocument.getString("cancelledlistID");
-
-                        if (cancelledListId != null) {
-                            Log.d("CancelledListActivity", "CancelledListID retrieved: " + cancelledListId);
-
-                            db.collection("cancelled-list").document(cancelledListId).get()
-                                    .addOnCompleteListener(cancelledTask -> {
-                                        if (cancelledTask.isSuccessful() && cancelledTask.getResult() != null) {
-                                            DocumentSnapshot cancelledDocument = cancelledTask.getResult();
-                                            List<String> deviceIds = (List<String>) cancelledDocument.get("userIds");
-
-                                            if (deviceIds != null) {
-                                                Log.d("CancelledListActivity", "Device IDs retrieved: " + deviceIds.toString());
-
-                                                // List to hold usernames
-                                                List<String> usernames = new ArrayList<>();
-
-                                                // Fetch usernames corresponding to each deviceId
-                                                for (String deviceId : deviceIds) {
-                                                    Log.d("CancelledListActivity", "Fetching username for deviceId: " + deviceId);
-
-                                                    db.collection("users").document(deviceId).get()
-                                                            .addOnCompleteListener(userTask -> {
-                                                                if (userTask.isSuccessful() && userTask.getResult() != null) {
-                                                                    DocumentSnapshot userDocument = userTask.getResult();
-                                                                    String username = userDocument.getString("username");
-                                                                    if (username != null) {
-                                                                        usernames.add(username);
-                                                                        Log.d("CancelledListActivity", "Username retrieved: " + username);
-                                                                    } else {
-                                                                        Log.e("CancelledListActivity", "No username found for deviceId " + deviceId);
-                                                                    }
-                                                                } else {
-                                                                    Log.e("CancelledListActivity", "Error fetching user for deviceId " + deviceId, userTask.getException());
-                                                                }
-
-                                                                // Check if all usernames have been fetched
-                                                                if (usernames.size() == deviceIds.size()) {
-                                                                    entrantsList.clear();
-                                                                    entrantsList.addAll(usernames);
-                                                                    adapter.notifyDataSetChanged();
-                                                                    Log.d("CancelledListActivity", "UI updated with usernames: " + usernames.toString());
-                                                                }
-                                                            });
-                                                }
-                                            } else {
-                                                Log.e("CancelledListActivity", "No userIds found in cancelled list document");
-                                            }
-                                        } else {
-                                            Log.e("CancelledListActivity", "Error fetching cancelled list document: ", cancelledTask.getException());
-                                            Toast.makeText(this, "Failed to load cancelled list", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        } else {
-                            Log.e("CancelledListActivity", "No cancelledListId found in event document");
-                            Toast.makeText(this, "Cancelled list ID not found", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Log.e("CancelledListActivity", "Error fetching event document: ", task.getException());
-                        Toast.makeText(this, "Failed to load event", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
 
 
 
