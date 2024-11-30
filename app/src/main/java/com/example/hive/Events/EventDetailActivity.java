@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
+import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.EditEventActivity;
 import com.example.hive.Models.User;
 import com.example.hive.OptionsPageActivity;
@@ -26,6 +27,7 @@ import com.example.hive.R;
 import com.example.hive.Views.OrganizerNotificationActivity;
 import com.example.hive.Views.QRCodeActivity;
 import com.example.hive.Models.QRCode;
+import com.google.firebase.firestore.CollectionReference;
 
 
 /**
@@ -247,22 +249,28 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
                     Toast.makeText(EventDetailActivity.this, "Event data not available", Toast.LENGTH_LONG).show();
                     return;
                 }
+                String eventId = event.getFirebaseID();
+                QRCode.retriveQRCodeFromDb(eventId, new QRCode.QRCodeCallback() {
+                    @Override
+                    public void onQRCodeRetrieved(String qrCodeBase64) {
+                        if (qrCodeBase64 == null || qrCodeBase64.isEmpty()) {
+                            Toast.makeText(EventDetailActivity.this, "QR code not available.", Toast.LENGTH_LONG).show();
+                        } else {
+                            // decode base64 string to bitmap
+                            byte[] decodedBytes = android.util.Base64.decode(qrCodeBase64, android.util.Base64.DEFAULT);
+                            Bitmap qrCodeBitmap = android.graphics.BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                            Intent intent = new Intent(EventDetailActivity.this, QRCodeActivity.class);
+                            intent.putExtra("qrCode", qrCodeBitmap);
+                            startActivity(intent);
+                        }
+                    }
 
-                try {
-                    Bitmap qrCodeBitmap = event.generateQRCode(300, 300);
-                    Intent intent = new Intent(EventDetailActivity.this, QRCodeActivity.class);
-                    intent.putExtra("qrCode", qrCodeBitmap);
-                    startActivity(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(EventDetailActivity.this, "QR generation failed", Toast.LENGTH_LONG).show();
-                }
+                    public void onError(Exception e) {
+                        Log.e("QRCode", "failed to retrieve QR code", e);
+                    }
 
-
+                });
             }
-
-
         });
-
     }
 }
