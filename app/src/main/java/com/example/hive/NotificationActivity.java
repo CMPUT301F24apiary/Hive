@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Models.Notification;
 import com.example.hive.Models.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -45,13 +47,20 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void loadNotifications() {
-        String userId = getCurrentUserId(); // Retrieve the current user's ID
+        // Assuming you have a method getCurrentUserId() to get the current user ID.
+        String userId = getCurrentUserId();
+
+        if (userId == null || userId.isEmpty()) {
+            Log.e(TAG, "User ID is null or empty. Cannot load notifications.");
+            return;
+        }
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(userId).collection("notifications")
                 .orderBy("timestamp", Query.Direction.DESCENDING) // Order by the newest first
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // Clear the notifications list before adding new items.
                     notifications.clear();
                     for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                         Notification notification = document.toObject(Notification.class);
@@ -66,6 +75,19 @@ public class NotificationActivity extends AppCompatActivity {
                     Log.e(TAG, "Failed to load notifications", e);
                 });
     }
+
+    // Method to get the current user ID, for example using Firebase Authentication.
+    private String getCurrentUserId() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser != null) {
+            return currentUser.getUid();
+        } else {
+            Log.e(TAG, "Current user is null.");
+            return null;
+        }
+    }
+
 
     private void displayNotifications() {
         notificationsContainer.removeAllViews();
@@ -118,7 +140,4 @@ public class NotificationActivity extends AppCompatActivity {
         // Handle re-registration logic, such as updating Firestore
     }
 
-    private String getCurrentUserId() {
-        return User.getInstance().getDeviceId(); // Example to retrieve user ID from current user
-    }
 }

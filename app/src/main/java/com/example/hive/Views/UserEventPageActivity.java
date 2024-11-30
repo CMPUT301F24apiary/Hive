@@ -250,6 +250,7 @@ public class UserEventPageActivity extends AppCompatActivity {
         userData.put("email", currentUser.getEmail());
         userData.put("deviceId", currentUser.getDeviceId());
 
+        // Adding the user to the waiting list using the correct event ID
         firebaseController.getDb().collection("events")
                 .document(eventId) // Use the correct event ID
                 .collection("waiting-list") // Update waiting-list sub-collection
@@ -330,6 +331,7 @@ public class UserEventPageActivity extends AppCompatActivity {
         });
     }
 
+
     /**
      * Unregisters the user from an event with location.
      *
@@ -351,6 +353,7 @@ public class UserEventPageActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /**
      * Retrieves the user's last known location.
