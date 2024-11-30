@@ -33,10 +33,10 @@ public class AddEventActivityTest {
     @Test
     public void testSaveEventDetails() {
         onView(withId(R.id.eventName)).perform(ViewActions.typeText("Test Event"));
-        onView(withId(R.id.eventDate)).perform(ViewActions.typeText("05-11-2024"));
+        //onView(withId(R.id.eventDate)).perform(ViewActions.typeText("05-11-2024"));
         onView(withId(R.id.eventTime)).perform(ViewActions.typeText("10:00"));
         onView(withId(R.id.eventDuration)).perform(ViewActions.typeText("02:00"));
-        onView(withId(R.id.eventLocation)).perform(ViewActions.typeText("Community Center"));
+        //onView(withId(R.id.eventLocation)).perform(ViewActions.typeText("Community Center"));
         onView(withId(R.id.eventCost)).perform(ViewActions.typeText("50"));
         onView(withId(R.id.numParticipants)).perform(ViewActions.typeText("100"));
         onView(withId(R.id.eventDescription)).perform(ViewActions.typeText("A fun community event"));

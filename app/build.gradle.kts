@@ -57,6 +57,8 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
     implementation ("com.google.firebase:firebase-firestore:25.1.1")
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 
     implementation(libs.glide.v4110)
     annotationProcessor(libs.compiler)
