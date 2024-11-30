@@ -3,7 +3,9 @@ package com.example.hive;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.http.QuicException;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -29,10 +31,12 @@ import com.example.hive.Controllers.ImageController;
 import com.example.hive.DateAndTimePickers.DatePickerFragment;
 import com.example.hive.DateAndTimePickers.TimePickerFragment;
 import com.example.hive.Events.Event;
+import com.example.hive.Models.QRCode;
 import com.example.hive.Models.User;
 import com.example.hive.OrganizerEventListActivity;
 import com.example.hive.R;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.zxing.WriterException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -232,6 +236,16 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
                     if (urlAndID != null) {
                         new ImageController().updateImageRef(urlAndID.second, id);
                     }
+
+                    // save QR Code to event upon generation
+                    QRCode qrCode = new QRCode(event.getFirebaseID());
+                    Bitmap qeBitmap = null;
+                    try {
+                        qeBitmap = qrCode.generateQRCode(300, 300);
+                    } catch (WriterException e) {
+                        Log.e("QR Code Generation", "Failed to generate QR Code", e);
+                    }
+                    QRCode.saveQRToDb(qeBitmap, event.getFirebaseID());
 
                     // Create an empty waiting-list subcollection for the event
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
