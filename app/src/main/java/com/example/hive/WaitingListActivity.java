@@ -80,24 +80,34 @@ public class WaitingListActivity extends AppCompatActivity {
     }
 
     private void fetchWaitingList() {
-        Log.d("WaitingListActivity", "Fetching waiting list for eventId: " + eventId);
+        Log.d("WaitingListActivity", "Setting up real-time listener for waiting list for eventId: " + eventId);
 
-        CollectionReference waitingListRef = db.collection("events").document(eventId).collection("waiting-list");
-        waitingListRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
+        CollectionReference waitingListRef = db.collection("events")
+                .document(eventId)
+                .collection("waiting-list");
+
+        waitingListRef.addSnapshotListener((snapshots, e) -> {
+            if (e != null) {
+                Log.e("WaitingListActivity", "Listen failed: ", e);
+                Toast.makeText(this, "Failed to load waiting list in real-time", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (snapshots != null && !snapshots.isEmpty()) {
                 entrantsList.clear(); // Clear the list to avoid duplicates
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    String username = document.getString("username"); // Get the "username" field
-                    Log.d("WaitingListActivity", "Fetched username: " + username);
+                for (QueryDocumentSnapshot document : snapshots) {
+                    String username = document.getString("username"); // Fetch "username" field from Firebase
+                    Log.d("WaitingListActivity", "Fetched username in real-time: " + username);
                     if (username != null) {
                         entrantsList.add(username); // Add each username to the list
                     }
                 }
                 adapter.notifyDataSetChanged(); // Update the ListView with new data
-                Log.d("WaitingListActivity", "Entrants list updated: " + entrantsList);
+                Log.d("WaitingListActivity", "Entrants list updated in real-time: " + entrantsList);
             } else {
-                Log.e("WaitingListActivity", "Error fetching waiting list: ", task.getException());
-                Toast.makeText(this, "Failed to load waiting list", Toast.LENGTH_SHORT).show();
+                Log.d("WaitingListActivity", "No documents in waiting-list collection.");
+                entrantsList.clear();
+                adapter.notifyDataSetChanged();
             }
         });
     }

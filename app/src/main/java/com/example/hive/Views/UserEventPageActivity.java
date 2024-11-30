@@ -274,19 +274,25 @@ public class UserEventPageActivity extends AppCompatActivity {
      * @param userId The ID of the user to add.
      */
     private void addUserToWaitingList(String waitingListId, String userId) {
-        firebaseController.addUserToWaitingList(waitingListId, userId, new FirebaseController.Callback() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(UserEventPageActivity.this, "Successfully registered for the event!", Toast.LENGTH_SHORT).show();
-                navigateToEventListActivity();
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                Toast.makeText(UserEventPageActivity.this, "Failed to register: " + errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
+        User currentUser = User.getInstance(); // Get the current User instance
+        firebaseController.getDb().collection("events")
+                .document(eventId) // Use correct event ID
+                .collection("waiting-list") // Update waiting-list sub-collection
+                .document(userId) // Use userId as the document ID for uniqueness
+                .set(currentUser) // Use the current user instance
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Successfully added user to waiting list.");
+                    Toast.makeText(UserEventPageActivity.this, "Successfully registered for the event!", Toast.LENGTH_SHORT).show();
+                    navigateToEventListActivity();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to add user to waiting list: " + e.getMessage());
+                    Toast.makeText(UserEventPageActivity.this, "Failed to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
+
+
+
 
     /**
      * Navigates the user back to the event list activity.
