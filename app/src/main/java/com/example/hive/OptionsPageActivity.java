@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Events.EventDetailActivity;
+import com.example.hive.Views.EntrantMapActivity;
 import com.example.hive.Views.InvitedEntrantsActivity;
 
 public class OptionsPageActivity extends AppCompatActivity {
@@ -48,6 +49,7 @@ public class OptionsPageActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+
         invitedEntrantsButton.setOnClickListener(v -> {
             // Navigate to invited entrants activity
             Intent i = new Intent(this, InvitedEntrantsActivity.class);
@@ -68,7 +70,9 @@ public class OptionsPageActivity extends AppCompatActivity {
         });
 
         viewEntrantMapButton.setOnClickListener(v -> {
-            // Placeholder for Viewing Entrant Map logic
+            Intent intent = new Intent(OptionsPageActivity.this, EntrantMapActivity.class);
+            intent.putExtra("eventId", eventId); // Pass the eventId to EntrantMapActivity
+            startActivity(intent);
         });
     }
 }
