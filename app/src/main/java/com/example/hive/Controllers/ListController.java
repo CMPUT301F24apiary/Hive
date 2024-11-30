@@ -169,6 +169,50 @@ public class ListController extends FirebaseController {
         });
     }
 
+    // Run the lottery to select the winners
+    public void runLottery(Context context, String eventID, int maxWinners) {
+        // Fetch the waiting list of entrants
+        getWaitingListUIDs(eventID, waitingList -> {
+            if (waitingList == null || waitingList.isEmpty()) {
+                Log.d("ListController", "Waiting list is empty for event: " + eventID);
+                Toast.makeText(context, "No entrants in the waiting list to draw a lottery.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Randomly select winners from the waiting list
+            ArrayList<String> winners = generateInvitedList(eventID, new ArrayList<>(waitingList), maxWinners);
+
+            // Add the invited list to the event in Firestore
+            createInvitedUserList(winners, userList -> {
+                // Notify winners and others
+                notifyLotteryResults(context, eventID, winners, waitingList);
+                Log.d("ListController", "Lottery drawn and notifications sent for event: " + eventID);
+                Toast.makeText(context, "Lottery drawn successfully!", Toast.LENGTH_SHORT).show();
+            });
+        });
+    }
+
+
+    // Notify users after lottery results
+    public void notifyLotteryResults(Context context, String eventID, ArrayList<String> invited, ArrayList<String> allEntrants) {
+        // Notify the users who have won
+        for (String userId : invited) {
+            notifyUserWin(context, userId);
+            addNotification(userId, eventID, "win", "Congratulations! You have been chosen for the event!");
+        }
+
+        // Notify the users who have not won
+        for (String userId : allEntrants) {
+            if (!invited.contains(userId)) {
+                notifyUserLose(context, userId);
+                addNotification(userId, eventID, "lose", "Thank you for participating. Unfortunately, you were not selected this time.");
+            }
+        }
+
+        Log.d("ListController", "Notifications sent for lottery results of event: " + eventID);
+    }
+
+
     // Check if a specific user is on the invited list for the event
     public void checkIfUserIsInvited(String eventID, String userID, OnSuccessListener<Boolean> listener) {
         db.collection("events").document(eventID).collection("invited-list").document(userID)

@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -93,18 +94,14 @@ public class WaitingListActivity extends AppCompatActivity {
                 return;
             }
 
-            if (snapshots != null) {
+            if (snapshots != null && !snapshots.isEmpty()) {
                 entrantsList.clear(); // Clear the list to avoid duplicates
-                for (QueryDocumentSnapshot document : snapshots) {
+                for (DocumentSnapshot document : snapshots.getDocuments()) { // Use DocumentSnapshot here
                     String username = document.getString("username"); // Fetch "username" field from Firebase
                     if (username != null) {
                         entrantsList.add(username); // Add each username to the list
                         Log.d("WaitingListActivity", "Fetched username in real-time: " + username);
                     }
-                }
-                if (entrantsList.isEmpty()) {
-                    Log.d("WaitingListActivity", "No entrants found in waiting-list collection.");
-                    Toast.makeText(this, "No users are currently on the waiting list.", Toast.LENGTH_SHORT).show();
                 }
                 adapter.notifyDataSetChanged(); // Update the ListView with new data
                 Log.d("WaitingListActivity", "Entrants list updated in real-time: " + entrantsList);
@@ -112,7 +109,10 @@ public class WaitingListActivity extends AppCompatActivity {
                 Log.d("WaitingListActivity", "No documents in waiting-list collection.");
                 entrantsList.clear();
                 adapter.notifyDataSetChanged();
+                Toast.makeText(this, "No users are currently on the waiting list.", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
 }
