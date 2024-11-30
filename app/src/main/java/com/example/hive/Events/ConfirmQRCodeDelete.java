@@ -1,18 +1,22 @@
 package com.example.hive.Events;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.hive.R;
+
 public class ConfirmQRCodeDelete extends DialogFragment {
     // Declare variables for cancel and confirm buttons
     private Button cancelButton;
-    private Button confirmBtn;
+    private Button confirmButton;
     private DeleteQRCodeListener listener;
 
     /**
@@ -48,6 +52,22 @@ public class ConfirmQRCodeDelete extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        return super.onCreateDialog(savedInstanceState);
+//        return super.onCreateDialog(savedInstanceState);
+        View view = getLayoutInflater().inflate(R.layout.fragment_confirm_qr_code_delete, null);
+        confirmButton = view.findViewById(R.id.event_confirm_deletion_button);
+        cancelButton = view.findViewById(R.id.event_cancel_deletion_button);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(dialogInterface -> {
+            cancelButton.setOnClickListener(v -> {
+                dialog.dismiss();
+            });
+            confirmButton.setOnClickListener(v -> {
+                listener.deleteQRCode();
+                dialog.dismiss();
+            });
+        });
+        return dialog;
     }
 }
