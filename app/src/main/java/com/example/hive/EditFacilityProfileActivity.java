@@ -234,6 +234,7 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
             FacilityController controller = new FacilityController();
 
             if (isEdit) {
+                Log.d("OrganizerEventListActivity", "editing facility");
                 HashMap<String, Object> data = new HashMap<>();
                 data.put("name", updatedName);
                 data.put("email", updatedEmail);
@@ -251,12 +252,13 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
                 });
 
             } else {
-
+                Log.d("OrganizerEventListActivity", "adding facility");
                 controller.addFacility(EditFacilityProfileActivity.this, deviceID,
                         updatedName, updatedEmail, updatedPhone, pictureUri, success -> {
                             if (success) {
-                                Intent result = new Intent();
+                                Intent result = new Intent(EditFacilityProfileActivity.this, FacilityActivity.class);
                                 setResult(1, result);
+                                startActivity(result);
                                 finish();
                             } else {
                                 Toast.makeText(EditFacilityProfileActivity.this,

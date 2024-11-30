@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,6 +56,30 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
         }
 
         // Skeleton - add logic to send notifications here
+        sendNotif.setOnClickListener(v -> {
+            boolean sendToSelected = selected.isSelected();
+            boolean sendToCancelled = cancelled.isSelected();
+            boolean sendToWaiting = waiting.isSelected();
+            String notificationMessage = message.getText().toString().trim();
+
+            if (notificationMessage.isEmpty()) {
+                Toast.makeText(OrganizerNotificationActivity.this,
+                        "You must enter a message.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (!sendToCancelled && !sendToSelected && !sendToWaiting) {
+                Toast.makeText(OrganizerNotificationActivity.this,
+                        "You must select at least one group to notify.",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (sendToSelected) {
+
+            }
+
+        });
 
     }
 }
