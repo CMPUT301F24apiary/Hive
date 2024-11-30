@@ -1,38 +1,34 @@
 package com.example.hive;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.example.hive.Controllers.ListController;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * For the organizer to see the cancelled entrants
- *
- * @author HRITTIJA
- */
-public class CancelledListActivity extends AppCompatActivity {
+public class CancelledListActivity extends AppCompatActivity implements ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
     private FirebaseFirestore db;
     private List<String> entrantsList;
     private ArrayAdapter<String> adapter;
     private String eventId;
+    private String cancelledListId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,14 +79,91 @@ public class CancelledListActivity extends AppCompatActivity {
         });
 
         // Fetch waiting list
-        listController.fetchCancelledList(eventId, users -> {
-            entrantsList.clear();
-            entrantsList.addAll(users);
-            adapter.notifyDataSetChanged();
+        fetchCancelledList();
+
+        // Delete All button logic
+        Button deleteAllButton = findViewById(R.id.delete_all_button);
+        deleteAllButton.setOnClickListener(v -> {
+            ConfirmDeleteDialogFragment dialog = new ConfirmDeleteDialogFragment(this);
+            dialog.show(getSupportFragmentManager(), "ConfirmDeleteDialog");
         });
     }
 
+    private void fetchCancelledList() {
+        db.collection("events").document(eventId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DocumentSnapshot eventDocument = task.getResult();
+                        cancelledListId = eventDocument.getString("cancelledlistID");
 
+                        if (cancelledListId != null) {
+                            fetchUsernames();
+                        } else {
+                            Toast.makeText(this, "Cancelled list ID not found", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(this, "Failed to load event", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void fetchUsernames() {
+        db.collection("cancelled-list").document(cancelledListId).get()
+                .addOnCompleteListener(cancelledTask -> {
+                    if (cancelledTask.isSuccessful() && cancelledTask.getResult() != null) {
+                        DocumentSnapshot cancelledDocument = cancelledTask.getResult();
+                        List<String> deviceIds = (List<String>) cancelledDocument.get("userIds");
+
+                        if (deviceIds != null) {
+                            entrantsList.clear();
+                            fetchUserDetails(deviceIds);  // Fetch usernames using the device IDs
+                        } else {
+                            Toast.makeText(this, "No user IDs found", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void fetchUserDetails(List<String> deviceIds) {
+        entrantsList.clear();
+
+        for (String deviceId : deviceIds) {
+            db.collection("users").document(deviceId).get()  // Assuming the collection is named "users"
+                    .addOnSuccessListener(userDoc -> {
+                        if (userDoc.exists()) {
+                            String username = userDoc.getString("username");  // Assuming there's a "username" field
+                            if (username != null) {
+                                entrantsList.add(username);  // Add the username to the list
+                                adapter.notifyDataSetChanged();
+                            } else {
+                                Log.w("CancelledListActivity", "No username found for device ID: " + deviceId);
+                            }
+                        } else {
+                            Log.w("CancelledListActivity", "User document not found for device ID: " + deviceId);
+                        }
+                    })
+                    .addOnFailureListener(e -> Log.e("CancelledListActivity", "Error fetching user details", e));
+        }
+    }
+
+
+    @Override
+    public void onDeleteConfirmed() {
+        if (cancelledListId != null) {
+            DocumentReference cancelledListRef = db.collection("cancelled-list").document(cancelledListId);
+
+            // Update Firestore by setting "userIds" to an empty list
+            cancelledListRef.update("userIds", new ArrayList<>())
+                    .addOnSuccessListener(aVoid -> {
+                        entrantsList.clear();
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(CancelledListActivity.this, "All entries deleted", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(CancelledListActivity.this, "Failed to delete entries", Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
 
 
 
