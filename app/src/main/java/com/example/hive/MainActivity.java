@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -48,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
             requestNotificationPermission();
         }
 
+        // Check for notifications
+        checkForPendingNotifications();
+
         // Register activity result launcher
         roleSelectionLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -87,16 +91,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Device ID could not be retrieved.", Toast.LENGTH_LONG).show();
         }
     }
-
-    // Other developer/debugging buttons can remain here
-    // Uncomment and add as needed
-        /*
-        Button eventsButton = findViewById(R.id.view_events_button);
-        eventsButton.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, AdminEventListActivity.class);
-            startActivity(i);
-        });
-        */
 
     @Override
     protected void onResume() {
@@ -152,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         String eventID = "YOUR_EVENT_ID_HERE"; // Replace with the actual event ID
 
         if (deviceId != null && !deviceId.isEmpty()) {
+            Log.d("MainActivity notifs", "Checking for notifications");
             listController.checkIfUserIsInvited(eventID, deviceId, isInvited -> {
                 if (isInvited) {
                     // User is invited, notify them to accept or decline
