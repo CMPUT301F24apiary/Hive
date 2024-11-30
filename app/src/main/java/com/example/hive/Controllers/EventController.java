@@ -159,8 +159,6 @@ public class EventController extends FirebaseController {
      * Gets all event information from events collection of database that were made by given user.
      * Once all data is retrieved, callback function is called.
      *
-     * TODO Add checks for user. Currently this function just returns all events.
-     *
      * @param callback
      * The function to run after all data has been retrieved.
      */
@@ -173,9 +171,11 @@ public class EventController extends FirebaseController {
             @Override
             public void onUserFetched(User user) {
                 ArrayList<String> eventIDs = user.getEventIDs();
+                if (eventIDs == null) {
+                    return;
+                }
                 int totalEvents = eventIDs.size();
-                if (totalEvents == 0) {
-                    callback.onSuccess(data);
+                if (totalEvents == 1 && eventIDs.get(0).isEmpty()) {
                     return;
                 }
                 AtomicInteger eventsFetched = new AtomicInteger();
