@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -146,7 +147,11 @@ public class UserEventPageActivity extends AppCompatActivity {
      * Sets up listeners for the Register and Unregister buttons.
      */
     private void setupButtonListeners() {
-        String userId = User.getInstance().getDeviceId();
+//        String userId = User.getInstance().getDeviceId();
+
+        String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        Log.d("setupButtonListeners", userId == null ? "null" : userId);
 
         registerButton.setOnClickListener(v -> handleAction(true, userId));
         unregisterButton.setOnClickListener(v -> handleAction(false, userId));
@@ -163,6 +168,8 @@ public class UserEventPageActivity extends AppCompatActivity {
             Toast.makeText(this, "User ID is missing.", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        Log.d("handleAction", userId);
 
         firebaseController.getDb().collection("events").document(eventId)
                 .get()

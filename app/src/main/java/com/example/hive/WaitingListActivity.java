@@ -12,7 +12,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Models.User;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -25,6 +28,7 @@ public class WaitingListActivity extends AppCompatActivity {
     private List<String> entrantsList;
     private ArrayAdapter<String> adapter;
     private String eventId;
+    private FirebaseController fbControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,8 @@ public class WaitingListActivity extends AppCompatActivity {
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
+
+        fbControl = new FirebaseController();
 
         // Get eventId from intent
         eventId = getIntent().getStringExtra("eventId");
@@ -82,37 +88,59 @@ public class WaitingListActivity extends AppCompatActivity {
     private void fetchWaitingList() {
         Log.d("WaitingListActivity", "Setting up real-time listener for waiting list for eventId: " + eventId);
 
-        CollectionReference waitingListRef = db.collection("events")
-                .document(eventId)
-                .collection("waiting-list");
-
-        waitingListRef.addSnapshotListener((snapshots, e) -> {
-            if (e != null) {
-                Log.e("WaitingListActivity", "Listen failed: ", e);
-                Toast.makeText(this, "Failed to load waiting list in real-time", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (snapshots != null) {
-                entrantsList.clear(); // Clear the list to avoid duplicates
-                for (QueryDocumentSnapshot document : snapshots) {
-                    String username = document.getString("username"); // Fetch "username" field from Firebase
-                    if (username != null) {
-                        entrantsList.add(username); // Add each username to the list
-                        Log.d("WaitingListActivity", "Fetched username in real-time: " + username);
+        db.collection("events")
+                .document(eventId).get().addOnSuccessListener(doc -> {
+                    String waitingListID = doc.getString("waiting-list-id");
+                    if (waitingListID == null || waitingListID.isEmpty()) {
+                        Log.d("fetchWaitingList", "No waiting list ID for event " + eventId);
+                        return;
                     }
-                }
-                if (entrantsList.isEmpty()) {
-                    Log.d("WaitingListActivity", "No entrants found in waiting-list collection.");
-                    Toast.makeText(this, "No users are currently on the waiting list.", Toast.LENGTH_SHORT).show();
-                }
-                adapter.notifyDataSetChanged(); // Update the ListView with new data
-                Log.d("WaitingListActivity", "Entrants list updated in real-time: " + entrantsList);
-            } else {
-                Log.d("WaitingListActivity", "No documents in waiting-list collection.");
-                entrantsList.clear();
-                adapter.notifyDataSetChanged();
-            }
-        });
+                    DocumentReference waitingListRef = db.collection("waiting-list").document(waitingListID);
+                    waitingListRef.addSnapshotListener((snapshot, e) -> {
+                        if (e != null) {
+                            Log.e("WaitingListActivity", "Listen failed: ", e);
+                            Toast.makeText(this, "Failed to load waiting list in real-time", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        ArrayList<String> waitingListUserIDs = (ArrayList<String>) snapshot.get("user-ids");
+
+                        if (waitingListUserIDs != null) {
+                            entrantsList.clear(); // Clear the list to avoid duplicates
+                            int numUsers = waitingListUserIDs.size();
+                            if (numUsers == 0) {
+                                Log.d("WaitingListActivity", "No entrants found in waiting-list collection.");
+                                Toast.makeText(this, "No users are currently on the waiting list.", Toast.LENGTH_SHORT).show();
+                                adapter.notifyDataSetChanged();
+                            }
+                            for (String uid : waitingListUserIDs) {
+                                fbControl.fetchUserByDeviceId(uid, new FirebaseController.OnUserFetchedListener() {
+                                    @Override
+                                    public void onUserFetched(User user) {
+                                        if (user.getUserName() != null) {
+                                            entrantsList.add(user.getUserName()); // Add each username to the list
+                                            Log.d("WaitingListActivity", "Fetched username in real-time: " + user.getUserName());
+                                            if (entrantsList.size() == numUsers) {
+                                                adapter.notifyDataSetChanged(); // Update the ListView with new data
+                                                Log.d("WaitingListActivity", "Entrants list updated in real-time: " + entrantsList);
+                                            }
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        Log.e("Fetch user error", e.getMessage());
+                                    }
+                                });
+                            }
+                        } else {
+                            Log.d("WaitingListActivity", "No documents in waiting-list collection.");
+                            entrantsList.clear();
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                });
+
     }
 }
