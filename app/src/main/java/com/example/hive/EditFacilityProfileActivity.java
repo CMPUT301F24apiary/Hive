@@ -255,8 +255,9 @@ public class EditFacilityProfileActivity extends AppCompatActivity {
                 controller.addFacility(EditFacilityProfileActivity.this, deviceID,
                         updatedName, updatedEmail, updatedPhone, pictureUri, success -> {
                             if (success) {
-                                Intent result = new Intent();
+                                Intent result = new Intent(EditFacilityProfileActivity.this, FacilityActivity.class);
                                 setResult(1, result);
+                                startActivity(result);
                                 finish();
                             } else {
                                 Toast.makeText(EditFacilityProfileActivity.this,
