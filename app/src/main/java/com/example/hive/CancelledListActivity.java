@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.DocumentReference;
+import com.example.hive.Controllers.ListController;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -34,6 +36,8 @@ public class CancelledListActivity extends AppCompatActivity implements ConfirmD
         setContentView(R.layout.activity_cancelledlist);
 
         db = FirebaseFirestore.getInstance();
+
+        ListController listController = new ListController();
 
         eventId = getIntent().getStringExtra("eventId");
         if (eventId == null) {
@@ -160,4 +164,6 @@ public class CancelledListActivity extends AppCompatActivity implements ConfirmD
                     });
         }
     }
+
 }
+

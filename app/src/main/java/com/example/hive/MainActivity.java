@@ -18,7 +18,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.hive.Controllers.FirebaseController;
-import com.example.hive.Controllers.InvitedController;
+import com.example.hive.Controllers.ListController;
 import com.example.hive.Controllers.NotificationsController;
 import com.example.hive.Models.User;
 import com.example.hive.Views.FirstTimeActivity;
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> roleSelectionLauncher;
     private User currentUser = User.getInstance();
     private FirebaseController firebaseController = new FirebaseController();
-    private InvitedController invitedController = new InvitedController();
+    private ListController listController = new ListController();
     private FirebaseFirestore db = firebaseController.getDb();
 
     @Override
@@ -152,19 +152,19 @@ public class MainActivity extends AppCompatActivity {
         String eventID = "YOUR_EVENT_ID_HERE"; // Replace with the actual event ID
 
         if (deviceId != null && !deviceId.isEmpty()) {
-            invitedController.checkIfUserIsInvited(eventID, deviceId, isInvited -> {
+            listController.checkIfUserIsInvited(eventID, deviceId, isInvited -> {
                 if (isInvited) {
                     // User is invited, notify them to accept or decline
-                    invitedController.notifyUserWin(this, deviceId);
+                    listController.notifyUserWin(this, deviceId);
                 } else {
                     // Handle if user was not invited (e.g. lost or re-register case)
-                    invitedController.getWaitingListUIDs(eventID, waitingList -> {
+                    listController.getWaitingListUIDs(eventID, waitingList -> {
                         if (waitingList.contains(deviceId)) {
                             // User was not chosen, notify them they were not selected
-                            invitedController.notifyUserLose(this, deviceId);
+                            listController.notifyUserLose(this, deviceId);
                         } else {
                             // User is being re-invited due to someone declining
-                            invitedController.notifyUserReRegister(this, deviceId);
+                            listController.notifyUserReRegister(this, deviceId);
                         }
                     });
                 }

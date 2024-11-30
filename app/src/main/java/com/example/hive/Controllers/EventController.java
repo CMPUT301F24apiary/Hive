@@ -4,19 +4,16 @@ import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.example.hive.Events.Event;
 import com.example.hive.Models.User;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,6 +124,7 @@ public class EventController extends FirebaseController {
             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                 String id = doc.getId();
                 String title = (String) doc.get("title");
+                Log.d("eventTitleAdmin", title);
                 long startDate = (long) doc.get("startDateInMS");
                 long endDate = (long) doc.get("endDateInMS");
                 String cost = (String) doc.get("cost");
@@ -161,8 +159,6 @@ public class EventController extends FirebaseController {
      * Gets all event information from events collection of database that were made by given user.
      * Once all data is retrieved, callback function is called.
      *
-     * TODO Add checks for user. Currently this function just returns all events.
-     *
      * @param callback
      * The function to run after all data has been retrieved.
      */
@@ -175,9 +171,11 @@ public class EventController extends FirebaseController {
             @Override
             public void onUserFetched(User user) {
                 ArrayList<String> eventIDs = user.getEventIDs();
+                if (eventIDs == null) {
+                    return;
+                }
                 int totalEvents = eventIDs.size();
-                if (totalEvents == 0) {
-                    callback.onSuccess(data);
+                if (totalEvents == 1 && eventIDs.get(0).isEmpty()) {
                     return;
                 }
                 AtomicInteger eventsFetched = new AtomicInteger();
@@ -356,29 +354,29 @@ public class EventController extends FirebaseController {
         eventsCollection.document(eventID).update(data);
     }
 
-    public void runLottery(Context context, String eventID, int maxWinners, InvitedController invitedController) {
+    public void runLottery(Context context, String eventID, int maxWinners, ListController listController) {
         // Fetch the waiting list of entrants
-        invitedController.getWaitingListUIDs(eventID, waitingList -> {
+        listController.getWaitingListUIDs(eventID, waitingList -> {
             if (waitingList == null || waitingList.isEmpty()) {
                 Log.d("EventController", "Waiting list is empty for event: " + eventID);
                 return;
             }
 
             // Randomly select winners from the waiting list
-            ArrayList<String> winners = invitedController.generateInvitedList(eventID, waitingList, maxWinners);
+            ArrayList<String> winners = listController.generateInvitedList(eventID, waitingList, maxWinners);
 
             // Add the invited list to the event in Firestore
             addInvitedList(eventID, winners);
 
             // Notify winners
             for (String winner : winners) {
-                invitedController.notifyUserWin(context, winner);
+                listController.notifyUserWin(context, winner);
             }
 
             // Notify users who did not win
             for (String entrant : waitingList) {
                 if (!winners.contains(entrant)) {
-                    invitedController.notifyUserLose(context, entrant);
+                    listController.notifyUserLose(context, entrant);
                 }
             }
 
