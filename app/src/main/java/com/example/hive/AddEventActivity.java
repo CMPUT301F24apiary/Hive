@@ -68,6 +68,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         setContentView(R.layout.activity_addevents);
         EventController controller = new EventController();
 
+
         ImageView backArrow = findViewById(R.id.backArrow);
         eventName = findViewById(R.id.eventName);
         eventDuration = findViewById(R.id.eventDuration);

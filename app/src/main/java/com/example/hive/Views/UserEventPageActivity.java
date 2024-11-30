@@ -1,7 +1,11 @@
 package com.example.hive.Views;
+
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,24 +14,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.EventListActivity;
 import com.example.hive.Events.Event;
 import com.example.hive.Models.User;
 import com.example.hive.R;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Activity to display detailed information about a specific event and provide the ability to
- * register or unregister for the event. Handles fetching event details from Firestore,
- * updating the UI, and interacting with waiting lists.
+ * register or unregister for the event. Handles event details, user actions, and location-based
+ * registration/unregistration using Firebase Firestore.
  *
  * @author Dina
  */
 public class UserEventPageActivity extends AppCompatActivity {
+
     private static final String TAG = "UserEventPageActivity";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
 
@@ -38,9 +48,10 @@ public class UserEventPageActivity extends AppCompatActivity {
     private String eventId;
     private TextView locationTextView, costTextView;
     private TextView dateTextView, timeTextView;
+    private LocationManager locationManager;
 
     /**
-     * Initializes the activity, including fetching event details and setting up UI components.
+     * Initializes the activity, retrieves the event ID from the Intent, and sets up the UI components.
      *
      * @param savedInstanceState The previously saved instance state, if any.
      */
@@ -64,6 +75,8 @@ public class UserEventPageActivity extends AppCompatActivity {
         registerButton = findViewById(R.id.registerButton);
         unregisterButton = findViewById(R.id.unregisterButton);
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
         // Get event ID from the Intent
         Intent intent = getIntent();
         eventId = intent.getStringExtra("SCAN_RESULT");
@@ -82,48 +95,35 @@ public class UserEventPageActivity extends AppCompatActivity {
     }
 
     /**
-     * Fetches event details from Firestore using the event ID.
+     * Fetches event details from Firestore and updates the UI with the retrieved data.
      *
-     * @param eventId The ID of the event to fetch details for.
+     * @param eventId The ID of the event to fetch.
      */
     private void fetchEventDetails(String eventId) {
-        Log.d(TAG, "Fetching event details for Event ID: " + eventId);
         firebaseController.getDb().collection("events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        Log.d(TAG, "Event document found: " + documentSnapshot.getData());
                         Event event = documentSnapshot.toObject(Event.class);
                         if (event != null) {
-                            Log.d(TAG, "Event object successfully created: " + event.getTitle());
                             updateUIWithEventDetails(event);
-                        } else {
-                            Log.e(TAG, "Event object is null after Firestore conversion.");
                         }
-                    } else {
-                        Log.e(TAG, "Event not found in Firestore for Event ID: " + eventId);
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error fetching event details: " + e.getMessage());
-                });
+                .addOnFailureListener(e -> Log.e(TAG, "Error fetching event details: " + e.getMessage()));
     }
 
     /**
-     * Updates the UI with the details of the fetched event.
+     * Updates the UI with details of the fetched event.
      *
      * @param event The event object containing the details.
      */
     private void updateUIWithEventDetails(Event event) {
-        Log.d(TAG, "Updating UI with event details. Event Title: " + event.getTitle());
-
         if (event.getWaitingListId() == null || event.getWaitingListId().isEmpty()) {
-            Log.e(TAG, "Invalid waitingListId in event.");
-            Toast.makeText(this, "Invalid event data. Cannot register.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Invalid event data.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Update UI components
         String[] startDateAndTime = event.getDateAndTimeFromMS(event.getStartDateInMS());
         String[] endDateAndTime = event.getDateAndTimeFromMS(event.getEndDateInMS());
 
@@ -136,144 +136,105 @@ public class UserEventPageActivity extends AppCompatActivity {
         locationTextView.setText(String.format(Locale.ENGLISH, "Location: %s", event.getLocation()));
         costTextView.setText(String.format(Locale.ENGLISH, "$%s", event.getCost()));
 
-        Log.d(TAG, "Event UI updated successfully.");
+        if (event.getPosterURL() != null && !event.getPosterURL().isEmpty()) {
+            Glide.with(this).load(event.getPosterURL()).into(eventImageView);
+        }
     }
 
     /**
-     * Sets up click listeners for the Register and Unregister buttons.
+     * Sets up listeners for the Register and Unregister buttons.
      */
     private void setupButtonListeners() {
         String userId = User.getInstance().getDeviceId();
-        Log.d(TAG, "User ID for registration: " + userId);
 
-        registerButton.setOnClickListener(v -> {
-            if (userId == null || userId.isEmpty()) {
-                Toast.makeText(UserEventPageActivity.this, "User ID is missing. Cannot register.", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        registerButton.setOnClickListener(v -> handleAction(true, userId));
+        unregisterButton.setOnClickListener(v -> handleAction(false, userId));
+    }
 
-            firebaseController.getDb().collection("events").document(eventId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            Event event = documentSnapshot.toObject(Event.class);
-                            if (event != null) {
-                                String waitingListId = event.getWaitingListId(); // Fetch the correct waiting list ID
-                                if (waitingListId == null || waitingListId.isEmpty()) {
-                                    Toast.makeText(this, "Waiting list ID is invalid.", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
+    /**
+     * Handles user registration or unregistration for an event, with optional geolocation.
+     *
+     * @param isRegistration Whether the action is registration (true) or unregistration (false).
+     * @param userId         The ID of the user performing the action.
+     */
+    private void handleAction(boolean isRegistration, String userId) {
+        if (userId == null || userId.isEmpty()) {
+            Toast.makeText(this, "User ID is missing.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-                                if (Boolean.TRUE.equals(event.getGeolocation())) {
-                                    showGeolocationWarning(() -> addUserToWaitingList(waitingListId, userId));
-                                } else {
-                                    addUserToWaitingList(waitingListId, userId);
-                                }
-                            } else {
-                                Toast.makeText(this, "Failed to fetch event details.", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(this, "Event not found.", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("UserEventPageActivity", "Error fetching event: " + e.getMessage());
-                        Toast.makeText(this, "Failed to fetch event details.", Toast.LENGTH_SHORT).show();
-                    });
-        });
-
-        unregisterButton.setOnClickListener(v -> {
-            Log.d(TAG, "Unregister button clicked. Event ID: " + eventId);
-
-            if (userId == null || userId.isEmpty()) {
-                Toast.makeText(this, "User ID is missing. Cannot unregister.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            firebaseController.getDb().collection("events").document(eventId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            Event event = documentSnapshot.toObject(Event.class);
-                            if (event != null) {
-                                String waitingListId = event.getWaitingListId(); // Fetch the correct waiting list ID
-                                if (waitingListId == null || waitingListId.isEmpty()) {
-                                    Toast.makeText(this, "Waiting list ID is invalid. Cannot unregister.", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                firebaseController.removeUserFromWaitingList(waitingListId, userId, new FirebaseController.Callback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        Log.d(TAG, "Successfully unregistered from event.");
-                                        Toast.makeText(UserEventPageActivity.this, "Successfully unregistered from the event!", Toast.LENGTH_SHORT).show();
-                                        navigateToEventListActivity();
+        firebaseController.getDb().collection("events").document(eventId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Event event = documentSnapshot.toObject(Event.class);
+                        if (event != null) {
+                            String waitingListId = event.getWaitingListId();
+                            if (Boolean.TRUE.equals(event.getGeolocation())) {
+                                showGeolocationWarning(() -> {
+                                    Location location = getLastKnownLocation();
+                                    if (location != null) {
+                                        if (isRegistration) {
+                                            addUserToWaitingListWithLocation(waitingListId, userId, location);
+                                        } else {
+                                            removeUserFromWaitingListWithLocation(waitingListId, userId, location);
+                                        }
+                                    } else {
+                                        Toast.makeText(this, "Unable to fetch location.", Toast.LENGTH_SHORT).show();
                                     }
-
-                                    @Override
-                                    public void onFailure(String errorMessage) {
-                                        Log.e(TAG, "Failed to unregister: " + errorMessage);
-                                        Toast.makeText(UserEventPageActivity.this, "Failed to unregister: " + errorMessage, Toast.LENGTH_SHORT).show();
+                                }, () -> {
+                                    if (isRegistration) {
+                                        removeUserFromWaitingList(waitingListId, userId); // Ensure removal on decline
                                     }
+                                    Log.d(TAG, "Exiting activity after geolocation decline.");
+                                    finish(); // Exit the activity
                                 });
                             } else {
-                                Toast.makeText(this, "Failed to fetch event details.", Toast.LENGTH_SHORT).show();
+                                if (isRegistration) {
+                                    addUserToWaitingList(waitingListId, userId);
+                                } else {
+                                    removeUserFromWaitingList(waitingListId, userId);
+                                }
                             }
-                        } else {
-                            Toast.makeText(this, "Event not found.", Toast.LENGTH_SHORT).show();
                         }
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, "Error fetching event: " + e.getMessage());
-                        Toast.makeText(this, "Failed to fetch event details.", Toast.LENGTH_SHORT).show();
-                    });
-        });
+                    }
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Error fetching event details: " + e.getMessage()));
+
 
     }
 
     /**
-     * Displays a warning dialog for events requiring geolocation.
+     * Displays a dialog to warn the user about geolocation requirements.
      *
-     * @param onAcceptAction A Runnable to execute if the user accepts the warning.
+     * @param onAcceptAction Action to perform if the user accepts.
+     * @param onDeclineAction Action to perform if the user declines.
      */
-    private void showGeolocationWarning(Runnable onAcceptAction) {
-        Log.d(TAG, "Displaying geolocation warning dialog.");
+    private void showGeolocationWarning(Runnable onAcceptAction, Runnable onDeclineAction) {
         new AlertDialog.Builder(this)
                 .setTitle("Geolocation Required")
-                .setMessage("This event requires access to your location. Do you want to proceed?")
+                .setMessage("This event requires location access. Do you want to proceed?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    if (isLocationEnabled()) {
-                        Log.d(TAG, "Location services enabled. Proceeding with registration.");
-                        onAcceptAction.run();
-                    } else {
-                        Log.e(TAG, "Location services disabled. Cannot proceed.");
-                        Toast.makeText(this, "Please enable location services to proceed.", Toast.LENGTH_SHORT).show();
-                    }
+                    Log.d(TAG, "User accepted geolocation access.");
+                    onAcceptAction.run();
                 })
-                .setNegativeButton("No", (dialog, which) -> Log.d(TAG, "Geolocation warning declined by user."))
+                .setNegativeButton("No", (dialog, which) -> {
+                    Log.d(TAG, "User declined geolocation access. Removing and exiting.");
+                    onDeclineAction.run();
+                })
                 .show();
     }
 
-    /**
-     * Checks if location services are enabled on the device.
-     *
-     * @return True if location services are enabled, false otherwise.
-     */
-    private boolean isLocationEnabled() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        boolean isEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        Log.d(TAG, "Location enabled: " + isEnabled);
-        return isEnabled;
-    }
+
 
     /**
-     * Adds the user to the event's waiting list.
+     * Registers the user for an event without location.
      *
      * @param waitingListId The ID of the waiting list.
-     * @param userId The ID of the user to add.
+     * @param userId        The ID of the user.
      */
     private void addUserToWaitingList(String waitingListId, String userId) {
+
         User currentUser = User.getInstance(); // Get the current User instance
         firebaseController.getDb().collection("events")
                 .document(eventId) // Use correct event ID
@@ -289,20 +250,166 @@ public class UserEventPageActivity extends AppCompatActivity {
                     Log.e(TAG, "Failed to add user to waiting list: " + e.getMessage());
                     Toast.makeText(UserEventPageActivity.this, "Failed to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+
+        firebaseController.addUserToWaitingList(waitingListId, userId, new FirebaseController.Callback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(UserEventPageActivity.this, "Registered successfully!", Toast.LENGTH_SHORT).show();
+                navigateToEventListActivity();
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(UserEventPageActivity.this, "Failed to register: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
 
 
     /**
-     * Navigates the user back to the event list activity.
+     * Unregisters the user from an event without location.
+     *
+     * @param waitingListId The ID of the waiting list.
+     * @param userId        The ID of the user.
+     */
+    private void removeUserFromWaitingList(String waitingListId, String userId) {
+        firebaseController.removeUserFromWaitingList(waitingListId, userId, new FirebaseController.Callback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(UserEventPageActivity.this, "Unregistered successfully!", Toast.LENGTH_SHORT).show();
+                navigateToEventListActivity();
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(UserEventPageActivity.this, "Failed to unregister: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Registers the user for an event with location.
+     *
+     * @param waitingListId The ID of the waiting list.
+     * @param userId        The ID of the user.
+     * @param location      The user's location.
+     */
+    private void addUserToWaitingListWithLocation(String waitingListId, String userId, Location location) {
+        Map<String, Object> locationData = new HashMap<>();
+        locationData.put("latitude", location.getLatitude());
+        locationData.put("longitude", location.getLongitude());
+
+        firebaseController.addUserToWaitingListWithLocation(waitingListId, userId, locationData, new FirebaseController.Callback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(UserEventPageActivity.this, "Registered with location successfully!", Toast.LENGTH_SHORT).show();
+                navigateToEventListActivity();
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(UserEventPageActivity.this, "Failed to register: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Unregisters the user from an event with location.
+     *
+     * @param waitingListId The ID of the waiting list.
+     * @param userId        The ID of the user.
+     * @param location      The user's location.
+     */
+    private void removeUserFromWaitingListWithLocation(String waitingListId, String userId, Location location) {
+        firebaseController.removeUserFromWaitingListWithLocation(waitingListId, userId, new FirebaseController.Callback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(UserEventPageActivity.this, "Unregistered with location successfully!", Toast.LENGTH_SHORT).show();
+                navigateToEventListActivity();
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(UserEventPageActivity.this, "Failed to unregister: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Retrieves the user's last known location.
+     *
+     * @return The last known location or null if unavailable.
+     */
+    private Location getLastKnownLocation() {
+        Log.d(TAG, "getLastKnownLocation: Checking location permissions...");
+        // Check for location permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.e(TAG, "getLastKnownLocation: Location permission not granted.");
+            checkLocationPermission();
+            return null;
+        }
+
+        Location location = null;
+
+        // Check if GPS provider is enabled
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Log.d(TAG, "getLastKnownLocation: GPS provider is enabled. Fetching location...");
+            try {
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location != null) {
+                    Log.d(TAG, "getLastKnownLocation: GPS Location fetched. Lat: " + location.getLatitude() + ", Lon: " + location.getLongitude());
+                    return location;
+                } else {
+                    Log.w(TAG, "getLastKnownLocation: GPS Location is null.");
+                }
+            } catch (SecurityException e) {
+                Log.e(TAG, "getLastKnownLocation: SecurityException when accessing GPS provider: " + e.getMessage());
+            }
+        } else {
+            Log.w(TAG, "getLastKnownLocation: GPS provider is disabled.");
+        }
+
+        // Check if Network provider is enabled
+        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            Log.d(TAG, "getLastKnownLocation: Network provider is enabled. Fetching location...");
+            try {
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if (location != null) {
+                    Log.d(TAG, "getLastKnownLocation: Network Location fetched. Lat: " + location.getLatitude() + ", Lon: " + location.getLongitude());
+                    return location;
+                } else {
+                    Log.w(TAG, "getLastKnownLocation: Network Location is null.");
+                }
+            } catch (SecurityException e) {
+                Log.e(TAG, "getLastKnownLocation: SecurityException when accessing Network provider: " + e.getMessage());
+            }
+        } else {
+            Log.w(TAG, "getLastKnownLocation: Network provider is disabled.");
+        }
+
+        Log.e(TAG, "getLastKnownLocation: Unable to fetch location. Both GPS and Network providers returned null.");
+        return null;
+    }
+
+
+    /**
+     * Checks and requests location permissions if not already granted.
+     */
+    private void checkLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    /**
+     * Navigates the user to the EventListActivity.
      */
     private void navigateToEventListActivity() {
-        Log.d(TAG, "Navigating to EventListActivity.");
         Intent intent = new Intent(UserEventPageActivity.this, EventListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }
 }
-
