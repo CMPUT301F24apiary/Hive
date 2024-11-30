@@ -4,12 +4,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.content.Context;
 
 
 import androidx.activity.EdgeToEdge;
@@ -19,7 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.hive.Controllers.EventController;
-import com.example.hive.Controllers.InvitedController;
+import com.example.hive.Controllers.ListController;
 import com.example.hive.Models.User;
 import com.example.hive.R;
 
@@ -92,11 +90,11 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             Log.d("InvitedEntrantsActivity", "Lottery draw button clicked.");
 
-                            // Create an instance of InvitedController
-                            InvitedController invitedController = new InvitedController();
+                            // Create an instance of ListController
+                            ListController listController = new ListController();
 
                             // Run the lottery with EventController
-                            eventControl.runLottery(InvitedEntrantsActivity.this, eventID, 10, invitedController);
+                            eventControl.runLottery(InvitedEntrantsActivity.this, eventID, 10, listController);
                         }
                     });
 
@@ -132,7 +130,7 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
                 InvitedEntrantsActivity.this, users);
         invitedUsersList.setAdapter(adapter);
 
-        InvitedController inviteControl = new InvitedController();
+        ListController inviteControl = new ListController();
 
         eventControl.getInvitedList(eventID, successAndList -> {
             if (successAndList.first) {
