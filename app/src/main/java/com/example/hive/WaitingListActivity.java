@@ -93,14 +93,18 @@ public class WaitingListActivity extends AppCompatActivity {
                 return;
             }
 
-            if (snapshots != null && !snapshots.isEmpty()) {
+            if (snapshots != null) {
                 entrantsList.clear(); // Clear the list to avoid duplicates
                 for (QueryDocumentSnapshot document : snapshots) {
                     String username = document.getString("username"); // Fetch "username" field from Firebase
-                    Log.d("WaitingListActivity", "Fetched username in real-time: " + username);
                     if (username != null) {
                         entrantsList.add(username); // Add each username to the list
+                        Log.d("WaitingListActivity", "Fetched username in real-time: " + username);
                     }
+                }
+                if (entrantsList.isEmpty()) {
+                    Log.d("WaitingListActivity", "No entrants found in waiting-list collection.");
+                    Toast.makeText(this, "No users are currently on the waiting list.", Toast.LENGTH_SHORT).show();
                 }
                 adapter.notifyDataSetChanged(); // Update the ListView with new data
                 Log.d("WaitingListActivity", "Entrants list updated in real-time: " + entrantsList);
