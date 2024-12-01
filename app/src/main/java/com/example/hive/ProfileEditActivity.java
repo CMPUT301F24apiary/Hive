@@ -115,18 +115,23 @@ public class ProfileEditActivity extends AppCompatActivity {
                 Log.d("ProfEditRemovePic", "Clicked remove");
                 new FirebaseController().getUserDocId(deviceId, docId -> {
                     Log.d("ProfEditRemovePic", docId);
-                    new ImageController().deleteImageAndUpdateRelatedDoc(user.getProfileImageUrl(),
-                            null, docId, success -> {
-                                Log.d("ProfEditRemovePic", success.toString());
-                        if (success) {
-                            // Reset to default profile picture
-                            profilePicture.setImageDrawable(user.getDisplayDrawable());
-                        } else {
-                            Toast.makeText(ProfileEditActivity.this,
-                                    "Profile Picture removal error",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    if (!user.getProfileImageUrl().isEmpty() && user.getProfileImageUrl() != null) {
+                        new ImageController().deleteImageAndUpdateRelatedDoc(user.getProfileImageUrl(),
+                                null, docId, success -> {
+                                    Log.d("ProfEditRemovePic", success.toString());
+                                    if (success) {
+                                        // Reset to default profile picture
+                                        profilePicture.setImageDrawable(user.getDisplayDrawable());
+                                    } else {
+                                        Toast.makeText(ProfileEditActivity.this,
+                                                "Profile Picture removal error",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    } else {
+                        Toast.makeText(ProfileEditActivity.this, "No picture is set", Toast.LENGTH_LONG).show();
+                    }
+
                 });
             }
         });
