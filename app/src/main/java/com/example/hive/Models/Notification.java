@@ -2,6 +2,7 @@ package com.example.hive.Models;
 
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.PropertyName;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 public class Notification {
     private String firebaseId; // Firestore document ID
     private String userId;     // The ID of the user this notification belongs to
+    @PropertyName("eventid")
     private String eventId;    // The ID of the event related to this notification
     private String content;    // The content of the notification
     private String type;       // Type of notification (e.g., "win", "lose", "re-register")
@@ -42,10 +44,12 @@ public class Notification {
         this.userId = userId;
     }
 
+    @PropertyName("eventid")
     public String getEventId() {
         return eventId;
     }
 
+    @PropertyName("eventid")
     public void setEventId(String eventId) {
         this.eventId = eventId;
     }

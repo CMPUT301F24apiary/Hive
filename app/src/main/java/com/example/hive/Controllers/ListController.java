@@ -4,15 +4,16 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.hive.Models.Notification;
 import com.example.hive.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class ListController extends FirebaseController {
 
@@ -42,10 +43,19 @@ public class ListController extends FirebaseController {
         });
     }
 
-    // Method to generate an invited list based on a lottery
+    /**
+     * Draw the lottery and store results in firebase
+     *
+     * @param eventID
+     * @param entrants
+     * @param numParticipants
+     * @return
+     */
     public ArrayList<String> generateInvitedList(String eventID, ArrayList<String> entrants,
                                                  int numParticipants) {
         CollectionReference eventsCollection = db.collection("events");
+
+        EventController eventController = new EventController();
 
         Log.d("ListController", "Starting to generate invited list for eventID: " + eventID);
         Log.d("ListController", "Number of entrants available: " + entrants.size() + ", Number of participants to select: " + numParticipants);
@@ -53,6 +63,7 @@ public class ListController extends FirebaseController {
         // Proceed with drawing the lottery
         if (entrants.size() < numParticipants) {
             Log.d("ListController", "Number of entrants is less than the number of participants. Returning all entrants.");
+            eventController.addInvitedList(eventID, entrants);
             return entrants;
         }
 
@@ -66,15 +77,18 @@ public class ListController extends FirebaseController {
 
         Log.d("ListController", "Invited users generated. Number of users invited: " + invited.size());
 
-        // Set isLotteryDrawn to true after the lottery is drawn
-        eventsCollection.document(eventID).update("isLotteryDrawn", Boolean.TRUE)
-                .addOnSuccessListener(aVoid -> Log.d("ListController", "Lottery status set to true."))
-                .addOnFailureListener(e -> Log.e("ListController", "Failed to set lottery status to true", e));
+        // Add invited to the firebase after draw
+        eventController.addInvitedList(eventID, invited);
 
         return invited;
     }
 
-    // Create the invited user list in Firestore
+    /**
+     * Create array of users to be displayed in the activity
+     *
+     * @param invited
+     * @param listener
+     */
     public void createInvitedUserList(ArrayList<String> invited, OnSuccessListener<ArrayList<User>> listener) {
         ArrayList<User> userList = new ArrayList<>();
         int[] completedFetches = {0};  // Using array to modify in lambda
@@ -109,68 +123,68 @@ public class ListController extends FirebaseController {
     }
 
     // Notify a user that they have won the lottery
-    public void notifyUserWin(Context context, String userId) {
-        fetchUserByDeviceId(userId, new OnUserFetchedListener() {
-            @Override
-            public void onUserFetched(User user) {
-                NotificationsController.showNotification(
-                        context,
-                        user.hashCode(), // Unique ID based on user
-                        "Congratulations!",
-                        "You have been chosen for the event!"
-                );
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e("ListController", "Failed to fetch user for winning notification", e);
-            }
-        });
-    }
+//    public void notifyUserWin(Context context, String userId) {
+//        fetchUserByDeviceId(userId, new OnUserFetchedListener() {
+//            @Override
+//            public void onUserFetched(User user) {
+//                NotificationsController.showNotification(
+//                        context,
+//                        user.hashCode(), // Unique ID based on user
+//                        "Congratulations!",
+//                        "You have been chosen for the event!"
+//                );
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                Log.e("ListController", "Failed to fetch user for winning notification", e);
+//            }
+//        });
+//    }
 
 
     // Notify a user that they have not been selected in the lottery
-    public void notifyUserLose(Context context, String userId) {
-        fetchUserByDeviceId(userId, new OnUserFetchedListener() {
-            @Override
-            public void onUserFetched(User user) {
-                NotificationsController.showNotification(
-                        context,
-                        user.hashCode(), // Unique ID based on user
-                        "Thank you for participating",
-                        "Unfortunately, you were not chosen this time."
-                );
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e("ListController", "Failed to fetch user for losing notification", e);
-            }
-        });
-    }
+//    public void notifyUserLose(Context context, String userId) {
+//        fetchUserByDeviceId(userId, new OnUserFetchedListener() {
+//            @Override
+//            public void onUserFetched(User user) {
+//                NotificationsController.showNotification(
+//                        context,
+//                        user.hashCode(), // Unique ID based on user
+//                        "Thank you for participating",
+//                        "Unfortunately, you were not chosen this time."
+//                );
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                Log.e("ListController", "Failed to fetch user for losing notification", e);
+//            }
+//        });
+//    }
 
     // Notify a user that they have another chance to join due to declined invitations
-    public void notifyUserReRegister(Context context, String userId) {
-        fetchUserByDeviceId(userId, new OnUserFetchedListener() {
-            @Override
-            public void onUserFetched(User user) {
-                NotificationsController.showNotification(
-                        context,
-                        user.hashCode(), // Unique ID based on user
-                        "Another Chance!",
-                        "A spot has opened up. Re-register now!"
-                );
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e("ListController", "Failed to fetch user for re-registration notification", e);
-            }
-        });
-    }
+//    public void notifyUserReRegister(Context context, String userId) {
+//        fetchUserByDeviceId(userId, new OnUserFetchedListener() {
+//            @Override
+//            public void onUserFetched(User user) {
+//                NotificationsController.showNotification(
+//                        context,
+//                        user.hashCode(), // Unique ID based on user
+//                        "Another Chance!",
+//                        "A spot has opened up. Re-register now!"
+//                );
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                Log.e("ListController", "Failed to fetch user for re-registration notification", e);
+//            }
+//        });
+//    }
 
     // Run the lottery to select the winners
-    public void runLottery(Context context, String eventID, int maxWinners) {
+    public void runLottery(Context context, String eventID, int maxWinners, OnSuccessListener<ArrayList<User>> listener) {
         // Fetch the waiting list of entrants
         getWaitingListUIDs(eventID, waitingList -> {
             if (waitingList == null || waitingList.isEmpty()) {
@@ -188,6 +202,7 @@ public class ListController extends FirebaseController {
                 notifyLotteryResults(context, eventID, winners, waitingList);
                 Log.d("ListController", "Lottery drawn and notifications sent for event: " + eventID);
                 Toast.makeText(context, "Lottery drawn successfully!", Toast.LENGTH_SHORT).show();
+                listener.onSuccess(userList);
             });
         });
     }
@@ -197,15 +212,15 @@ public class ListController extends FirebaseController {
     public void notifyLotteryResults(Context context, String eventID, ArrayList<String> invited, ArrayList<String> allEntrants) {
         // Notify the users who have won
         for (String userId : invited) {
-            notifyUserWin(context, userId);
-            addNotification(userId, eventID, "win", "Congratulations! You have been chosen for the event!");
+//            notifyUserWin(context, userId);
+            addNotification(userId, eventID, "win", "Congratulations! You have been chosen for the event ");
         }
 
         // Notify the users who have not won
         for (String userId : allEntrants) {
             if (!invited.contains(userId)) {
-                notifyUserLose(context, userId);
-                addNotification(userId, eventID, "lose", "Thank you for participating. Unfortunately, you were not selected this time.");
+//                notifyUserLose(context, userId);
+                addNotification(userId, eventID, "lose", "Thank you for participating. Unfortunately, you were not selected for the event ");
             }
         }
 
@@ -300,5 +315,114 @@ public class ListController extends FirebaseController {
             }
         });
     }
+
+    public void fetchNotifications(String deviceID, OnSuccessListener<ArrayList<Notification>> listener) {
+        ArrayList<Notification> notifs = new ArrayList<>();
+        db.collection("users").document(deviceID)
+                .collection("notifications").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+            int totalDocs = queryDocumentSnapshots.size();
+            for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                Notification notif = doc.toObject(Notification.class);
+                if (notif != null) {
+                    notif.setFirebaseId(doc.getId());
+                    notifs.add(notif);
+                }
+                if (notifs.size() == totalDocs) {
+                    listener.onSuccess(notifs);
+                }
+            }
+        }).addOnFailureListener(e -> {
+            Log.d("Error getting notifications",
+                    e.getMessage() == null ? "Could not retrieve error message" : e.getMessage());
+        });
+    }
+
+    public void addUserToFinalList(String eventID, String userID, OnSuccessListener<Boolean> listener) {
+        new EventController().getSingleEvent(eventID, event -> {
+            String finalListID = event.getFinalListID();
+            if (finalListID == null) {
+                DocumentReference docRef = db.collection("final-list").document();
+                String newFinalListID = docRef.getId();
+                HashMap<String, Object> data = new HashMap<>();
+                ArrayList<String> deviceIds = new ArrayList<>();
+                deviceIds.add(userID);
+                data.put("deviceIds", deviceIds);
+                docRef.set(data).addOnSuccessListener(v -> {
+                    HashMap<String, Object> eventData = new HashMap<>();
+                    db.collection("events").document(eventID)
+                            .update("finallistID", newFinalListID)
+                            .addOnSuccessListener(unused -> {
+                                listener.onSuccess(Boolean.TRUE);
+                            });
+                }).addOnFailureListener(e -> {
+                    Log.e("addUserToFinalList", "Failed to create new final list");
+                    listener.onSuccess(Boolean.FALSE);
+                });
+            } else {
+                DocumentReference docRef = db.collection("final-list").document(finalListID);
+                docRef.get().addOnSuccessListener(doc -> {
+                    ArrayList<String> users = (ArrayList<String>) doc.get("userIds");
+                    if (users == null) {
+                        users = new ArrayList<>();
+                    }
+                    users.add(userID);
+                    docRef.update("userIds", users).addOnSuccessListener(v -> {
+                        listener.onSuccess(Boolean.TRUE);
+                    }).addOnFailureListener(e -> {
+                        Log.e("addUserToFinalList", "Failed to update final list");
+                        listener.onSuccess(Boolean.FALSE);
+                    });
+                }).addOnFailureListener(e -> {
+                    Log.e("addUserToFinalList", "Failed to fetch final list");
+                    listener.onSuccess(Boolean.FALSE);
+                });
+            }
+        });
+    }
+
+    public void addUserToCancelledList(String eventID, String userID, OnSuccessListener<Boolean> listener) {
+        new EventController().getSingleEvent(eventID, event -> {
+            String cancelledListID = event.getCancelledListID();
+            if (cancelledListID == null) {
+                DocumentReference docRef = db.collection("cancelled-list").document();
+                String newCancelledListID = docRef.getId();
+                HashMap<String, Object> data = new HashMap<>();
+                ArrayList<String> deviceIds = new ArrayList<>();
+                deviceIds.add(userID);
+                data.put("deviceIds", deviceIds);
+                docRef.set(data).addOnSuccessListener(v -> {
+                    HashMap<String, Object> eventData = new HashMap<>();
+                    db.collection("events").document(eventID)
+                            .update("cancelledlistID", newCancelledListID)
+                            .addOnSuccessListener(unused -> {
+                                listener.onSuccess(Boolean.TRUE);
+                            });
+                }).addOnFailureListener(e -> {
+                    Log.e("addUserToCancelledList", "Failed to create new cancelled list");
+                    listener.onSuccess(Boolean.FALSE);
+                });
+            } else {
+                DocumentReference docRef = db.collection("cancelled-list").document(cancelledListID);
+                docRef.get().addOnSuccessListener(doc -> {
+                    ArrayList<String> users = (ArrayList<String>) doc.get("userIds");
+                    if (users == null) {
+                        users = new ArrayList<>();
+                    }
+                    users.add(userID);
+                    docRef.update("userIds", users).addOnSuccessListener(v -> {
+                        listener.onSuccess(Boolean.TRUE);
+                    }).addOnFailureListener(e -> {
+                        Log.e("addUserToCancelledList", "Failed to update cancelled list");
+                        listener.onSuccess(Boolean.FALSE);
+                    });
+                }).addOnFailureListener(e -> {
+                    Log.e("addUserToCancelledList", "Failed to fetch cancelled list");
+                    listener.onSuccess(Boolean.FALSE);
+                });
+            }
+        });
+    }
+
 
 }

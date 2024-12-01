@@ -354,33 +354,33 @@ public class EventController extends FirebaseController {
         eventsCollection.document(eventID).update(data);
     }
 
-    public void runLottery(Context context, String eventID, int maxWinners, ListController listController) {
-        // Fetch the waiting list of entrants
-        listController.getWaitingListUIDs(eventID, waitingList -> {
-            if (waitingList == null || waitingList.isEmpty()) {
-                Log.d("EventController", "Waiting list is empty for event: " + eventID);
-                return;
-            }
-
-            // Randomly select winners from the waiting list
-            ArrayList<String> winners = listController.generateInvitedList(eventID, waitingList, maxWinners);
-
-            // Add the invited list to the event in Firestore
-            addInvitedList(eventID, winners);
-
-            // Notify winners
-            for (String winner : winners) {
-                listController.notifyUserWin(context, winner);
-            }
-
-            // Notify users who did not win
-            for (String entrant : waitingList) {
-                if (!winners.contains(entrant)) {
-                    listController.notifyUserLose(context, entrant);
-                }
-            }
-
-            Log.d("EventController", "Lottery has been drawn for event: " + eventID);
-        });
-    }
+//    public void runLottery(Context context, String eventID, int maxWinners, ListController listController) {
+//        // Fetch the waiting list of entrants
+//        listController.getWaitingListUIDs(eventID, waitingList -> {
+//            if (waitingList == null || waitingList.isEmpty()) {
+//                Log.d("EventController", "Waiting list is empty for event: " + eventID);
+//                return;
+//            }
+//
+//            // Randomly select winners from the waiting list
+//            ArrayList<String> winners = listController.generateInvitedList(eventID, waitingList, maxWinners);
+//
+//            // Add the invited list to the event in Firestore
+//            addInvitedList(eventID, winners);
+//
+//            // Notify winners
+//            for (String winner : winners) {
+//                listController.notifyUserWin(context, winner);
+//            }
+//
+//            // Notify users who did not win
+//            for (String entrant : waitingList) {
+//                if (!winners.contains(entrant)) {
+//                    listController.notifyUserLose(context, entrant);
+//                }
+//            }
+//
+//            Log.d("EventController", "Lottery has been drawn for event: " + eventID);
+//        });
+//    }
 }
