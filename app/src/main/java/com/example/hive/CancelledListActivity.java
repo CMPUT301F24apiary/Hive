@@ -24,11 +24,11 @@ import java.util.List;
 
 public class CancelledListActivity extends AppCompatActivity implements ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
-    private FirebaseFirestore db;
+    public FirebaseFirestore db;
     private List<String> entrantsList;
     private ArrayAdapter<String> adapter;
-    private String eventId;
-    private String cancelledListId;
+    public String eventId;
+    public String cancelledListId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +89,7 @@ public class CancelledListActivity extends AppCompatActivity implements ConfirmD
         });
     }
 
-    private void fetchCancelledList() {
+    public void fetchCancelledList() {
         db.collection("events").document(eventId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
@@ -107,7 +107,7 @@ public class CancelledListActivity extends AppCompatActivity implements ConfirmD
                 });
     }
 
-    private void fetchUsernames() {
+    public void fetchUsernames() {
         db.collection("cancelled-list").document(cancelledListId).get()
                 .addOnCompleteListener(cancelledTask -> {
                     if (cancelledTask.isSuccessful() && cancelledTask.getResult() != null) {
@@ -124,7 +124,7 @@ public class CancelledListActivity extends AppCompatActivity implements ConfirmD
                 });
     }
 
-    private void fetchUserDetails(List<String> deviceIds) {
+    public void fetchUserDetails(List<String> deviceIds) {
         entrantsList.clear();
 
         for (String deviceId : deviceIds) {
