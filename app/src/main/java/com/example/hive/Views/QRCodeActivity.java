@@ -12,9 +12,27 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.R;
-
+/**
+ * QRCodeActivity is responsible for displaying a QR code passed via an Intent.
+ * It provides a back button to close the activity and handles cases where the QR code fails to load.
+ *
+ * <p>Features:</p>
+ * <ul>
+ *     <li>Displays a QR code image in an ImageView.</li>
+ *     <li>Handles user interaction for closing the activity.</li>
+ *     <li>Logs and displays an error message if the QR code fails to load.</li>
+ * </ul>
+ *
+ * @author Dina
+ */
 public class QRCodeActivity extends AppCompatActivity {
-
+    /**
+     * Initializes the activity, sets up UI elements, and displays the QR code.
+     *
+     * @param savedInstanceState If the activity is being reinitialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState(Bundle)}.
+     *                           <b>Note: Otherwise, it is null.</b>
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +56,11 @@ public class QRCodeActivity extends AppCompatActivity {
             finish();
         }
     }
-
+    /**
+     * Handles the close button click event to finish and close the activity.
+     *
+     * @param view The view that triggered the click event.
+     */
     public void onCloseClicked(android.view.View view) {
         finish();
     }

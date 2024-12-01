@@ -47,7 +47,7 @@ public class UserEventPageActivity extends AppCompatActivity {
     private TextView eventTitle, eventDetails, eventDescription, participantsCount;
     private Button registerButton, unregisterButton;
     private FirebaseController firebaseController;
-    private String eventId;
+    public String eventId;
     private TextView locationTextView, costTextView;
     private TextView dateTextView, timeTextView;
     private LocationManager locationManager;
@@ -101,7 +101,7 @@ public class UserEventPageActivity extends AppCompatActivity {
      *
      * @param eventId The ID of the event to fetch.
      */
-    private void fetchEventDetails(String eventId) {
+    public void fetchEventDetails(String eventId) {
         firebaseController.getDb().collection("events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
