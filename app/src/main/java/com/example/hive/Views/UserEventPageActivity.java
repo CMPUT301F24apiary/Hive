@@ -178,6 +178,15 @@ public class UserEventPageActivity extends AppCompatActivity {
                         Event event = documentSnapshot.toObject(Event.class);
                         if (event != null) {
                             String waitingListId = event.getWaitingListId();
+
+                            int currentParticipants = event.getNumParticipants();
+                            int participantLimit = event.getEntrantLimit();
+
+                            // Check if the waiting list is full
+                            if (isRegistration && currentParticipants >= participantLimit) {
+                                Toast.makeText(this, "Waiting list is full. You cannot register.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             if (Boolean.TRUE.equals(event.getGeolocation())) {
                                 showGeolocationWarning(() -> {
                                     Location location = getLastKnownLocation();

@@ -7,11 +7,12 @@
 
     <View
         android:id="@+id/gradientView"
-        android:layout_width="420dp"
+        android:layout_width="468dp"
         android:layout_height="69dp"
         android:layout_alignParentTop="true"
         android:background="@drawable/gradient_background"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="0dp" />
 
     <!-- Back Button -->
     <ImageButton
