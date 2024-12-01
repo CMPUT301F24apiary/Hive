@@ -32,12 +32,12 @@ import java.util.Map;
 public class EntrantMapActivity extends AppCompatActivity {
 
     private static final String TAG = "EntrantMapActivity";
-    private FirebaseFirestore db;
+    public FirebaseFirestore db;
     private String eventId;
-    private ImageView mapView;
-    private Bitmap mutableBitmap;
-    private Canvas canvas;
-    private Paint paint;
+    public ImageView mapView;
+    public Bitmap mutableBitmap;
+    public Canvas canvas;
+    public Paint paint;
 
     /**
      * Initializes the EntrantMapActivity, setting up the map and fetching geolocation data.
@@ -93,7 +93,7 @@ public class EntrantMapActivity extends AppCompatActivity {
     /**
      * Fetches geolocation data from Firebase Firestore and plots the locations on the map.
      */
-    private void fetchAndDisplayGeolocations() {
+    public void fetchAndDisplayGeolocations() {
         db.collection("events").document(eventId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 String waitingListId = task.getResult().getString("waiting-list-id");
@@ -139,7 +139,7 @@ public class EntrantMapActivity extends AppCompatActivity {
      * @param latitude  The latitude of the location.
      * @param longitude The longitude of the location.
      */
-    private void plotLocationOnMap(double latitude, double longitude) {
+    public void plotLocationOnMap(double latitude, double longitude) {
         double bitmapWidth = mutableBitmap.getWidth();
         double bitmapHeight = mutableBitmap.getHeight();
 
