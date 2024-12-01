@@ -251,7 +251,30 @@ public class ListController extends FirebaseController {
         data.put("type", type);
         data.put("eventid", eventID);
         data.put("content", message);
-        db.collection("users").document(userID).collection("notifications").add(data);
+        DocumentReference userDoc = db.collection("users").document(userID);
+        userDoc.get().addOnSuccessListener(doc -> {
+            boolean permChosen = Boolean.TRUE.equals(doc.getBoolean("notificationChosen"));
+            boolean permNotChosen = Boolean.TRUE.equals(doc.getBoolean("notificationNotChosen"));
+            boolean permAll = Boolean.TRUE.equals(doc.getBoolean("notificationOrganizer"));
+            if (!permAll) {
+                Log.d("addNotification, all", "Permission Denied");
+                return;
+            }
+            else if (!type.equals("win") && !type.equals("lose")) {
+                userDoc.collection("notifications").add(data);
+            }
+            if (!permChosen && type.equals("win")) {
+                Log.d("addNotification, win", "Permission Denied");
+                return;
+            } else if (permChosen && type.equals("win")) {
+                userDoc.collection("notifications").add(data);
+            }
+            if (!permNotChosen && type.equals("lose")) {
+                Log.d("addNotification, lose", "Permission Denied");
+            } else if (permNotChosen && type.equals("lose")) {
+                userDoc.collection("notifications").add(data);
+            }
+        });
     }
 
     public void fetchCancelledList(String eventId, OnSuccessListener<ArrayList<String>> listener) {
