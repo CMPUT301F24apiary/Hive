@@ -8,19 +8,40 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-
+/**
+ * DialogFragment for confirming the deletion of all entries in the cancelled list.
+ * Displays a confirmation dialog with "Delete" and "Cancel" options.
+ *
+ * @author HRITTIJA
+ */
 public class ConfirmDeleteDialogFragment extends DialogFragment {
 
+    /**
+     * Interface for handling the "Delete" action in the confirmation dialog.
+     */
     public interface ConfirmDeleteListener {
-        void onDeleteConfirmed();  // Interface to handle the "Delete" action
+        void onDeleteConfirmed();
     }
 
     private ConfirmDeleteListener listener;
+
+    /**
+     * Constructor to set the listener for the dialog.
+     *
+     * @param listener to handle the confirmation of the delete action.
+     */
 
     public ConfirmDeleteDialogFragment(ConfirmDeleteListener listener) {
         this.listener = listener;
     }
 
+
+    /**
+     * Creates and returns the confirmation dialog for deleting
+     *
+     * @param savedInstanceState from previous saved state.
+     * @return A Dialog object that displays the confirmation text.
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

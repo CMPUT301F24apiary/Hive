@@ -61,6 +61,8 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editevent);
 
+        // Initialize views
+
         eventName = findViewById(R.id.eventName);
         eventDuration = findViewById(R.id.eventDuration);
         eventCost = findViewById(R.id.eventCost);
@@ -82,6 +84,7 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
         } else {
             Log.e("EditEventActivity", "No event data passed");
         }
+        // Set data for editing if the event is not null
 
         if (currentEvent != null) {
             eventName.setText(currentEvent.getTitle());
@@ -174,7 +177,10 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
         TextView updateButton = findViewById(R.id.updateButton);
         updateButton.setOnClickListener(v -> saveEventDetails());
     }
-
+    /**
+     * To open the gallery for poster uploading
+     * @param view
+     */
     public void onAddPosterClick() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, GALLERY_REQUEST_CODE);
@@ -188,7 +194,10 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
             addPosterImage.setImageURI(posterImageUri);
         }
     }
-
+    /**
+     * Saves the details of an event by validating inputs, handling image upload
+     * and updating the event in the database.
+     */
     private void saveEventDetails() {
         String title = eventName.getText().toString().trim();
         String duration = eventDuration.getText().toString().trim();
@@ -264,7 +273,23 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
             }
         }
     }
-
+    /**
+     * Updates an existing event with the provided details.
+     *
+     * @param firebaseID The Firebase ID of the event to be updated.
+     * @param title The title of the event.
+     * @param cost The cost of the event.
+     * @param startDateTime The start date and time of the event (in milliseconds).
+     * @param endDateTime The end date and time of the event (in milliseconds).
+     * @param description A brief description of the event.
+     * @param numParticipantsCount The number of participants for the event.
+     * @param urlAndID A Pair containing the URL for the event's poster image and its ID (optional).
+     * @param selectionDate The date of the selection process (in milliseconds).
+     * @param entrantLimit The maximum number of entrants (can be null if no limit).
+     * @param duration The duration of the event.
+     * @param geolocationOn Indicates whether geolocation is enabled for the event.
+     * @param replacementDrawOn Indicates whether a replacement draw is enabled for the event.
+     */
 
     private void updateEvent(String firebaseID, String title, String cost, long startDateTime,
                              long endDateTime, String description, int numParticipantsCount,
@@ -325,7 +350,14 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
             return 0;
         }
     }
-
+    /**
+     * Calculates the end date and time by adding the specified duration to the start date and time.
+     *
+     * @param startDate The start date in "dd-MM-yyyy" format.
+     * @param startTime The start time in "HH:mm" format.
+     * @param duration The duration to be added in "HH:mm" format.
+     * @return The calculated end date and time as a string in "dd-MM-yyyy HH:mm" format.
+     */
     private String getEndDateTimeFromDuration(String startDate, String startTime, String duration) {
         String endDate = startDate;
 
@@ -417,13 +449,27 @@ public class EditEventActivity extends AppCompatActivity implements TimePickerDi
         // Return end date and end time separated by a space
         return endDate + " " + endTime;
     }
-
+    /**
+     * Called when the organizer sets the time on a time picker.
+     *
+     * @param view       The TimePicker view where the organizer selects the time.
+     * @param hourOfDay  The hour of the day in 24-hour format (0-23).
+     * @param minute     The minute
+     */
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         startTime = String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
         pickStartTime.setText(startTime);
     }
 
+    /**
+     * Called when the organizer sets the date on a date picker.
+     *
+     * @param view       The DatePicker view where the user selects the date.
+     * @param year       The year selected
+     * @param month      The month selected (e.g - January is 0, February is 1).
+     * @param dayOfMonth The day of the month selected by the organizer.
+     */
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         String date = String.valueOf(dayOfMonth) + "-" + String.valueOf(month+1) + "-" + String.valueOf(year);
