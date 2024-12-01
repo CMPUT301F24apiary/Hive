@@ -44,12 +44,14 @@ import java.io.IOException;
 import java.util.HashMap;
 //import java.util.Base64;
 
+/**
+ * User can edit their profile with this activity.
+ */
 public class ProfileEditActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
 
     ImageView profilePicture;
     public EditText personNameInput;
-    public EditText userNameInput;
     public EditText emailInput;
     public EditText phoneInput;
     private Button editPictureButton, removePictureButton, saveButton, cancelButton;
@@ -72,7 +74,6 @@ public class ProfileEditActivity extends AppCompatActivity {
 
         // Initialize input fields
         personNameInput = findViewById(R.id.personNameInput);
-        userNameInput = findViewById(R.id.userNameInput);
         emailInput = findViewById(R.id.emailInput);
         phoneInput = findViewById(R.id.phoneInput);
 
@@ -322,7 +323,6 @@ public class ProfileEditActivity extends AppCompatActivity {
                     user = fetchedUser;
 
                     personNameInput.setText(user.getUserName());
-                    userNameInput.setText(user.getUserName());
                     emailInput.setText(user.getEmail());
                     phoneInput.setText(user.getPhoneNumber());
 
@@ -373,13 +373,11 @@ public class ProfileEditActivity extends AppCompatActivity {
      */
     public void saveProfileData() {
         String personName = personNameInput.getText().toString();
-        String userName = userNameInput.getText().toString();
         String email = emailInput.getText().toString();
         String phone = phoneInput.getText().toString();
 
         HashMap<String, Object> data = new HashMap<>();
-        data.put("username", userName);
-        data.put("name", personName);
+        data.put("username", personName);
         data.put("email", email);
         data.put("phoneNumber", phone);
 
@@ -439,23 +437,8 @@ public class ProfileEditActivity extends AppCompatActivity {
             }
         }
 
-
-        // Save profile picture
-//        BitmapDrawable drawable = (BitmapDrawable) profilePicture.getDrawable();
-//        Bitmap bitmap = drawable.getBitmap();
-//        String profilePictureBase64 = bitmapToBase64(bitmap);
-//
-//        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putString("personName", personName);
-//        editor.putString("userName", userName);
-//        editor.putString("email", email);
-//        editor.putString("phone", phone);
-//        editor.putString("profilePicture", profilePictureBase64);
-//        editor.apply();  // Apply the changes
     }
     public void setSharedPreferencesForTesting(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
     }
-
 }

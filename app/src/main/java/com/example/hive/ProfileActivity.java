@@ -57,7 +57,6 @@ public class ProfileActivity extends AppCompatActivity {
         backArrow = findViewById(R.id.backArrow);
         profilePicture = findViewById(R.id.imageViewProfileImage); // Make sure you have this defined in your layout XML file
         personNameText = findViewById(R.id.personName);
-        userNameText = findViewById(R.id.userName);
         emailText = findViewById(R.id.emailLabel);
         phoneText = findViewById(R.id.phoneLabel);
 
@@ -109,9 +108,10 @@ public class ProfileActivity extends AppCompatActivity {
             public void onUserFetched(User user) {
                 if (user != null) {
                     personNameText.setText(user.getUserName());
-                    userNameText.setText(user.getUserName());
-                    emailText.setText(user.getEmail());
-                    phoneText.setText(user.getPhoneNumber());
+                    String emailTextVal = "Email: " + user.getEmail();
+                    emailText.setText(emailTextVal);
+                    String phoneTextVal = "Phone: " + user.getPhoneNumber();
+                    phoneText.setText(phoneTextVal);
 
                     String pfpUrl = user.getProfileImageUrl();
 
@@ -134,23 +134,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
         });
-//        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
-//        String personName = sharedPreferences.getString("personName", "Person Name");
-//        String userName = sharedPreferences.getString("userName", "User Name");
-//        String email = sharedPreferences.getString("email", "user@google.com");
-//        String phone = sharedPreferences.getString("phone", "(780) xxx - xxxx");
-//        String profilePictureBase64 = sharedPreferences.getString("profilePicture", "");
-
-        // Load profile picture if available
-//        if (!profilePictureBase64.isEmpty()) {
-//            Bitmap profileBitmap = base64ToBitmap(profilePictureBase64);
-//            profilePicture.setImageBitmap(profileBitmap);
-//        } else {
-//            // Set default profile picture
-//            profilePicture.setImageResource(R.drawable.ic_profile);
-//        }
     }
-    
 
     /**
      * Called when returning from the ProfileEditActivity.

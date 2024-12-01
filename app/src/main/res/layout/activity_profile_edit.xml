@@ -78,37 +78,12 @@
         android:textSize="18sp"
         android:inputType="text"/>
 
-    <!-- Username Section -->
-    <TextView
-        android:id="@+id/usernameLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/nameLabel"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="20dp"
-        android:text="Username"
-        android:textColor="#136F63"
-        android:textSize="18sp" />
-
-    <EditText
-        android:id="@+id/userNameInput"
-        android:layout_width="276dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/usernameLabel"
-        android:layout_marginStart="42dp"
-        android:layout_toEndOf="@id/usernameLabel"
-        android:hint="Enter your username"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:textSize="18sp"
-        android:inputType="text"/>
-
     <!-- Email Section -->
     <TextView
         android:id="@+id/emailLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/usernameLabel"
+        android:layout_below="@id/nameLabel"
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
         android:text="Email"
