@@ -15,13 +15,31 @@ import androidx.core.content.ContextCompat;
 
 import com.example.hive.R;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
-
+/**
+ * CustomQrScannerActivity is responsible for scanning QR codes using the device camera
+ * and handling the scanned data. It includes functionality for camera permissions,
+ * continuous scanning, and navigation based on the scanned data.
+ *
+ * <p>Features:</p>
+ * <ul>
+ *     <li>Requests camera permissions dynamically.</li>
+ *     <li>Uses a continuous scanning mode to decode QR codes.</li>
+ *     <li>Processes scanned QR code data and navigates to {@link UserEventPageActivity}.</li>
+ *     <li>Provides an option to cancel the scanning process.</li>
+ * </ul>
+ *
+ * @author Dina
+ */
 public class CustomQrScannerActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSION = 1001;
     private static final String TAG = "CustomQrScannerActivity";
     private DecoratedBarcodeView barcodeView; // Scanner view with laser overlay
     private Button cancelButton;
-
+    /**
+     * Called when the activity is first created. Initializes UI components and checks for camera permissions.
+     *
+     * @param savedInstanceState A Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +65,10 @@ public class CustomQrScannerActivity extends AppCompatActivity {
             startScanner();
         }
     }
-
+    /**
+     * Starts the QR code scanner in continuous scanning mode.
+     * Decodes QR code data and navigates to {@link UserEventPageActivity}.
+     */
     private void startScanner() {
         barcodeView.decodeContinuous(result -> {
             if (result != null && result.getText() != null) {
@@ -69,7 +90,13 @@ public class CustomQrScannerActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Handles the result of the camera permission request.
+     *
+     * @param requestCode  The request code passed during the permission request.
+     * @param permissions  The requested permissions.
+     * @param grantResults The results of the permission requests.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
@@ -85,7 +112,9 @@ public class CustomQrScannerActivity extends AppCompatActivity {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-
+    /**
+     * Resumes the scanner when the activity is resumed.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -94,7 +123,9 @@ public class CustomQrScannerActivity extends AppCompatActivity {
             barcodeView.resume();
         }
     }
-
+    /**
+     * Pauses the scanner when the activity is paused.
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -103,7 +134,9 @@ public class CustomQrScannerActivity extends AppCompatActivity {
             barcodeView.pause();
         }
     }
-
+    /**
+     * Releases resources tied to the barcode scanner when the activity is destroyed.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
