@@ -48,6 +48,10 @@ public class Event implements Parcelable {
     private String waitingListId;
     private String qrCode;
     private boolean isLotteryDrawn;
+    @PropertyName("cancelledlistID")
+    private String cancelledListID;
+    @PropertyName("finallistID")
+    private String finalListID;
 
 
 
@@ -121,6 +125,9 @@ public class Event implements Parcelable {
         this.waitingList = in.readHashMap(String.class.getClassLoader());
         this.waitingListId = in.readString();
         this.isLotteryDrawn = in.readInt() == 1;
+        this.qrCode = in.readString();
+        this.cancelledListID = in.readString();
+        this.finalListID = in.readString();
     }
 
     @Override
@@ -147,6 +154,9 @@ public class Event implements Parcelable {
         dest.writeMap(waitingList);
         dest.writeString(waitingListId);
         dest.writeInt(isLotteryDrawn ? 1 : 0);
+        dest.writeString(qrCode);
+        dest.writeString(cancelledListID);
+        dest.writeString(finalListID);
     }
 
     /**
@@ -394,6 +404,34 @@ public class Event implements Parcelable {
      */
     public void setReplacementDrawAllowed(boolean replacementDrawAllowed) {
         this.replacementDrawAllowed = replacementDrawAllowed;
+    }
+
+    @PropertyName("cancelledlistID")
+    public String getCancelledListID() {
+        return cancelledListID;
+    }
+
+    @PropertyName("cancelledlistID")
+    public void setCancelledListID(String cancelledListID) {
+        this.cancelledListID = cancelledListID;
+    }
+
+    @PropertyName("finallistID")
+    public String getFinalListID() {
+        return finalListID;
+    }
+
+    @PropertyName("finallistID")
+    public void setFinalListID(String finalListID) {
+        this.finalListID = finalListID;
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 
     /**
