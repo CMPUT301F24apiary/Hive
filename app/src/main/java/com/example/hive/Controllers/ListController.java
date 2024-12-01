@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.hive.Events.Event;
 import com.example.hive.Models.Notification;
 import com.example.hive.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -64,6 +65,7 @@ public class ListController extends FirebaseController {
         if (entrants.size() < numParticipants) {
             Log.d("ListController", "Number of entrants is less than the number of participants. Returning all entrants.");
             eventController.addInvitedList(eventID, entrants);
+            eventController.updateWaitingList(eventID, new ArrayList<>());
             return entrants;
         }
 
@@ -79,6 +81,7 @@ public class ListController extends FirebaseController {
 
         // Add invited to the firebase after draw
         eventController.addInvitedList(eventID, invited);
+        eventController.updateWaitingList(eventID, entrants);
 
         return invited;
     }
@@ -322,6 +325,9 @@ public class ListController extends FirebaseController {
                 .collection("notifications").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
             int totalDocs = queryDocumentSnapshots.size();
+            if (totalDocs == 0) {
+                listener.onSuccess(notifs);
+            }
             for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
                 Notification notif = doc.toObject(Notification.class);
                 if (notif != null) {
@@ -390,12 +396,14 @@ public class ListController extends FirebaseController {
                 HashMap<String, Object> data = new HashMap<>();
                 ArrayList<String> deviceIds = new ArrayList<>();
                 deviceIds.add(userID);
-                data.put("deviceIds", deviceIds);
+                data.put("userIds", deviceIds);
                 docRef.set(data).addOnSuccessListener(v -> {
                     HashMap<String, Object> eventData = new HashMap<>();
                     db.collection("events").document(eventID)
                             .update("cancelledlistID", newCancelledListID)
                             .addOnSuccessListener(unused -> {
+                                pickNewEntrant(eventID, event);
+                                removeUserFromInvited(eventID, userID);
                                 listener.onSuccess(Boolean.TRUE);
                             });
                 }).addOnFailureListener(e -> {
@@ -411,6 +419,7 @@ public class ListController extends FirebaseController {
                     }
                     users.add(userID);
                     docRef.update("userIds", users).addOnSuccessListener(v -> {
+                        pickNewEntrant(eventID, event);
                         listener.onSuccess(Boolean.TRUE);
                     }).addOnFailureListener(e -> {
                         Log.e("addUserToCancelledList", "Failed to update cancelled list");
@@ -422,6 +431,29 @@ public class ListController extends FirebaseController {
                 });
             }
         });
+    }
+
+    public void pickNewEntrant(String eventId, Event event) {
+        getWaitingListUIDs(eventId, users -> {
+            if (!users.isEmpty()) {
+                int random = (int) Math.floor(Math.random() % users.size());
+                String selected = users.remove(random);
+                DocumentReference docRef = db.collection("waiting-list").document(event.getWaitingListId());
+                docRef.get().addOnSuccessListener(doc -> {
+                    ArrayList<String> selectedUsers = (ArrayList<String>) doc.get("user-ids");
+                    selectedUsers.add(selected);
+                    docRef.update("user-ids", selectedUsers).addOnSuccessListener(v -> {
+                        new EventController().updateWaitingList(eventId, users);
+                    });
+                });
+            }
+        });
+
+    }
+
+    public void removeUserFromInvited(String eventID, String userID) {
+        db.collection("events").document(eventID)
+                .collection("invited-list").document(userID).delete();
     }
 
 

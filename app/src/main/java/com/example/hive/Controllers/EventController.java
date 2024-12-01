@@ -383,4 +383,13 @@ public class EventController extends FirebaseController {
 //            Log.d("EventController", "Lottery has been drawn for event: " + eventID);
 //        });
 //    }
+
+    public void updateWaitingList(String eventID, ArrayList<String> entrants) {
+     db.collection("events").document(eventID).get().addOnSuccessListener(doc -> {
+         String waitingListID = doc.getString("waiting-list-id");
+         if (waitingListID != null) {
+             db.collection("waiting-list").document(waitingListID).update("user-ids", entrants);
+         }
+     });
+    }
 }
