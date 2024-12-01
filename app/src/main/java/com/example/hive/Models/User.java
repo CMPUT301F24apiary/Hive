@@ -32,6 +32,9 @@ public class User {
     @PropertyName("roleSet")
     private List<String> roleList;
     private String profileImageUrl;
+    private boolean notificationChosen = true;       // Default to true
+    private boolean notificationNotChosen = true;    // Default to true
+    private boolean notificationOrganizer = true;    // Default to true
     FirebaseFirestore db;
     private Drawable initialsDrawable;
     private String facilityID;
@@ -120,6 +123,29 @@ public class User {
         this.role = role;
     }
 
+    // Add getter and setter methods for the new fields
+    public boolean getNotificationChosen() {
+        return notificationChosen;
+    }
+    public void setNotificationChosen(boolean notificationChosen) {
+        this.notificationChosen = notificationChosen;
+    }
+
+    public boolean getNotificationNotChosen() {
+        return notificationNotChosen;
+    }
+    public void setNotificationNotChosen(boolean notificationNotChosen) {
+        this.notificationNotChosen = notificationNotChosen;
+    }
+
+    public boolean getNotificationOrganizer() {
+        return notificationOrganizer;
+    }
+    public void setNotificationOrganizer(boolean notificationOrganizer) {
+        this.notificationOrganizer = notificationOrganizer;
+    }
+
+
     @PropertyName("roleSet")
     public List<String> getRoleList() {
         return roleList;
@@ -145,6 +171,7 @@ public class User {
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
         generateInitialsDrawable();
+
     }
 
     @PropertyName("events")
