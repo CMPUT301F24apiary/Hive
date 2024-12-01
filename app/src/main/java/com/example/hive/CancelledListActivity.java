@@ -21,7 +21,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Activity for displaying and managing the list of entrants whose entries were cancelled(They declined
+ * the invite)
+ * Provides functionality for searching and clearing the list of cancelled entrants.
+ * @author HRITTIJA
+ */
 public class CancelledListActivity extends AppCompatActivity implements ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
     private FirebaseFirestore db;
@@ -29,6 +34,13 @@ public class CancelledListActivity extends AppCompatActivity implements ConfirmD
     private ArrayAdapter<String> adapter;
     private String eventId;
     private String cancelledListId;
+
+    /**
+     * Called when the activity is made.
+     * Sets up the environment and fetches the cancelled list from Firebase.
+     *
+     * @param savedInstanceState The saved instance state of the activity
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +90,6 @@ public class CancelledListActivity extends AppCompatActivity implements ConfirmD
             finish();
         });
 
-        // Fetch waiting list
         fetchCancelledList();
 
         // Delete All button logic
@@ -88,7 +99,9 @@ public class CancelledListActivity extends AppCompatActivity implements ConfirmD
             dialog.show(getSupportFragmentManager(), "ConfirmDeleteDialog");
         });
     }
-
+    /**
+     * Fetches the cancelled list ID for the event and uses that get the cancelled list
+     */
     private void fetchCancelledList() {
         db.collection("events").document(eventId).get()
                 .addOnCompleteListener(task -> {
@@ -106,7 +119,9 @@ public class CancelledListActivity extends AppCompatActivity implements ConfirmD
                     }
                 });
     }
-
+    /**
+     * Fetches the usernames of the entrants in the cancelled list using the ID
+     */
     private void fetchUsernames() {
         db.collection("cancelled-list").document(cancelledListId).get()
                 .addOnCompleteListener(cancelledTask -> {
@@ -123,7 +138,11 @@ public class CancelledListActivity extends AppCompatActivity implements ConfirmD
                     }
                 });
     }
-
+    /**
+     * Fetches the usernames for the list of device IDs from the "users" collection in Firebase.
+     *
+     * @param deviceIds List of device IDs for which usernames need to be fetched.
+     */
     private void fetchUserDetails(List<String> deviceIds) {
         entrantsList.clear();
 
@@ -146,7 +165,9 @@ public class CancelledListActivity extends AppCompatActivity implements ConfirmD
         }
     }
 
-
+    /**
+     * Clears all the entries in the cancelled list using ConfirmDeleteDialogFragment
+     */
     @Override
     public void onDeleteConfirmed() {
         if (cancelledListId != null) {
