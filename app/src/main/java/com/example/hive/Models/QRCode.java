@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.util.Base64;
 import android.util.Log;
 
-import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.zxing.BarcodeFormat;
@@ -93,7 +92,7 @@ public class QRCode {
      * @param eventId
      * @param callback
      */
-    public static void retriveQRCodeFromDb(String eventId, QRCodeCallback callback) {
+    public static void retrieveQRCodeFromDb(String eventId, QRCodeCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {

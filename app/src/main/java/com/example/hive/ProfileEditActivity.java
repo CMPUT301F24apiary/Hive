@@ -165,7 +165,6 @@ public class ProfileEditActivity extends AppCompatActivity {
 
             // Use Glide to load and crop the selected image as a circle
             // From https://github.com/bumptech/glide/issues/3839, downloaded 2024-11-06
-
             Glide.with(this)
                     .load(pfpUri)
                     .transform(new CircleCrop())
@@ -377,28 +376,6 @@ public class ProfileEditActivity extends AppCompatActivity {
                 Toast.makeText(ProfileEditActivity.this, "Error fetching user profile (ProfileEditActivity)",
                         Toast.LENGTH_LONG).show();
             }});
-
-//                    sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
-//        String personName = sharedPreferences.getString("personName", "");
-//        String userName = sharedPreferences.getString("userName", "");
-//        String email = sharedPreferences.getString("email", "");
-//        String phone = sharedPreferences.getString("phone", "");
-//        String profilePictureBase64 = sharedPreferences.getString("profilePicture", "");
-//
-//        // Set the loaded data into the EditText fields
-//        personNameInput.setText(personName);
-//        userNameInput.setText(userName);
-//        emailInput.setText(email);
-//        phoneInput.setText(phone);
-//
-//        // Load profile picture if available
-//        if (!profilePictureBase64.isEmpty()) {
-//            Bitmap profileBitmap = base64ToBitmap(profilePictureBase64);
-//            profilePicture.setImageBitmap(profileBitmap);
-//        } else {
-//            // Set default profile picture
-//            profilePicture.setImageResource(R.drawable.ic_profile);
-//        }
     }
 
     /**

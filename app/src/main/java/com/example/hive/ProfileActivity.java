@@ -88,14 +88,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     /**
-     * Converts a Base64 encoded string back to a Bitmap.
-     *
-     * @param base64Str The Base64 encoded string.
-     * @return The decoded Bitmap.
+     * refresh the profile activity when user edits profile.
      */
-    private Bitmap base64ToBitmap(String base64Str) {
-        byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadProfileData(deviceId);
     }
 
     /**
@@ -153,4 +151,6 @@ public class ProfileActivity extends AppCompatActivity {
             loadProfileData(deviceId);
         }
     }
+
+
 }

@@ -114,17 +114,6 @@ public class FacilityActivity extends AppCompatActivity {
         editor.apply();
     }
 
-
-//    /**
-//     * Converts Base64 string to bitmap
-//     * @param base64Str string to be converted
-//     * @return the converted bitmap
-//     */
-//    private Bitmap base64ToBitmap(String base64Str) {
-//        byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
-//        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-//    }
-
     /**
      * Shows the facility information.
      */
