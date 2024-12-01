@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * For the organizer to see the final entrants
+ * For the organizer to see the final entrants who were invited and they accepted
  *
  * @author HRITTIJA
  */
@@ -33,7 +33,12 @@ public class FinalListActivity extends AppCompatActivity {
     private List<String> entrantsList;
     private ArrayAdapter<String> adapter;
     private String eventId;
-
+    /**
+     * Called when the activity is created. It initializes the UI, fetches the final entrants list from Firebase,
+     * and sets up search functionality.
+     *
+     * @param savedInstanceState The state of the activity during its previous run.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,13 +58,10 @@ public class FinalListActivity extends AppCompatActivity {
         entrantsList = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, R.layout.list_item, entrantsList);
         listView.setAdapter(adapter);
-
-        // Add real-time filtering while typing in the search bar
         EditText searchBar = findViewById(R.id.search_bar);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Not needed
             }
 
             @Override
@@ -80,10 +82,13 @@ public class FinalListActivity extends AppCompatActivity {
             finish();
         });
 
-        // Fetch waiting list
         fetchFinalList();
     }
-
+    /**
+     * Fetches the final list of entrants for the event from Firestore.
+     * The event's final list ID is retrieved, and the corresponding device IDs are fetched.
+     * Usernames corresponding to those device IDs are then displayed in the ListView.
+     */
     private void fetchFinalList() {
         Log.d("FinalListActivity", "Fetching finallist for eventId: " + eventId);
 

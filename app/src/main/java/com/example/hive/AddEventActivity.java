@@ -47,7 +47,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Activity to add an event by filling in all the event details(By an organizer)
+ * Activity to add an event by filling in all the event details(By an organizer). Saves
+ * the event details for the entrants to see.
  *
  * @author Hrittija
  */
@@ -121,7 +122,7 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
 
 
     /**
-     * To open the gallery for facility profile picture uploading
+     * To open the gallery for poster uploading
      * @param view
      */
     public void onAddPosterClick(View view) {
@@ -218,6 +219,25 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
 
     }
 
+    /**
+     * Saves an event by creating an Event object and storing it in the database,
+     * including generating a QR code and initializing a waiting list.
+     *
+     * @param title                 The title of the event.
+     * @param cost                  The cost to participate in the event.
+     * @param startDateTime         The start date and time of the event, represented as a timestamp (in ms).
+     * @param endDateTime           The end date and time of the event, represented as a timestamp (in ms).
+     * @param description           A description of the event.
+     * @param numParticipantsCount  The number of participants for the event.
+     * @param urlAndID              An optional pair containing the URL and the ID (could be null).
+     * @param selectionDate         The date when the event selection was made, represented as a timestamp (in ms).
+     * @param entrant               The entrant number for the event.
+     * @param duration              The duration of the event (hours/minutes).
+     * @param geolocationOn         A boolean indicating whether geolocation tracking is enabled or not.
+     * @param replacementDrawOn     A boolean indicating whether a replacement draw feature is enabled for the event.
+     *
+     * @throws WriterException If an error occurs while generating the QR Code.
+     */
     private void saveEvent(String title, String cost, long startDateTime, long endDateTime,
                            String description, int numParticipantsCount,
                            @Nullable Pair<String, String> urlAndID, long selectionDate, int entrant,
@@ -384,13 +404,27 @@ public class AddEventActivity extends AppCompatActivity implements TimePickerDia
         // Return end date and end time separated by a space
         return endDate + " " + endTime;
     }
+    /**
+     * Called when the organizer sets the time on a time picker.
+     *
+     * @param view       The TimePicker view where the organizer selects the time.
+     * @param hourOfDay  The hour of the day in 24-hour format (0-23).
+     * @param minute     The minute
+     */
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         startTime = String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
         pickStartTime.setText(startTime);
     }
-
+    /**
+     * Called when the organizer sets the date on a date picker.
+     *
+     * @param view       The DatePicker view where the user selects the date.
+     * @param year       The year selected
+     * @param month      The month selected (e.g - January is 0, February is 1).
+     * @param dayOfMonth The day of the month selected by the organizer.
+     */
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         String date = String.valueOf(dayOfMonth) + "-" + String.valueOf(month+1) + "-" + String.valueOf(year);
