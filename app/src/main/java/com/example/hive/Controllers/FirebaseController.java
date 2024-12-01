@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +46,8 @@ public class FirebaseController {
             db = getDb();
         }
     }
+
+
 
     public static synchronized FirebaseController getInstance() {
         if (instance == null) {
@@ -129,6 +132,9 @@ public class FirebaseController {
         //    userData.put("phoneNumber", phoneNumber);
         //}
 
+        userData.put("notificationChosen", true);  // Default to true, can be set to false as needed
+        userData.put("notificationNotChosen", true);
+        userData.put("notificationOrganizer", true);
 
         return db.collection("users").document(deviceId)
                 .set(userData)
@@ -225,6 +231,23 @@ public class FirebaseController {
         });
     }
 
+    public void addNotificationToUser(String userId, String content, String eventId, String type) {
+        Map<String, Object> notificationData = new HashMap<>();
+        notificationData.put("content", content);
+        notificationData.put("eventid", eventId);
+        notificationData.put("type", type);
+
+        db.collection("users").document(userId).collection("notifications")
+                .add(notificationData)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d(TAG, "Notification successfully added to user: " + userId);
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error adding notification to user: " + userId, e);
+                });
+    }
+
+
     public void getUserDocId(String deviceId, OnSuccessListener<String> listener) {
         db.collection("users").whereEqualTo("deviceId", deviceId).get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -291,7 +314,7 @@ public class FirebaseController {
                     callback.onFailure("Failed to add user to waiting list.");
                 });
     }
-    public void removeUserFromWaitingListWithLocation(String waitingListId, String userId, Callback location) {
+    public void removeUserFromWaitingListWithLocation(String waitingListId, String userId, Callback callback) {
         DocumentReference waitingListRef = db.collection("waiting-list").document(waitingListId);
 
         Map<String, Object> updates = new HashMap<>();
@@ -299,9 +322,16 @@ public class FirebaseController {
         updates.put("user-locations." + userId, FieldValue.delete());
 
         waitingListRef.update(updates)
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "User and geolocation removed from waiting list successfully."))
-                .addOnFailureListener(e -> Log.e(TAG, "Failed to remove user and geolocation: " + e.getMessage()));
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "User and geolocation removed from waiting list successfully.");
+                    callback.onSuccess();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to remove user and geolocation: " + e.getMessage(), e);
+                    callback.onFailure("Failed to remove user with geolocation from waiting list.");
+                });
     }
+
 
     public void addUserToWaitingListWithLocation(String waitingListId, String userId, Map<String, Object> locationData, Callback callback) {
         // Reference the specific waiting list document in Firestore
@@ -323,6 +353,7 @@ public class FirebaseController {
                     callback.onFailure("Failed to add user with geolocation to waiting list.");
                 });
     }
+
 
 
 

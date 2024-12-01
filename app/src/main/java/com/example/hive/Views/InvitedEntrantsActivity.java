@@ -38,6 +38,7 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
         message.setVisibility(View.GONE);
         findViewById(R.id.search_container).setVisibility(View.VISIBLE);
         invitedUsersList.setVisibility(View.VISIBLE);
+        drawLotteryButton.setVisibility(View.GONE);
         users.clear();
         users.addAll(newUsers);
         adapter.updateData(users);
@@ -60,6 +61,12 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        invitedUsersList = findViewById(R.id.invited_list_view);
+        users = new ArrayList<>();
+        adapter = new InvitedEntrantsAdapter(
+                InvitedEntrantsActivity.this, users);
+        invitedUsersList.setAdapter(adapter);
 
         ImageButton back = findViewById(R.id.back_button);
         back.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +101,7 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
                             ListController listController = new ListController();
 
                             // Run the lottery with EventController
-                            eventControl.runLottery(InvitedEntrantsActivity.this, eventID, 10, listController);
+                            listController.runLottery(InvitedEntrantsActivity.this, eventID, event.getNumParticipants(), InvitedEntrantsActivity.this::update);
                         }
                     });
 
@@ -123,12 +130,6 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
     }
 
     private void getInvitedUsers() {
-        users = new ArrayList<>();
-
-        invitedUsersList = findViewById(R.id.invited_list_view);
-        adapter = new InvitedEntrantsAdapter(
-                InvitedEntrantsActivity.this, users);
-        invitedUsersList.setAdapter(adapter);
 
         ListController inviteControl = new ListController();
 

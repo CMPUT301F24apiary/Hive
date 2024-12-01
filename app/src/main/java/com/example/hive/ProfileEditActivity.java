@@ -177,6 +177,7 @@ public class ProfileEditActivity extends AppCompatActivity {
      * Sets up the notification bell buttons to toggle between enabled (green bell)
      * and disabled (white bell) states. Saves the state in SharedPreferences.
      */
+
     void setupNotificationButtons() {
         // Listener to toggle icon and save state
         View.OnClickListener toggleNotificationListener = v -> {
@@ -185,17 +186,35 @@ public class ProfileEditActivity extends AppCompatActivity {
 
             // Toggle icon and state
             if (isEnabled) {
-                button.setImageResource(R.drawable.bell); // Default white bell
+                button.setImageResource(R.drawable.bell); // Default white bell (Disabled)
                 button.setTag(false);
                 Toast.makeText(this, "Notification Disabled", Toast.LENGTH_SHORT).show();
             } else {
-                button.setImageResource(R.drawable.bell2); // Filled green bell
+                button.setImageResource(R.drawable.bell2); // Filled green bell (Enabled)
                 button.setTag(true);
                 Toast.makeText(this, "Notification Enabled", Toast.LENGTH_SHORT).show();
             }
 
-            // Save updated state
-            saveNotificationPreferences();
+            // Update Firebase with the new value
+            String fieldName = "";
+            if (v == notificationChosenBellButton) {
+                fieldName = "notificationChosen";
+            } else if (v == notificationNotChosenBellButton) {
+                fieldName = "notificationNotChosen";
+            } else if (v == notificationOrganizerBellButton) {
+                fieldName = "notificationOrganizer";
+            }
+
+            if (!fieldName.isEmpty()) {
+                HashMap<String, Object> updateData = new HashMap<>();
+                updateData.put(fieldName, !isEnabled);
+                FirebaseController fbController = new FirebaseController();
+                fbController.updateUserByDeviceId(deviceId, updateData, success -> {
+                    if (!success) {
+                        Toast.makeText(this, "Failed to update notification setting in Firebase", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         };
 
         // Attach the listener to each notification button
@@ -327,12 +346,27 @@ public class ProfileEditActivity extends AppCompatActivity {
                     phoneInput.setText(user.getPhoneNumber());
 
                     String pfpUrl = user.getProfileImageUrl();
-
                     if (!pfpUrl.isEmpty()) {
                         Glide.with(ProfileEditActivity.this).load(pfpUrl).circleCrop().into(profilePicture);
                     } else {
                         profilePicture.setImageDrawable(user.getDisplayDrawable());
                     }
+
+                    // Load notification preferences from Firebase
+                    boolean notificationChosen = user.getNotificationChosen(); // Assuming getter methods exist
+                    boolean notificationNotChosen = user.getNotificationNotChosen();
+                    boolean notificationOrganizer = user.getNotificationOrganizer();
+
+                    // Set toggles accordingly (true by default)
+                    notificationChosenBellButton.setTag(notificationChosen);
+                    notificationChosenBellButton.setImageResource(notificationChosen ? R.drawable.bell2 : R.drawable.bell);
+
+                    notificationNotChosenBellButton.setTag(notificationNotChosen);
+                    notificationNotChosenBellButton.setImageResource(notificationNotChosen ? R.drawable.bell2 : R.drawable.bell);
+
+                    notificationOrganizerBellButton.setTag(notificationOrganizer);
+                    notificationOrganizerBellButton.setImageResource(notificationOrganizer ? R.drawable.bell2 : R.drawable.bell);
+
                 } else {
                     Toast.makeText(ProfileEditActivity.this, "User is null", Toast.LENGTH_LONG).show();
                 }

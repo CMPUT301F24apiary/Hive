@@ -1,5 +1,6 @@
 package com.example.hive.Views;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -68,6 +69,7 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
             }
         });
 
+        // get event id from prev activity
         String eventID = getIntent().getStringExtra("eventID");
         if (eventID == null) {
             finish();
@@ -92,51 +94,73 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
             }
 
             if (sendToSelected) {
-                eventController.getInvitedList(eventID, successAndList -> {
-                    if (successAndList.first) {
-                        for (String uid : successAndList.second) {
-                            listController.addNotification(uid, eventID, "selected", notificationMessage);
-                        }
-                        Toast.makeText(this,
-                                "Successfully sent notification to selected users", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this,
-                                "No invited list for this event", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                new AlertDialog.Builder(this)
+                        .setTitle("Confirm Notification")
+                        .setMessage("Are you sure you want to notify all entrants on the selected list?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            eventController.getInvitedList(eventID, successAndList -> {
+                                if (successAndList.first) {
+                                    for (String uid : successAndList.second) {
+                                        listController.addNotification(uid, eventID, "selected", notificationMessage);
+                                    }
+                                    Toast.makeText(this,
+                                            "Successfully sent notification to selected users", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(this,
+                                            "No invited list for this event", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
             }
+
 
             if (sendToCancelled) {
-                listController.fetchCancelledList(eventID, uids -> {
-                    if (uids != null) {
-                        for (String uid : uids) {
-                            listController.addNotification(uid, eventID, "cancelled", notificationMessage);
-                        }
-                        Toast.makeText(this,
-                                "Successfully sent notification to cancelled users", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this,
-                                "No cancelled list for this event", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                new AlertDialog.Builder(this)
+                        .setTitle("Confirm Notification")
+                        .setMessage("Are you sure you want to notify all entrants on the cancelled list?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            listController.fetchCancelledList(eventID, uids -> {
+                                if (uids != null) {
+                                    for (String uid : uids) {
+                                        listController.addNotification(uid, eventID, "cancelled", notificationMessage);
+                                    }
+                                    Toast.makeText(this,
+                                            "Successfully sent notification to cancelled users", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(this,
+                                            "No cancelled list for this event", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
             }
+
 
             if (sendToWaiting) {
-                listController.getWaitingListUIDs(eventID, uids -> {
-                    if (uids != null) {
-                        for (String uid : uids) {
-                            listController.addNotification(uid, eventID, "waiting", notificationMessage);
-                        }
-                        Toast.makeText(this,
-                                "Successfully sent notification to waiting users", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this,
-                                "No waiting list for this event", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                // adding confirmation dialog
+                new AlertDialog.Builder(this)
+                        .setTitle("Confirm Notification")
+                        .setMessage("Are you sure you want to notify all entrants on the waiting list?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            listController.getWaitingListUIDs(eventID, uids -> {
+                                if (uids != null) {
+                                    for (String uid : uids) {
+                                        listController.addNotification(uid, eventID, "waiting", notificationMessage);
+                                    }
+                                    Toast.makeText(this,
+                                            "Successfully sent notification to waiting users", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(this,
+                                            "No waiting list for this event", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
             }
-
         });
-
     }
 }

@@ -8,11 +8,13 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.firebase.firestore.SetOptions;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -145,7 +147,11 @@ public class UserEventPageActivity extends AppCompatActivity {
      * Sets up listeners for the Register and Unregister buttons.
      */
     private void setupButtonListeners() {
-        String userId = User.getInstance().getDeviceId();
+//        String userId = User.getInstance().getDeviceId();
+
+        String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        Log.d("setupButtonListeners", userId == null ? "null" : userId);
 
         registerButton.setOnClickListener(v -> handleAction(true, userId));
         unregisterButton.setOnClickListener(v -> handleAction(false, userId));
@@ -163,6 +169,8 @@ public class UserEventPageActivity extends AppCompatActivity {
             return;
         }
 
+        Log.d("handleAction", userId);
+
         firebaseController.getDb().collection("events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -170,6 +178,15 @@ public class UserEventPageActivity extends AppCompatActivity {
                         Event event = documentSnapshot.toObject(Event.class);
                         if (event != null) {
                             String waitingListId = event.getWaitingListId();
+
+                            int currentParticipants = event.getNumParticipants();
+                            int participantLimit = event.getEntrantLimit();
+
+                            // Check if the waiting list is full
+                            if (isRegistration && currentParticipants >= participantLimit) {
+                                Toast.makeText(this, "Waiting list is full. You cannot register.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             if (Boolean.TRUE.equals(event.getGeolocation())) {
                                 showGeolocationWarning(() -> {
                                     Location location = getLastKnownLocation();
@@ -234,19 +251,47 @@ public class UserEventPageActivity extends AppCompatActivity {
      * @param userId        The ID of the user.
      */
     private void addUserToWaitingList(String waitingListId, String userId) {
+        User currentUser = User.getInstance(); // Get the current User instance
+
+        // Create a map of fields to add to the waiting-list document
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("username", currentUser.getUserName());
+        userData.put("email", currentUser.getEmail());
+        userData.put("deviceId", currentUser.getDeviceId());
+
+        // Adding the user to the waiting list using the correct event ID
+        firebaseController.getDb().collection("events")
+                .document(eventId) // Use the correct event ID
+                .collection("waiting-list") // Update waiting-list sub-collection
+                .document(userId) // Use userId as the document ID for uniqueness
+                .set(userData, SetOptions.merge()) // Use SetOptions.merge() to prevent overwriting other fields
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Successfully added user to waiting list.");
+                    Toast.makeText(UserEventPageActivity.this, "Successfully registered for the event!", Toast.LENGTH_SHORT).show();
+                    navigateToEventListActivity();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to add user to waiting list: " + e.getMessage());
+                    Toast.makeText(UserEventPageActivity.this, "Failed to register: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+
+        // Add the user to the waiting list using the FirebaseController method
         firebaseController.addUserToWaitingList(waitingListId, userId, new FirebaseController.Callback() {
             @Override
             public void onSuccess() {
-                Toast.makeText(UserEventPageActivity.this, "Registered successfully!", Toast.LENGTH_SHORT).show();
-                navigateToEventListActivity();
+                Log.d(TAG, "Successfully added user to waiting list through FirebaseController callback.");
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                Toast.makeText(UserEventPageActivity.this, "Failed to register: " + errorMessage, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Failed to add user to waiting list through FirebaseController callback: " + errorMessage);
             }
         });
     }
+
+
+
+
 
     /**
      * Unregisters the user from an event without location.
@@ -295,6 +340,7 @@ public class UserEventPageActivity extends AppCompatActivity {
         });
     }
 
+
     /**
      * Unregisters the user from an event with location.
      *
@@ -316,6 +362,7 @@ public class UserEventPageActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /**
      * Retrieves the user's last known location.
