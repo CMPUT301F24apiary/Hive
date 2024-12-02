@@ -66,7 +66,7 @@
             android:gravity="center"
             android:text="Invited Entrants"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="22sp"
             android:clickable="true"
             android:focusable="true" />
 
@@ -83,7 +83,7 @@
             android:gravity="center"
             android:text="Waiting List"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="22sp"
             android:clickable="true"
             android:focusable="true" />
 
@@ -100,7 +100,7 @@
             android:gravity="center"
             android:text="Cancelled Entrants"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="22sp"
             android:clickable="true"
             android:focusable="true" />
 
@@ -117,7 +117,7 @@
             android:gravity="center"
             android:text="Participants"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="22sp"
             android:clickable="true"
             android:focusable="true" />
 
@@ -134,7 +134,7 @@
             android:gravity="center"
             android:text="View Entrant Map"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="22sp"
             android:clickable="true"
             android:focusable="true" />
 

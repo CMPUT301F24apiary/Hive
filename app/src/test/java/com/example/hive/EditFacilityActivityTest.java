@@ -13,6 +13,8 @@ import org.mockito.Mockito;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
+import com.example.hive.Views.EditFacilityProfileActivity;
+
 /**
  * Tests for editfacilityprofileactivity
  */

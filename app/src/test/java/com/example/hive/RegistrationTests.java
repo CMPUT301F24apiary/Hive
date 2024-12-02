@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 
 import android.os.Bundle;
 
+import com.example.hive.Views.RegistrationActivity;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

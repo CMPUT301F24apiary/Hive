@@ -1,4 +1,4 @@
-package com.example.hive;
+package com.example.hive.Views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,8 +7,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Events.EventDetailActivity;
-import com.example.hive.Views.EntrantMapActivity;
-import com.example.hive.Views.InvitedEntrantsActivity;
+import com.example.hive.R;
 
 /**
  * Activity for displaying various options for an event.
@@ -46,9 +45,9 @@ public class OptionsPageActivity extends AppCompatActivity {
 
         // Back button logic
         findViewById(R.id.back_button).setOnClickListener(v -> {
-            Intent intent = new Intent(OptionsPageActivity.this, EventDetailActivity.class);
-            intent.putExtra("eventId", eventId); // Pass eventId back to EventDetailActivity
-            startActivity(intent);
+//            Intent intent = new Intent(OptionsPageActivity.this, EventDetailActivity.class);
+//            intent.putExtra("eventId", eventId); // Pass eventId back to EventDetailActivity
+//            startActivity(intent);
             finish();
         });
 

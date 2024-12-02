@@ -76,7 +76,8 @@
                 android:iconifiedByDefault="false"
                 android:paddingBottom="8dp"
                 android:queryHint="Search by name"
-                android:searchIcon="@drawable/ic_white_search" />
+                android:searchIcon="@drawable/ic_white_search"
+                android:inputType="textNoSuggestions" />
 
         </LinearLayout>
 

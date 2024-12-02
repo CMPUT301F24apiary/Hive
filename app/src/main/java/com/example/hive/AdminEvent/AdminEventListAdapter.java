@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 
 import com.example.hive.Events.AdminEventDetailActivity;
 import com.example.hive.Events.EventDetailActivity;
-import com.example.hive.Events.Event;
+import com.example.hive.Models.Event;
 import com.example.hive.Models.User;
 import com.example.hive.R;
 

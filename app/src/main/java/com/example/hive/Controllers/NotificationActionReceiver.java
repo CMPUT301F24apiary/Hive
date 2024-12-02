@@ -1,20 +1,14 @@
 package com.example.hive.Controllers;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
-import androidx.core.app.ActivityCompat;
-
-import com.example.hive.EventListActivity;
-import com.google.firebase.Firebase;
+import com.example.hive.Events.EventListActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FieldValue;
 
 import java.util.HashMap;
 import java.util.Map;

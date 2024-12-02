@@ -19,9 +19,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
-import com.example.hive.EditEventActivity;
+import com.example.hive.Models.Event;
 import com.example.hive.Models.User;
-import com.example.hive.OptionsPageActivity;
+import com.example.hive.Views.OptionsPageActivity;
 import com.example.hive.R;
 import com.example.hive.Views.OrganizerNotificationActivity;
 import com.example.hive.Views.QRCodeActivity;
@@ -159,6 +159,8 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             eventTitleView.setText(title);
             String cost = event.getCost();
             eventCostView.setText(String.format("$%s", cost));
+            int numParticipants = event.getNumParticipants();
+            eventNumParticipantsView.setText(String.valueOf(numParticipants));
             String startDate = event.getStartDate();
             String startTime = event.getStartTime();
             String endDate = event.getEndDate();

@@ -1,4 +1,4 @@
-package com.example.hive;
+package com.example.hive.Views;
 
 import android.Manifest;
 import android.content.Intent;
@@ -23,11 +23,8 @@ import com.example.hive.Controllers.ListController;
 import com.example.hive.Controllers.NotificationsController;
 import com.example.hive.Models.Notification;
 import com.example.hive.Models.User;
-import com.example.hive.Views.FirstTimeActivity;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.hive.R;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 

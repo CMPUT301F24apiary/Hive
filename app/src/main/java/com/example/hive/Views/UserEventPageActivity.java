@@ -16,14 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.firestore.SetOptions;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.FirebaseController;
-import com.example.hive.EventListActivity;
-import com.example.hive.Events.Event;
+import com.example.hive.Events.EventListActivity;
+import com.example.hive.Models.Event;
 import com.example.hive.Models.User;
 import com.example.hive.R;
 

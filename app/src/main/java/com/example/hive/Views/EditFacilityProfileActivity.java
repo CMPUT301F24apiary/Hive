@@ -1,13 +1,9 @@
-package com.example.hive;
+package com.example.hive.Views;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
@@ -24,12 +20,10 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Models.User;
 import com.example.hive.Controllers.FacilityController;
-import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Controllers.ImageController;
-import com.example.hive.Models.User;
+import com.example.hive.R;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 
 /**

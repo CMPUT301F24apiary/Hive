@@ -1,4 +1,4 @@
-package com.example.hive;
+package com.example.hive.Views;
 
 
 
@@ -14,10 +14,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.firestore.CollectionReference;
+import com.example.hive.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,9 +75,9 @@ public class FinalListActivity extends AppCompatActivity {
 
         // Back button logic
         findViewById(R.id.back_button).setOnClickListener(v -> {
-            Intent intent = new Intent(FinalListActivity.this, OptionsPageActivity.class);
-            intent.putExtra("eventId", eventId); // Pass the eventId back to OptionsPageActivity
-            startActivity(intent);
+//            Intent intent = new Intent(FinalListActivity.this, OptionsPageActivity.class);
+//            intent.putExtra("eventId", eventId); // Pass the eventId back to OptionsPageActivity
+//            startActivity(intent);
             finish();
         });
 

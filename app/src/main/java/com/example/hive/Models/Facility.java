@@ -1,17 +1,13 @@
-package com.example.hive;
+package com.example.hive.Models;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
-import org.w3c.dom.Text;
 /**
  * The Facility class represents a facility with its information such as name, email, phone, and picture URL.
  * It also provides functionality to generate a default profile picture (drawable) based on the facility's name.

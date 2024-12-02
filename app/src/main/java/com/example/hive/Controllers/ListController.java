@@ -4,11 +4,10 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.hive.Events.Event;
+import com.example.hive.Models.Event;
 import com.example.hive.Models.Notification;
 import com.example.hive.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;

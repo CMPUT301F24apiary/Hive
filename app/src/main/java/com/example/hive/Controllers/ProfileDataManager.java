@@ -1,4 +1,4 @@
-package com.example.hive.Models;
+package com.example.hive.Controllers;
 
 import android.content.SharedPreferences;
 

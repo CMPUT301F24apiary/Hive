@@ -14,6 +14,8 @@ import org.mockito.Mockito;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
+import com.example.hive.Views.ProfileEditActivity;
+
 @RunWith(JUnit4.class)
 public class PfpTest {
 

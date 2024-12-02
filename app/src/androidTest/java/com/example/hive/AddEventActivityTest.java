@@ -1,7 +1,6 @@
 package com.example.hive;
 
 
-import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.espresso.assertion.ViewAssertions;
@@ -21,6 +20,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
+
+import com.example.hive.Events.AddEventActivity;
 
 
 @RunWith(AndroidJUnit4.class)

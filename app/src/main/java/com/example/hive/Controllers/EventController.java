@@ -1,12 +1,11 @@
 package com.example.hive.Controllers;
 
-import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.example.hive.Events.Event;
+import com.example.hive.Models.Event;
 import com.example.hive.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;

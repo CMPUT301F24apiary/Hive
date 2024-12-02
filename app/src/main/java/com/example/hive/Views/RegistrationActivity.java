@@ -1,7 +1,9 @@
-package com.example.hive;
+package com.example.hive.Views;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.hive.R;
 
 /**
  * RegistrationActivity.java

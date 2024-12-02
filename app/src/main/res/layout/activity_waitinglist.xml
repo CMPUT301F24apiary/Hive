@@ -58,6 +58,7 @@
             android:layout_height="48dp"
             android:backgroundTint="@color/white"
             android:hint="Search people"
+            android:inputType="textNoSuggestions"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:textColor="@color/white"
