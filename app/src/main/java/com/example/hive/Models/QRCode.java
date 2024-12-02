@@ -63,7 +63,7 @@ public class QRCode {
      * @param bitmap
      * @return base64 string
      */
-    private static String convertBitmapToBase64(Bitmap bitmap) {
+    public static String convertBitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return Base64.encodeToString(stream.toByteArray(), Base64.DEFAULT);

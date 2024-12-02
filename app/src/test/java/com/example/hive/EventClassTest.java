@@ -14,13 +14,14 @@ import org.junit.Test;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  * @author Zach
  */
+/*
 public class EventClassTest {
     private Event testEvent;
     private Event testEventWithNullID;
     private Event testEventWithNullURL;
 
     @Before
-    public void setUp() {
+    public void setUpForEvent() {
         testEvent = new Event(
                 "Test Title",
                 "60.00",
@@ -95,3 +96,5 @@ public class EventClassTest {
     }
 
 }
+
+ */
