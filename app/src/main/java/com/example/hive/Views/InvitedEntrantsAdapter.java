@@ -27,13 +27,25 @@ import com.example.hive.R;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter for displaying and filtering invited users in a ListView.
+ * Implements Filterable to enable searching through the list of users.
+ *
+ * @author Zach
+ */
 public class InvitedEntrantsAdapter extends ArrayAdapter<User>
         implements Filterable {
 
-    private ArrayList<User> ogList;
-    private ArrayList<User> filtered;
+    private ArrayList<User> ogList;    // Original unfiltered list
+    private ArrayList<User> filtered;  // Current filtered list
     private Filter filter;
 
+    /**
+     * Constructor for InvitedEntrantsAdapter.
+     *
+     * @param context The current context
+     * @param users ArrayList of users to display in the list
+     */
     public InvitedEntrantsAdapter(Context context,
                                   ArrayList<User> users) {
         super(context, 0, users);
@@ -43,21 +55,21 @@ public class InvitedEntrantsAdapter extends ArrayAdapter<User>
 
     /**
      * Updates the two arrays needed for searching. Should be called before
-     * <code>notifyDataSetChanged</code> whenever it is used
+     * <code>notifyDataSetChanged</code> whenever it is used.
      *
-     * @param newUsers
-     * The array of pairs to update this adapter's arrays with
+     * @param newUsers The array of users to update this adapter's arrays with
      */
     public void updateData(ArrayList<User> newUsers) {
         ogList.clear();
         ogList.addAll(newUsers);
         filtered.clear();
         filtered.addAll(newUsers);
-    }/**
-     * Return the size of the filtered list
+    }
+
+    /**
+     * Return the size of the filtered list.
      *
-     * @return
-     * int, size of the filtered list
+     * @return int: Size of the filtered list
      */
     @Override
     public int getCount() {
@@ -65,12 +77,10 @@ public class InvitedEntrantsAdapter extends ArrayAdapter<User>
     }
 
     /**
-     * Get item of filtered list at specified position
+     * Get item of filtered list at specified position.
      *
-     * @param position Position of the item whose data we want within the adapter's
-     * data set.
-     * @return
-     * The pair object at provided position
+     * @param position Position of the item whose data we want within the adapter's data set
+     * @return The User object at provided position
      */
     @Nullable
     @Override
@@ -79,9 +89,10 @@ public class InvitedEntrantsAdapter extends ArrayAdapter<User>
     }
 
     /**
-     * @param position The position of the item within the adapter's data set whose row id we want.
-     * @return
-     * The requested item's row id
+     * Get the row id associated with the specified position in the list.
+     *
+     * @param position The position of the item within the adapter's data set whose row id we want
+     * @return The id of the item at the specified position
      */
     @Override
     public long getItemId(int position) {
@@ -91,17 +102,10 @@ public class InvitedEntrantsAdapter extends ArrayAdapter<User>
     /**
      * Gets the view for the list items.
      *
-     * @param position The position of the item within the adapter's data set of the item whose view
-     *        we want.
-     * @param convertView The old view to reuse, if possible. Note: You should check that this view
-     *        is non-null and of an appropriate type before using. If it is not possible to convert
-     *        this view to display the correct data, this method can create a new view.
-     *        Heterogeneous lists can specify their number of view types, so that this View is
-     *        always of the right type (see {@link #getViewTypeCount()} and
-     *        {@link #getItemViewType(int)}).
+     * @param position The position of the item within the adapter's data set of the item whose view we want
+     * @param convertView The old view to reuse, if possible
      * @param parent The parent that this view will eventually be attached to
-     * @return
-     * The view that displays a list item.
+     * @return The view that displays a list item
      */
     @NonNull
     @Override
@@ -138,6 +142,11 @@ public class InvitedEntrantsAdapter extends ArrayAdapter<User>
         return view;
     }
 
+    /**
+     * Returns the filter used for searching users.
+     *
+     * @return Filter instance for this adapter
+     */
     @NonNull
     @Override
     public Filter getFilter() {
@@ -148,7 +157,9 @@ public class InvitedEntrantsAdapter extends ArrayAdapter<User>
     }
 
     /**
-     * Custom Filter class to handle searching of events
+     * Custom Filter class to handle searching of users by username.
+     * Filters the list based on the search query, matching usernames
+     * that contain the search text (case-insensitive).
      */
     private class InvitedUserFilter extends Filter {
         @Override

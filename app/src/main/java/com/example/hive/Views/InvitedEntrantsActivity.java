@@ -9,7 +9,6 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -23,6 +22,12 @@ import com.example.hive.R;
 
 import java.util.ArrayList;
 
+/**
+ * Activity for displaying and managing invited entrants for an event.
+ * Handles lottery draws and displays the list of invited users.
+ *
+ * @author Zach 
+ */
 public class InvitedEntrantsActivity extends AppCompatActivity {
 
     private ArrayList<String> invitedUIDs;
@@ -34,6 +39,13 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
     private EventController eventControl;
     private String eventID;
 
+    /**
+     * Updates the UI with a new list of users.
+     * Hides the message, shows the search container and list view,
+     * and updates the adapter with new user data.
+     *
+     * @param newUsers ArrayList<User>: The new list of users to display
+     */
     public void update(ArrayList<User> newUsers) {
         message.setVisibility(View.GONE);
         findViewById(R.id.search_container).setVisibility(View.VISIBLE);
@@ -45,6 +57,13 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Initializes the activity, sets up UI components and event handlers.
+     * Handles lottery draw functionality based on event selection date.
+     *
+     * @param savedInstanceState Bundle: If the activity is being re-initialized after previously
+     *                          being shut down, this contains the data it most recently supplied
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,15 +120,13 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
                             ListController listController = new ListController();
 
                             // Run the lottery with EventController
-                            listController.runLottery(InvitedEntrantsActivity.this, eventID, event.getNumParticipants(), InvitedEntrantsActivity.this::update);
+                            listController.runLottery(InvitedEntrantsActivity.this, eventID,
+                                    event.getNumParticipants(), InvitedEntrantsActivity.this::update);
                         }
                     });
-
-
                 }
             }
         });
-
 
         // Logic to search for a user
         SearchView search = findViewById(R.id.search_bar);
@@ -126,11 +143,14 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
                 return false;
             }
         });
-
     }
 
+    /**
+     * Retrieves and processes the list of invited users for the event.
+     * If an invited list exists, displays it. Otherwise, generates a new list
+     * from the waiting list based on the number of participants.
+     */
     private void getInvitedUsers() {
-
         ListController inviteControl = new ListController();
 
         eventControl.getInvitedList(eventID, successAndList -> {
@@ -143,7 +163,8 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
                     eventControl.getField(eventID, "numParticipants",
                             res -> {
                                 Long numParticipants = (Long) res;
-                                invitedUIDs = inviteControl.generateInvitedList(eventID, entrants, numParticipants.intValue());
+                                invitedUIDs = inviteControl.generateInvitedList(eventID, entrants,
+                                        numParticipants.intValue());
                                 eventControl.addInvitedList(eventID, invitedUIDs);
                                 inviteControl.createInvitedUserList(invitedUIDs,
                                         InvitedEntrantsActivity.this::update);
@@ -151,6 +172,5 @@ public class InvitedEntrantsActivity extends AppCompatActivity {
                 });
             }
         });
-
     }
 }
