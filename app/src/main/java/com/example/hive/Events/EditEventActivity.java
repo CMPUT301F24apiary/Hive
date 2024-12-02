@@ -26,6 +26,7 @@ import com.example.hive.Controllers.FacilityController;
 import com.example.hive.Controllers.ImageController;
 import com.example.hive.DateAndTimePickers.DatePickerFragment;
 import com.example.hive.DateAndTimePickers.TimePickerFragment;
+import com.example.hive.Models.Event;
 import com.example.hive.R;
 
 import java.text.ParseException;

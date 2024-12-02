@@ -1,4 +1,4 @@
-package com.example.hive.Views;
+package com.example.hive.Events;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +16,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.hive.Events.Event;
-import com.example.hive.Events.EventDetailActivity;
+import com.example.hive.Models.Event;
 import com.example.hive.R;
 
 import java.util.ArrayList;

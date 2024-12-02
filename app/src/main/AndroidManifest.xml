@@ -91,7 +91,7 @@
         <activity android:name=".Events.EditEventActivity" />
         <activity android:name=".Views.CancelledListActivity" />
         <activity android:name=".Views.FinalListActivity" />
-        <activity android:name=".Views.OrganizerEventListActivity"
+        <activity android:name=".Events.OrganizerEventListActivity"
             android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />

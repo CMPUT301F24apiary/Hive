@@ -10,7 +10,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
-import com.example.hive.Models.ProfileDataManager;
+import com.example.hive.Controllers.ProfileDataManager;
 
 public class ProfileDataManagerTest {
 

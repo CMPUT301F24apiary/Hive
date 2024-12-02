@@ -19,7 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.hive.AdminImage.AdminImageListActivity;
 import com.example.hive.Controllers.EventController;
-import com.example.hive.Events.Event;
+import com.example.hive.Models.Event;
 import com.example.hive.Models.User;
 import com.example.hive.R;
 import com.example.hive.Views.RoleSelectionActivity;

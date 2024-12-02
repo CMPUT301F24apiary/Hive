@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Events.OrganizerEventListActivity;
 import com.example.hive.Models.User;
 
 import com.example.hive.Controllers.FacilityController;

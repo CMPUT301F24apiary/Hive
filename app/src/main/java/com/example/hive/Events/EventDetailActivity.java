@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
+import com.example.hive.Models.Event;
 import com.example.hive.Models.User;
 import com.example.hive.Views.OptionsPageActivity;
 import com.example.hive.R;

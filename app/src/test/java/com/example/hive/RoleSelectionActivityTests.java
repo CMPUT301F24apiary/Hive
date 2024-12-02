@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import android.content.Intent;
 import com.example.hive.AdminEvent.AdminEventListActivity;
 import com.example.hive.Events.EventListActivity;
-import com.example.hive.Views.OrganizerEventListActivity;
+import com.example.hive.Events.OrganizerEventListActivity;
 import com.example.hive.Views.RoleSelectionActivity;
 
 import org.junit.Before;

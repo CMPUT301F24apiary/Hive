@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
+import com.example.hive.Models.Event;
 import com.example.hive.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 

@@ -15,10 +15,7 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
-import com.example.hive.AdminEvent.AdminEventListActivity;
 import com.example.hive.AdminImage.AdminImageListActivity;
-import com.example.hive.Events.Event;
-import com.example.hive.Events.EventDetailActivity;
 
 import org.junit.After;
 import org.junit.Before;
