@@ -40,6 +40,7 @@ implements DeleteQRCodeListener, DeleteEventListener {
         TextView eventLocationView = findViewById(R.id.event_detail_location);
         TextView eventCostView = findViewById(R.id.event_detail_cost);
         TextView eventDescription = findViewById(R.id.event_detail_description);
+        TextView eventNumParticipantsView = findViewById(R.id.event_detail_number_participants);
         Button delQRCodeButton = findViewById(R.id.delete_qr_button);
         Button delEventButton = findViewById(R.id.delete_event_button);
 
@@ -51,6 +52,8 @@ implements DeleteQRCodeListener, DeleteEventListener {
             eventTitleView.setText(title);
             String cost = event.getCost();
             eventCostView.setText(String.format("$%s", cost));
+            int numParticipants = event.getNumParticipants();
+            eventNumParticipantsView.setText(String.valueOf(numParticipants));
             String startDate = event.getStartDate();
             String startTime = event.getStartTime();
             String endDate = event.getEndDate();

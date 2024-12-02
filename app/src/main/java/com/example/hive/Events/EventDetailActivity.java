@@ -159,6 +159,8 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
             eventTitleView.setText(title);
             String cost = event.getCost();
             eventCostView.setText(String.format("$%s", cost));
+            int numParticipants = event.getNumParticipants();
+            eventNumParticipantsView.setText(String.valueOf(numParticipants));
             String startDate = event.getStartDate();
             String startTime = event.getStartTime();
             String endDate = event.getEndDate();
