@@ -58,8 +58,8 @@ public class AdminProfileListActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                profileAdapter.filter(query);
-                return true;
+//                profileAdapter.filter(query);
+                return false;
             }
 
             @Override
@@ -134,12 +134,11 @@ public class AdminProfileListActivity extends AppCompatActivity {
      */
     private void fetchAllUsers() {
         firebaseController.fetchAllUsers().thenAccept(users -> {
-            userList.clear();
-            userList.addAll(users);
-            profileAdapter.notifyDataSetChanged();
+            profileAdapter.updateData(users);
         }).exceptionally(e-> {
             Log.e(TAG, "Error with fetchAllUsers method in firebase and AdminProfileListActivity.java", e);
             return null;
         });
     }
+
 }

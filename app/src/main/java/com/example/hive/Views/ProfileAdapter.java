@@ -109,23 +109,40 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
     }
 
     /**
+     * Update the arrays with provided list of users
+     *
+     * @param newUsers List of users to update with
+     */
+    public void updateData(List<User> newUsers) {
+        userList.clear();
+        userListOriginal.clear();
+        userList.addAll(newUsers);
+        userListOriginal.addAll(newUsers);
+        notifyDataSetChanged();
+    }
+
+    /**
      * filter profiles view for admin
      * @param query
      */
     public void filter(String query) {
-        userList.clear();
         if (query.isEmpty()) {
+            userList.clear();
             userList.addAll(userListOriginal);
         } else {
-            String queryLower = query.toLowerCase();
+            String queryLower = query.toLowerCase().trim();
+            List<User> filteredList = new ArrayList<>();
             for (User user : userListOriginal) {
                 if (user.getUserName().toLowerCase().contains(queryLower)) {
-                    userList.add(user);
+                    filteredList.add(user);
                 }
             }
+            userList.clear();
+            userList.addAll(filteredList);
         }
         notifyDataSetChanged();
     }
+
 
     /**
      * Refresh user list e.g. when a user is deleted by admin
