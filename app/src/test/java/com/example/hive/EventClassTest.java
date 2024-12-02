@@ -14,7 +14,6 @@ import org.junit.Test;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  * @author Zach
  */
-/*
 public class EventClassTest {
     private Event testEvent;
     private Event testEventWithNullID;
@@ -32,7 +31,12 @@ public class EventClassTest {
                 20,
                 "Test Location",
                 "Test Image URL",
-                true // geolocation
+                1731168706000L,
+                50,
+                "2h",
+                true,
+                false,
+                false
         );
         testEventWithNullID = new Event(
                 "Test Title Null ID",
@@ -44,7 +48,12 @@ public class EventClassTest {
                 30,
                 "Test Location Null ID",
                 "Test Image URL Null ID",
-                false // geolocation
+                1731168706000L,
+                30,
+                "1.5h",
+                false,
+                true,
+                false
         );
         testEventWithNullURL = new Event(
                 "Test Title Null URL",
@@ -56,7 +65,12 @@ public class EventClassTest {
                 40,
                 "Test Location Null URL",
                 null,
-                true // geolocation
+                1731168706000L,
+                null,
+                "3h",
+                true,
+                false,
+                true
         );
     }
 
@@ -72,6 +86,9 @@ public class EventClassTest {
         assertEquals("Test Location", testEvent.getLocation());
         assertEquals("Test Image URL", testEvent.getPosterURL());
         assertEquals(true, testEvent.getGeolocation());
+        assertEquals(false, testEvent.isLotteryDrawn());
+        assertEquals("2h", testEvent.getDuration());
+
         assertNull(testEventWithNullID.getFirebaseID());
         assertNull(testEventWithNullURL.getPosterURL());
         assertEquals(false, testEventWithNullID.getGeolocation());
@@ -96,5 +113,3 @@ public class EventClassTest {
     }
 
 }
-
- */

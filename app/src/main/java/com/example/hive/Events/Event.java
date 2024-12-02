@@ -365,17 +365,17 @@ public class Event implements Parcelable {
      * @param poster The URL to set this event's <code>posterURL</code> to.
      */
     @PropertyName("poster")
-    public void setPoster(String poster) {
+    public void setPosterURL(String poster) {
         this.poster = poster;
     }
 
     /**
-     * Getter for geolocation
+     * setter for geolocation
      *
      * @return if geolocation is on or off
      */
-    public boolean SetGeolocation() {
-        return geolocation;
+    public void setGeolocation(boolean geolocation) {
+        this.geolocation = geolocation;
     }
 
     /**

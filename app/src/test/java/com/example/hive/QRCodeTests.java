@@ -17,6 +17,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+
+/**
+ * QR code model tests.
+ */
 public class QRCodeTests {
 
     private QRCode qrCode;
