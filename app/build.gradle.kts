@@ -98,11 +98,8 @@ dependencies {
     implementation(libs.core)
     implementation(libs.zxing.android.embedded)
 
-
-
-
-
-
     // JavaDoc
-//    implementation(files("C:/Users/Zach/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
+    // implementation(files("C:/Users/Zach/AppData/Local/Android/Sdk/platforms/android-34/android.jar"))
 }
+
+

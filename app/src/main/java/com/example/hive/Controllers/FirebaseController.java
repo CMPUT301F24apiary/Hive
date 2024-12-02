@@ -154,7 +154,7 @@ public class FirebaseController {
 
     /**
      * Fetch all users from db
-     * @return CompletableFuture<List<Users>> aka a list of users (in the future, when the operation is complete)
+     * @return CompletableFuture&lt;List&lt;Users&gt;&gt; aka a list of users (in the future, when the operation is complete)
      */
     public CompletableFuture<List<User>> fetchAllUsers() {
         db = getDb();

@@ -2,6 +2,7 @@ com.example.hive
 com.example.hive.AdminEvent
 com.example.hive.AdminImage
 com.example.hive.Controllers
+com.example.hive.DateAndTimePickers
 com.example.hive.Events
 com.example.hive.Models
 com.example.hive.Views
