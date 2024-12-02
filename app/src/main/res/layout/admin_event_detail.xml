@@ -56,6 +56,7 @@
             android:paddingEnd="8dp"
             android:text="@string/event_date_default"
             android:textColor="@color/white"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/event_detail_title" />
@@ -77,6 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/event_location_default"
+                android:textSize="18sp"
                 android:textColor="@color/white" />
 
             <Space
@@ -88,6 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/event_cost_default"
+                android:textSize="18sp"
                 android:textColor="@color/white" />
         </LinearLayout>
 
@@ -120,6 +123,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/event_num_participants_default"
+                android:textSize="18sp"
                 android:textColor="@color/white" />
         </LinearLayout>
 
@@ -131,7 +135,9 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:text="@string/event_description_default"
+            android:paddingTop="20dp"
             android:textColor="@color/white"
+            android:textSize="22sp"
             app:layout_constraintTop_toBottomOf="@id/event_number_participants_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -153,8 +159,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:backgroundTint="@color/common_google_signin_btn_text_dark_focused"
-                android:text="X QR Code" />
+                android:backgroundTint="#303C51"
+                android:text="X QR Code"
+                android:textSize="18sp"
+                android:layout_marginEnd="8dp"/>
 
             <Button
                 android:id="@+id/delete_event_button"
@@ -162,7 +170,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/mainRed"
-                android:text="X Event" />
+                android:text="X Event"
+                android:textSize="18sp"
+                android:layout_marginStart="8dp"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

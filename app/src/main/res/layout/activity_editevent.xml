@@ -42,9 +42,10 @@
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="Name"
+                android:text="Name:"
                 android:textColor="@color/mainGreen"
                 android:textSize="22sp"
+                android:textStyle="bold"
                 android:gravity="center_vertical" />
 
             <EditText
@@ -67,9 +68,10 @@
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="Date"
+                android:text="Date:"
                 android:textColor="@color/mainGreen"
                 android:textSize="22sp"
+                android:textStyle="bold"
                 android:gravity="center_vertical" />
 
             <Button
@@ -77,7 +79,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/mainGreen"
-                android:text="Choose Date" />
+                android:text="Choose Date"
+                android:textSize="16sp"/>
         </LinearLayout>
 
         <!-- New Event Time field -->
@@ -91,9 +94,10 @@
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="Time"
+                android:text="Time:"
                 android:textColor="@color/mainGreen"
                 android:textSize="22sp"
+                android:textStyle="bold"
                 android:gravity="center_vertical" />
 
             <EditText
@@ -112,7 +116,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/mainGreen"
-                android:text="Choose Time" />
+                android:text="Choose Time"
+                android:textSize="16sp"/>
 
         </LinearLayout>
 
@@ -126,14 +131,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="Duration"
+                android:text="Duration:"
                 android:textColor="@color/mainGreen"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/eventDuration"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
                 android:inputType="time"
@@ -153,6 +160,7 @@
                 android:text="Cost:"
                 android:textColor="@color/mainGreen"
                 android:textSize="20sp"
+                android:textStyle="bold"
                 android:gravity="center_vertical" />
 
             <EditText
@@ -175,9 +183,10 @@
             <TextView
                 android:layout_width="230dp"
                 android:layout_height="wrap_content"
-                android:text="Number of Participants:"
+                android:text="Participant Capacity:"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp"
+                android:textSize="22sp"
+                android:textStyle="bold"
                 android:gravity="center_vertical" />
 
             <EditText
@@ -202,7 +211,8 @@
                 android:layout_height="wrap_content"
                 android:text="Entrant Limit:"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp"
+                android:textSize="22sp"
+                android:textStyle="bold"
                 android:gravity="center_vertical" />
 
             <EditText
@@ -225,9 +235,10 @@
             <TextView
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:text="Selection Date"
+                android:text="Selection Date:"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp"
+                android:textSize="22sp"
+                android:textStyle="bold"
                 android:gravity="center_vertical" />
 
             <Button
@@ -235,7 +246,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/mainGreen"
-                android:text="Choose Date" />
+                android:text="Choose Date"
+                android:textSize="16sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -247,16 +259,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Allow Replacement Draw"
+                android:text="Replacement Draw:"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp"
+                android:textSize="22sp"
+                android:textStyle="bold"
                 android:gravity="center_vertical" />
 
             <ToggleButton
                 android:id="@+id/toggleReplacementDraw"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp" />
+                android:layout_marginStart="8dp"
+                android:textSize="16sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -268,16 +282,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Enable Geolocation for Event"
+                android:text="Geolocation:"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp"
+                android:textSize="22sp"
+                android:textStyle="bold"
                 android:gravity="center_vertical" />
 
             <ToggleButton
                 android:id="@+id/toggleGeolocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp" />
+                android:layout_marginStart="8dp"
+                android:textSize="16sp"/>
         </LinearLayout>
 
         <TextView
@@ -285,7 +301,8 @@
             android:layout_height="wrap_content"
             android:text="Event Description:"
             android:textColor="@color/mainGreen"
-            android:textSize="20sp"
+            android:textSize="22sp"
+            android:textStyle="bold"
             android:layout_marginTop="16dp" />
 
         <EditText
@@ -298,7 +315,8 @@
             android:backgroundTint="@color/white"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:textSize="20sp"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -312,7 +330,8 @@
                 android:layout_height="wrap_content"
                 android:text="Poster"
                 android:textColor="@color/mainGreen"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:layout_weight="3"/>
 
             <ImageView
                 android:id="@+id/addPosterImage"
@@ -341,6 +360,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="32dp"
             android:text="Update"
+            android:textSize="16sp"
             android:textColor="@color/white"
             android:backgroundTint="@color/mainGreen" />
 
