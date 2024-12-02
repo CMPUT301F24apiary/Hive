@@ -12,6 +12,8 @@
  */
 package com.example.hive;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -35,10 +37,12 @@ import com.example.hive.Views.AdminProfileViewActivity;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    FirebaseController firebaseController;
+
     private Button editProfileButton;
     private ImageView backArrow;
     private ImageView profilePicture;  // You missed initializing the profile picture in your earlier code.
-    private TextView personNameText, userNameText, emailText, phoneText;
+    private TextView personNameText, emailText, phoneText;
     private String deviceId;
 
     /**
@@ -49,6 +53,7 @@ public class ProfileActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        firebaseController = new FirebaseController();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
@@ -79,9 +84,7 @@ public class ProfileActivity extends AppCompatActivity {
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Notify the user when the back arrow is clicked
-                Toast.makeText(ProfileActivity.this, "Back arrow clicked", Toast.LENGTH_SHORT).show();
-
+//                Toast.makeText(ProfileActivity.this, "Back arrow clicked", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -100,8 +103,7 @@ public class ProfileActivity extends AppCompatActivity {
      * Loads profile data from Firebase and displays it in the corresponding TextViews.
      */
     public void loadProfileData(String deviceId) {
-        FirebaseController controller = new FirebaseController();
-        controller.fetchUserByDeviceId(deviceId, new FirebaseController.OnUserFetchedListener() {
+        firebaseController.fetchUserByDeviceId(deviceId, new FirebaseController.OnUserFetchedListener() {
             @Override
             public void onUserFetched(User user) {
                 if (user != null) {

@@ -142,8 +142,8 @@ public class ProfileEditActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (isValidInput()) {
                     saveProfileData();
-                    setResult(RESULT_OK);
-                    finish();
+//                    setResult(RESULT_OK);
+//                    finish();
                 }
             }
         });
@@ -316,17 +316,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
-    /**
-     * Converts a Base64 encoded string back to a Bitmap.
-     *
-     * @param base64Str The Base64 encoded string.
-     * @return The decoded Bitmap.
-     */
-    Bitmap base64ToBitmap(String base64Str) {
-        byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-    }
-
 
     /**
      * Loads the profile data from SharedPreferences and populates the input fields.
@@ -397,7 +386,7 @@ public class ProfileEditActivity extends AppCompatActivity {
         if (pfpUri == null) {
             fbControl.updateUserByDeviceId(deviceId, data, didUpdate -> {
                 if (didUpdate) {
-                    finish();
+                    sentResultAndFinish();
                 } else {
                     Toast.makeText(
                             ProfileEditActivity.this,
@@ -411,12 +400,11 @@ public class ProfileEditActivity extends AppCompatActivity {
             try {
                 imgControl.saveImage(this, pfpUri, "profile picture")
                         .addOnSuccessListener(urlAndID -> {
-
                             data.put("profileImageUrl", urlAndID.first);
                             fbControl.updateUserByDeviceId(deviceId, data, didUpdate -> {
                                 if (didUpdate) {
                                     imgControl.updateImageRef(urlAndID.second, deviceId);
-                                    finish();
+                                    sentResultAndFinish();
                                 } else {
                                     Toast.makeText(ProfileEditActivity.this,
                                             "Could not update user",
@@ -433,7 +421,7 @@ public class ProfileEditActivity extends AppCompatActivity {
 
                             fbControl.updateUserByDeviceId(deviceId, data, didUpdate -> {
                                 if (didUpdate) {
-                                    finish();
+                                    sentResultAndFinish();
                                 } else {
                                     Toast.makeText(ProfileEditActivity.this,
                                             "Could not update user",
@@ -449,6 +437,13 @@ public class ProfileEditActivity extends AppCompatActivity {
         }
 
     }
+
+    private void sentResultAndFinish() {
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
     public void setSharedPreferencesForTesting(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
     }
