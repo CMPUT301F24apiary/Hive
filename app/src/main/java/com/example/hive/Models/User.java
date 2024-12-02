@@ -19,7 +19,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * create a user object.
+ * Represents a user in the Hive application.
+ * This class includes user details such as device ID, username, email, phone number, role, and profile image.
+ * The user can have multiple roles and notifications settings.
+ *
+ * @Author Aleena.
  */
 public class User {
     private static User instance = null;
@@ -41,6 +45,11 @@ public class User {
     @PropertyName("events")
     private ArrayList<String> eventIDs;
 
+    /**
+     * Returns the singleton instance of the User class.
+     *
+     * @return The singleton User instance.
+     */
     public static User getInstance() {
         if (instance == null) {
             instance = new User();
@@ -49,15 +58,16 @@ public class User {
     }
 
     /**
-     * constructor for user with known details
-     * @param deviceId device id
-     * @param userName name of user
-     * @param email email
-     * @param phoneNumber phone number
-     * @param role current role of user
-     * @param roleList all roles user can have
-     * @param db database instance
-     * @param profileImageUrl uses Glide
+     * Constructor for creating a user with known details.
+     *
+     * @param deviceId The device ID.
+     * @param userName The name of the user.
+     * @param email The email address of the user.
+     * @param phoneNumber The phone number of the user (optional).
+     * @param role The current role of the user.
+     * @param roleList All roles the user can have.
+     * @param db The Firebase Firestore database instance.
+     * @param profileImageUrl The URL of the user's profile image.
      */
     public User(String deviceId, String userName, String email, String phoneNumber,
                 String role, List<String> roleList, FirebaseFirestore db, String profileImageUrl) {
@@ -69,9 +79,11 @@ public class User {
         this.roleList = roleList != null ? new ArrayList<>(roleList) : new ArrayList<>();
         this.roleList.add("entrant");  // default role
         this.profileImageUrl = profileImageUrl;
-
     }
 
+    /**
+     * Default constructor for creating a user with default details.
+     */
     public User() {
         this.deviceId = "";
         this.userName = "";
@@ -79,8 +91,8 @@ public class User {
         this.phoneNumber = null;
         this.role = "entrant";
         this.roleList = new ArrayList<>();
-        roleList.add("entrant");// default role
-        this.profileImageUrl = ""; // this is the default profile image
+        roleList.add("entrant"); // default role
+        this.profileImageUrl = ""; // default profile image
     }
 
     public String getDeviceId() {
@@ -123,28 +135,59 @@ public class User {
         this.role = role;
     }
 
-    // Add getter and setter methods for the new fields
+    /**
+     * Returns whether notifications for being chosen are enabled.
+     *
+     * @return true if notifications are enabled, false otherwise.
+     */
     public boolean getNotificationChosen() {
         return notificationChosen;
     }
+
+    /**
+     * Sets whether notifications for being chosen are enabled.
+     *
+     * @param notificationChosen true to enable notifications, false to disable.
+     */
     public void setNotificationChosen(boolean notificationChosen) {
         this.notificationChosen = notificationChosen;
     }
 
+    /**
+     * Returns whether notifications for not being chosen are enabled.
+     *
+     * @return true if notifications are enabled, false otherwise.
+     */
     public boolean getNotificationNotChosen() {
         return notificationNotChosen;
     }
+
+    /**
+     * Sets whether notifications for not being chosen are enabled.
+     *
+     * @param notificationNotChosen true to enable notifications, false to disable.
+     */
     public void setNotificationNotChosen(boolean notificationNotChosen) {
         this.notificationNotChosen = notificationNotChosen;
     }
 
+    /**
+     * Returns whether organizer notifications are enabled.
+     *
+     * @return true if notifications are enabled, false otherwise.
+     */
     public boolean getNotificationOrganizer() {
         return notificationOrganizer;
     }
+
+    /**
+     * Sets whether organizer notifications are enabled.
+     *
+     * @param notificationOrganizer true to enable notifications, false to disable.
+     */
     public void setNotificationOrganizer(boolean notificationOrganizer) {
         this.notificationOrganizer = notificationOrganizer;
     }
-
 
     @PropertyName("roleSet")
     public List<String> getRoleList() {
@@ -171,7 +214,6 @@ public class User {
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
         generateInitialsDrawable();
-
     }
 
     @PropertyName("events")
@@ -184,6 +226,11 @@ public class User {
         this.eventIDs = eventIDs;
     }
 
+    /**
+     * Generates the initials for the user based on their username.
+     *
+     * @return The initials of the user.
+     */
     public String getInitials() {
         String initials = "PN";
         if (userName != null && !userName.trim().isEmpty()) {
@@ -196,10 +243,12 @@ public class User {
     }
 
     /**
-     * generate initials profile pic if no profile pic is uploaded
+     * Generates an initials profile picture if no profile picture is uploaded.
+     *
+     * @return A Drawable representing the initials.
      */
     private Drawable generateInitialsDrawable() {
-        //Log.d(TAG, "Generating initials drawable for user: " + userName);
+        // Log.d(TAG, "Generating initials drawable for user: " + userName);
 
         ColorGenerator generator = ColorGenerator.MATERIAL;
         int key = Math.abs(deviceId.hashCode());
@@ -211,22 +260,23 @@ public class User {
 
         String initials = getInitials();
 
-            initialsDrawable = new TextDrawable.Builder()
-                    .setColor(color1)
-                    .setBold()
-                    .setTextColor(color3)
-                    .setShape(TextDrawable.SHAPE_ROUND)
-                    .setText(initials)
-                    .setBorder(20)
-                    .setBorderColor(Color.BLACK)
-                    .build();
+        initialsDrawable = new TextDrawable.Builder()
+                .setColor(color1)
+                .setBold()
+                .setTextColor(color3)
+                .setShape(TextDrawable.SHAPE_ROUND)
+                .setText(initials)
+                .setBorder(20)
+                .setBorderColor(Color.BLACK)
+                .build();
 
         return initialsDrawable;
     }
 
     /**
-     * get either the profile image url or the initials drawable
-     * @return deterministic profile pic only if one has not been generated before
+     * Gets either the profile image URL or the initials drawable.
+     *
+     * @return The Drawable representing the user's display picture, or null if a profile image URL is available.
      */
     public Drawable getDisplayDrawable() {
         if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
