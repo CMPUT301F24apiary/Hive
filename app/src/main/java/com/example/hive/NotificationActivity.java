@@ -34,14 +34,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Activity for displaying and managing notifications for the user.
+ * Users can view notifications related to events, accept or decline invitations, and re-register for events.
+ * This activity also allows clearing notifications from the list.
+ *
+ * @Author Aleena.
+ */
 public class NotificationActivity extends AppCompatActivity {
-
 
     private static final String TAG = NotificationActivity.class.getSimpleName();
     private LinearLayout notificationsContainer;
     private ArrayList<Notification> notifications = new ArrayList<>();
     private String userId;
 
+    /**
+     * Initializes the activity, sets up views, and loads notifications for the user.
+     *
+     * @param savedInstanceState The saved state of the activity, if available.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,17 +64,22 @@ public class NotificationActivity extends AppCompatActivity {
         notificationsContainer = findViewById(R.id.notificationsContainer);
         ImageButton backButton = findViewById(R.id.backButton);
 
+        // Set up back button to return to the EventListActivity
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(NotificationActivity.this, EventListActivity.class);
             startActivity(intent);
             finish();
         });
 
+        // Load notifications for the user
         loadNotifications();
     }
 
+    /**
+     * Loads the notifications for the current user from Firebase Firestore.
+     * If the user ID is null or empty, logs an error and returns.
+     */
     private void loadNotifications() {
-
         if (userId == null || userId.isEmpty()) {
             Log.e(TAG, "User ID is null or empty. Cannot load notifications.");
             return;
@@ -76,7 +92,11 @@ public class NotificationActivity extends AppCompatActivity {
         });
     }
 
-    // Method to get the current user ID, for example using Firebase Authentication.
+    /**
+     * Retrieves the current user ID using Firebase Authentication.
+     *
+     * @return The current user ID, or null if the user is not authenticated.
+     */
     private String getCurrentUserId() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = auth.getCurrentUser();
@@ -88,7 +108,10 @@ public class NotificationActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Displays the list of notifications in the UI.
+     * If there are no notifications, displays a message indicating no notifications are available.
+     */
     private void displayNotifications() {
         notificationsContainer.removeAllViews();
 
@@ -102,6 +125,11 @@ public class NotificationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Adds a notification view to the UI for the given notification.
+     *
+     * @param notification The notification to be displayed.
+     */
     private void addNotificationView(Notification notification) {
         View notificationView = getLayoutInflater().inflate(R.layout.notification_item, notificationsContainer, false);
 
@@ -136,6 +164,12 @@ public class NotificationActivity extends AppCompatActivity {
         notificationsContainer.addView(notificationView);
     }
 
+    /**
+     * Handles the event when the user accepts an invitation.
+     * Adds the user to the final list of participants and clears the corresponding notification.
+     *
+     * @param notification The notification representing the invitation.
+     */
     private void acceptEvent(Notification notification) {
         new ListController().addUserToFinalList(notification.getEventId(), userId, success -> {
             if (success) {
@@ -151,6 +185,12 @@ public class NotificationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the event when the user declines an invitation.
+     * Adds the user to the cancelled list and clears the corresponding notification.
+     *
+     * @param notification The notification representing the invitation.
+     */
     private void declineEvent(Notification notification) {
         new ListController().addUserToCancelledList(notification.getEventId(), userId, success -> {
             if (success) {
@@ -166,6 +206,12 @@ public class NotificationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the event when the user re-registers for an event.
+     * Adds the user back to the waiting list, optionally with geolocation data, and clears the corresponding notification.
+     *
+     * @param notification The notification representing the event.
+     */
     private void reRegisterEvent(Notification notification) {
         new EventController().getSingleEvent(notification.getEventId(), event -> {
             if (event.getGeolocation()) {
@@ -214,16 +260,13 @@ public class NotificationActivity extends AppCompatActivity {
         });
     }
 
-
     /**
      * Retrieves the user's last known location.
      *
      * @return The last known location or null if unavailable.
      */
     private Location getLastKnownLocation() {
-
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
         Location location = null;
 
         // Check if GPS provider is enabled
@@ -265,5 +308,4 @@ public class NotificationActivity extends AppCompatActivity {
         Log.e(TAG, "getLastKnownLocation: Unable to fetch location. Both GPS and Network providers returned null.");
         return null;
     }
-
 }

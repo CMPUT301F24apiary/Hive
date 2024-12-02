@@ -12,7 +12,10 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import org.w3c.dom.Text;
-
+/**
+ * The Facility class represents a facility with its information such as name, email, phone, and picture URL.
+ * It also provides functionality to generate a default profile picture (drawable) based on the facility's name.
+ */
 public class Facility {
 
     private String name;
@@ -24,6 +27,15 @@ public class Facility {
     public Facility() {
 
     }
+
+    /**
+     * Constructor for creating a Facility object with name, email, phone, and optional picture URL.
+     *
+     * @param name      The name of the facility.
+     * @param email     The email address associated with the facility.
+     * @param phone     The phone number associated with the facility.
+     * @param pictureURL The URL of the facility's picture (nullable).
+     */
 
     public Facility(String name, String email, String phone, @Nullable String pictureURL) {
         this.name = name;
@@ -72,6 +84,13 @@ public class Facility {
         this.ID = ID;
     }
 
+    /**
+     * Generates a default profile picture for the facility based on its name's first letter in a
+     * circular shape
+     * The background color is chosen randomly from a predefined color generator.
+     *
+     * @return A Drawable representing the default profile picture for the facility.
+     */
     public Drawable generateDefaultPic() {
         ColorGenerator generator = ColorGenerator.MATERIAL;
         int key = Math.abs((String.valueOf((int) Math.floor(Math.random()))).hashCode());

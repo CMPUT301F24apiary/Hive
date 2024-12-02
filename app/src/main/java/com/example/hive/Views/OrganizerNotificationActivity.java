@@ -3,12 +3,9 @@ package com.example.hive.Views;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -22,16 +19,32 @@ import com.example.hive.Controllers.EventController;
 import com.example.hive.Controllers.ListController;
 import com.example.hive.R;
 
+/**
+ * Activity for sending notifications to different groups of event participants.
+ * Allows organizers to send customized notifications to selected, cancelled,
+ * and waiting list participants.
+ *
+ * @author Zach
+ */
 public class OrganizerNotificationActivity extends AppCompatActivity {
 
-    private SwitchCompat selected, cancelled, waiting;
+    /** EditText for notification message */
     private EditText message;
-    private Button sendNotif;
-    private ImageButton back;
+    /** Controller for managing lists */
     private ListController listController;
+    /** Controller for managing events */
     private EventController eventController;
+    /** Flags to track which groups to send notifications to */
     private boolean sendToSelected, sendToCancelled, sendToWaiting;
 
+    /**
+     * Initializes the activity, sets up UI components and event handlers.
+     * Configures switches for selecting recipient groups and handles sending
+     * notifications with confirmation dialogs.
+     *
+     * @param savedInstanceState Bundle: If the activity is being re-initialized after previously
+     *                          being shut down, this contains the data it most recently supplied
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,31 +59,29 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
         listController = new ListController();
         eventController = new EventController();
 
-        selected = findViewById(R.id.selected_entrants_switch);
+        SwitchCompat selected = findViewById(R.id.selected_entrants_switch);
 
         selected.setOnCheckedChangeListener((buttonView, isChecked) -> sendToSelected = isChecked);
 
-        cancelled = findViewById(R.id.cancelled_entrants_switch);
+        SwitchCompat cancelled = findViewById(R.id.cancelled_entrants_switch);
 
         cancelled.setOnCheckedChangeListener((buttonView, isChecked) -> sendToCancelled = isChecked);
 
-        waiting = findViewById(R.id.waiting_list_switch);
+        SwitchCompat waiting = findViewById(R.id.waiting_list_switch);
 
         waiting.setOnCheckedChangeListener((buttonView, isChecked) -> sendToWaiting = isChecked);
 
         message = findViewById(R.id.message_edit_text);
-        sendNotif = findViewById(R.id.send_notif_button);
-        back = findViewById(R.id.back_arrow);
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        Button sendNotif = findViewById(R.id.send_notif_button);
+
+        ImageButton back = findViewById(R.id.back_arrow);
+
+        back.setOnClickListener(v -> finish());
 
         // get event id from prev activity
         String eventID = getIntent().getStringExtra("eventID");
+        Log.d("OrganizerNotif", eventID == null ? "null" : eventID);
         if (eventID == null) {
             finish();
             return;
@@ -97,20 +108,18 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
                 new AlertDialog.Builder(this)
                         .setTitle("Confirm Notification")
                         .setMessage("Are you sure you want to notify all entrants on the selected list?")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-                            eventController.getInvitedList(eventID, successAndList -> {
-                                if (successAndList.first) {
-                                    for (String uid : successAndList.second) {
-                                        listController.addNotification(uid, eventID, "selected", notificationMessage);
-                                    }
-                                    Toast.makeText(this,
-                                            "Successfully sent notification to selected users", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(this,
-                                            "No invited list for this event", Toast.LENGTH_SHORT).show();
+                        .setPositiveButton("Yes", (dialog, which) -> eventController.getInvitedList(eventID, successAndList -> {
+                            if (successAndList.first) {
+                                for (String uid : successAndList.second) {
+                                    listController.addNotification(uid, eventID, "selected", notificationMessage);
                                 }
-                            });
-                        })
+                                Toast.makeText(this,
+                                        "Successfully sent notification to selected users", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(this,
+                                        "No invited list for this event", Toast.LENGTH_SHORT).show();
+                            }
+                        }))
                         .setNegativeButton("Cancel", null)
                         .show();
             }
@@ -120,20 +129,18 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
                 new AlertDialog.Builder(this)
                         .setTitle("Confirm Notification")
                         .setMessage("Are you sure you want to notify all entrants on the cancelled list?")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-                            listController.fetchCancelledList(eventID, uids -> {
-                                if (uids != null) {
-                                    for (String uid : uids) {
-                                        listController.addNotification(uid, eventID, "cancelled", notificationMessage);
-                                    }
-                                    Toast.makeText(this,
-                                            "Successfully sent notification to cancelled users", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(this,
-                                            "No cancelled list for this event", Toast.LENGTH_SHORT).show();
+                        .setPositiveButton("Yes", (dialog, which) -> listController.fetchCancelledList(eventID, uids -> {
+                            if (uids != null) {
+                                for (String uid : uids) {
+                                    listController.addNotification(uid, eventID, "cancelled", notificationMessage);
                                 }
-                            });
-                        })
+                                Toast.makeText(this,
+                                        "Successfully sent notification to cancelled users", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(this,
+                                        "No cancelled list for this event", Toast.LENGTH_SHORT).show();
+                            }
+                        }))
                         .setNegativeButton("Cancel", null)
                         .show();
             }
@@ -144,20 +151,18 @@ public class OrganizerNotificationActivity extends AppCompatActivity {
                 new AlertDialog.Builder(this)
                         .setTitle("Confirm Notification")
                         .setMessage("Are you sure you want to notify all entrants on the waiting list?")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-                            listController.getWaitingListUIDs(eventID, uids -> {
-                                if (uids != null) {
-                                    for (String uid : uids) {
-                                        listController.addNotification(uid, eventID, "waiting", notificationMessage);
-                                    }
-                                    Toast.makeText(this,
-                                            "Successfully sent notification to waiting users", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(this,
-                                            "No waiting list for this event", Toast.LENGTH_SHORT).show();
+                        .setPositiveButton("Yes", (dialog, which) -> listController.getWaitingListUIDs(eventID, uids -> {
+                            if (uids != null) {
+                                for (String uid : uids) {
+                                    listController.addNotification(uid, eventID, "waiting", notificationMessage);
                                 }
-                            });
-                        })
+                                Toast.makeText(this,
+                                        "Successfully sent notification to waiting users", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(this,
+                                        "No waiting list for this event", Toast.LENGTH_SHORT).show();
+                            }
+                        }))
                         .setNegativeButton("Cancel", null)
                         .show();
             }

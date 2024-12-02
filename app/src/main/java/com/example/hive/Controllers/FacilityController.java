@@ -18,15 +18,32 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 
+/**
+ * Controller to handle facility-related operations in the Firestore database.
+ * Extends FirebaseController for base database functionality.
+ *
+ * @author Zach
+ */
 public class FacilityController extends FirebaseController {
 
-    private FirebaseFirestore db;
+    /** Database reference to Firestore */
+    private final FirebaseFirestore db;
 
+    /**
+     * Constructor - initializes the controller with a database reference from parent class
+     */
     public FacilityController() {
         super();
         this.db = super.getDb();
     }
 
+    /**
+     * Retrieves facility details for a user based on their device ID.
+     * Gets the user's facility ID and fetches corresponding facility details.
+     *
+     * @param deviceId The device ID of the user
+     * @param listener Callback to handle the retrieved Facility object
+     */
     public void getUserFacilityDetails(String deviceId, OnSuccessListener<Facility> listener) {
         fetchUserByDeviceId(deviceId, new OnUserFetchedListener() {
             @Override
@@ -49,6 +66,18 @@ public class FacilityController extends FirebaseController {
         });
     }
 
+    /**
+     * Adds a new facility to the database and links it to a user.
+     * Handles optional facility picture upload using ImageController.
+     *
+     * @param context Application context for image handling
+     * @param deviceID The device ID of the user creating the facility
+     * @param name The name of the facility
+     * @param email The email address for the facility
+     * @param phone The phone number for the facility
+     * @param picture Optional Uri of the facility's picture
+     * @param listener Callback to handle the success/failure of the operation
+     */
     public void addFacility(Context context, String deviceID, String name, String email,
                             String phone, @Nullable Uri picture,
                             OnSuccessListener<Boolean> listener) {
@@ -88,6 +117,15 @@ public class FacilityController extends FirebaseController {
         }
     }
 
+    /**
+     * Updates an existing facility's information.
+     * Handles updating or removing facility pictures and other facility data.
+     *
+     * @param context Application context for image handling
+     * @param deviceID The device ID of the user editing the facility
+     * @param data HashMap containing the fields to update and their new values
+     * @param listener Callback to handle the success/failure of the operation
+     */
     public void editFacility(Context context, String deviceID, HashMap<String, Object> data,
                              OnSuccessListener<Boolean> listener) {
         Uri picture = (Uri) data.get("pictureUri");
@@ -129,6 +167,12 @@ public class FacilityController extends FirebaseController {
         });
     }
 
+    /**
+     * Deletes a facility and removes the facility ID from the associated user.
+     *
+     * @param deviceID The device ID of the user whose facility should be deleted
+     * @param listener Callback to handle the success/failure of the deletion
+     */
     public void deleteFacility(String deviceID, OnSuccessListener<Boolean> listener) {
         fetchUserByDeviceId(deviceID, new OnUserFetchedListener() {
             @Override

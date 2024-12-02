@@ -21,11 +21,20 @@ import java.util.Map;
 
 /**
  * This class handles actions for notifications such as "Accept", "Decline", and "Re-register".
+ * It manages user actions based on notifications received by the Hive application.
+ *
+ * @author Aleena
  */
 public class NotificationActionReceiver extends BroadcastReceiver {
 
     private static final String TAG = "NotificationActionReceiver";
 
+    /**
+     * Receives the broadcast and determines the action to take based on the intent's action.
+     *
+     * @param context The application context.
+     * @param intent  The intent containing the action and related data.
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent == null || intent.getAction() == null) {
@@ -66,6 +75,11 @@ public class NotificationActionReceiver extends BroadcastReceiver {
 
     /**
      * Handles the "Accept" action by adding the user to the final participants list.
+     *
+     * @param context        The application context.
+     * @param eventId        The ID of the event.
+     * @param userId         The ID of the user.
+     * @param notificationId The ID of the notification to be cleared.
      */
     private void handleAcceptAction(Context context, String eventId, String userId, String notificationId) {
         new ListController().addUserToFinalList(eventId, userId, success -> {
@@ -89,6 +103,11 @@ public class NotificationActionReceiver extends BroadcastReceiver {
 
     /**
      * Handles the "Decline" action by adding the user to the canceled list.
+     *
+     * @param context        The application context.
+     * @param eventId        The ID of the event.
+     * @param userId         The ID of the user.
+     * @param notificationId The ID of the notification to be cleared.
      */
     private void handleDeclineAction(Context context, String eventId, String userId, String notificationId) {
         new ListController().addUserToCancelledList(eventId, userId, success -> {
@@ -112,6 +131,12 @@ public class NotificationActionReceiver extends BroadcastReceiver {
 
     /**
      * Handles the "Re-register" action by adding the user back to the waiting list.
+     *
+     * @param context        The application context.
+     * @param db             The Firebase Firestore instance.
+     * @param eventId        The ID of the event.
+     * @param userId         The ID of the user.
+     * @param notificationId The ID of the notification to be cleared.
      */
     private void handleReRegisterAction(Context context, FirebaseFirestore db, String eventId, String userId, String notificationId) {
         FirebaseController fbControl = new FirebaseController();
@@ -169,13 +194,14 @@ public class NotificationActionReceiver extends BroadcastReceiver {
             }
         });
     }
+
     /**
      * Retrieves the user's last known location.
      *
+     * @param context The application context.
      * @return The last known location or null if unavailable.
      */
     private Location getLastKnownLocation(Context context) {
-
         Location location = null;
 
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
