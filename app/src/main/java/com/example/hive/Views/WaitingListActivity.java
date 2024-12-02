@@ -84,9 +84,9 @@ public class WaitingListActivity extends AppCompatActivity {
 
         // Back button logic
         findViewById(R.id.back_button).setOnClickListener(v -> {
-            Intent intent = new Intent(WaitingListActivity.this, OptionsPageActivity.class);
-            intent.putExtra("eventId", eventId); // Pass the eventId back to OptionsPageActivity
-            startActivity(intent);
+//            Intent intent = new Intent(WaitingListActivity.this, OptionsPageActivity.class);
+//            intent.putExtra("eventId", eventId); // Pass the eventId back to OptionsPageActivity
+//            startActivity(intent);
             finish();
         });
 

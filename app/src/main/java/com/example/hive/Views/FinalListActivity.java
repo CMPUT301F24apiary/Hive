@@ -75,9 +75,9 @@ public class FinalListActivity extends AppCompatActivity {
 
         // Back button logic
         findViewById(R.id.back_button).setOnClickListener(v -> {
-            Intent intent = new Intent(FinalListActivity.this, OptionsPageActivity.class);
-            intent.putExtra("eventId", eventId); // Pass the eventId back to OptionsPageActivity
-            startActivity(intent);
+//            Intent intent = new Intent(FinalListActivity.this, OptionsPageActivity.class);
+//            intent.putExtra("eventId", eventId); // Pass the eventId back to OptionsPageActivity
+//            startActivity(intent);
             finish();
         });
 

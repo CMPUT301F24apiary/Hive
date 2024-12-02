@@ -45,9 +45,9 @@ public class OptionsPageActivity extends AppCompatActivity {
 
         // Back button logic
         findViewById(R.id.back_button).setOnClickListener(v -> {
-            Intent intent = new Intent(OptionsPageActivity.this, EventDetailActivity.class);
-            intent.putExtra("eventId", eventId); // Pass eventId back to EventDetailActivity
-            startActivity(intent);
+//            Intent intent = new Intent(OptionsPageActivity.this, EventDetailActivity.class);
+//            intent.putExtra("eventId", eventId); // Pass eventId back to EventDetailActivity
+//            startActivity(intent);
             finish();
         });
 
