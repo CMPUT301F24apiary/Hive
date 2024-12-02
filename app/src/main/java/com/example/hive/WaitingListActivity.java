@@ -23,6 +23,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for managing and displaying the waiting list of entrants for a specific event.
+ * Users can search for entrants using a real-time filtering search bar.
+ *
+ * @author Aleena
+ */
 public class WaitingListActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
@@ -31,6 +37,11 @@ public class WaitingListActivity extends AppCompatActivity {
     private String eventId;
     private FirebaseController fbControl;
 
+    /**
+     * Initializes the activity, sets up views, and fetches the waiting list for the specified event.
+     *
+     * @param savedInstanceState The saved state of the activity, if available.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +49,6 @@ public class WaitingListActivity extends AppCompatActivity {
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
-
         fbControl = new FirebaseController();
 
         // Get eventId from intent
@@ -86,6 +96,10 @@ public class WaitingListActivity extends AppCompatActivity {
         fetchWaitingList();
     }
 
+    /**
+     * Fetches the waiting list for the specified event from Firestore and sets up a real-time listener.
+     * The waiting list is displayed in the ListView, and updates are reflected in real-time.
+     */
     private void fetchWaitingList() {
         Log.d("WaitingListActivity", "Setting up real-time listener for waiting list for eventId: " + eventId);
 
@@ -126,7 +140,6 @@ public class WaitingListActivity extends AppCompatActivity {
                                                 Log.d("WaitingListActivity", "Entrants list updated in real-time: " + entrantsList);
                                             }
                                         }
-
                                     }
 
                                     @Override
@@ -142,6 +155,5 @@ public class WaitingListActivity extends AppCompatActivity {
                         }
                     });
                 });
-
     }
 }

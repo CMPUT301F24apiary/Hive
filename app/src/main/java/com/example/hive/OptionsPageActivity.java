@@ -10,10 +10,21 @@ import com.example.hive.Events.EventDetailActivity;
 import com.example.hive.Views.EntrantMapActivity;
 import com.example.hive.Views.InvitedEntrantsActivity;
 
+/**
+ * Activity for displaying various options for an event.
+ * This activity allows users to navigate to different sections such as invited entrants, waiting list, participants, etc.
+ *
+ * @author Aleena
+ */
 public class OptionsPageActivity extends AppCompatActivity {
 
     private String eventId;
 
+    /**
+     * Initializes the activity, sets up views, and handles button click events.
+     *
+     * @param savedInstanceState The saved state of the activity, if available.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +59,6 @@ public class OptionsPageActivity extends AppCompatActivity {
             intent.putExtra("eventId", eventId); // Pass the eventId to WaitingListActivity
             startActivity(intent);
         });
-
 
         invitedEntrantsButton.setOnClickListener(v -> {
             // Navigate to invited entrants activity
