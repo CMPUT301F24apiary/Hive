@@ -153,6 +153,4 @@ public class ProfileActivity extends AppCompatActivity {
             loadProfileData(deviceId);
         }
     }
-
-
 }

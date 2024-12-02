@@ -438,6 +438,9 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * finish when user saves edits to their profile.
+     */
     private void sentResultAndFinish() {
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
