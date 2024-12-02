@@ -29,8 +29,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class EventController extends FirebaseController {
 
-    // Database reference
+    /** Database reference to Firestore */
     private final FirebaseFirestore db;
+    /** Reference to most recently saved event for testing purposes */
     private Event lastSavedEvent;
 
     /**
@@ -47,6 +48,14 @@ public class EventController extends FirebaseController {
         return lastSavedEvent;
     }
 
+    /**
+     * Adds a new event to Firestore and associates it with the user's device ID.
+     * Creates a waiting list document and links it to the event.
+     *
+     * @param event The Event object to be added to the database
+     * @param deviceID The device ID of the user creating the event
+     * @param listener Callback to handle the event ID after successful creation
+     */
     public void addEvent(Event event, String deviceID, OnSuccessListener<String> listener) {
         HashMap<String, Object> data = event.getAll();
         data.put("isLotteryDrawn", Boolean.FALSE);
@@ -73,6 +82,13 @@ public class EventController extends FirebaseController {
         });
     }
 
+    /**
+     * Updates an existing event in Firestore. If the event's firebaseID is null,
+     * attempts to fetch it using the event's title and start date.
+     *
+     * @param event The Event object containing updated information
+     * @param listener Callback to handle the event ID after successful update
+     */
     public void updateEvent(Event event, OnSuccessListener<String> listener) {
         if (event.getFirebaseID() == null) {
             Log.w("EventController", "Event ID is null. Fetching event ID...");
@@ -112,10 +128,8 @@ public class EventController extends FirebaseController {
      * Gets all event information from events collection of database. Once all data is retrieved,
      * callback function is called.
      *
-     * @param callback
-     * The function to run after all data has been retrieved.
+     * @param callback The function to run after all data has been retrieved
      */
-
     public void getAllEventsFromDB(OnSuccessListener<ArrayList<Event>> callback) {
         ArrayList<Event> data = new ArrayList<>();
         CollectionReference eventsCollection = db.collection("events");
@@ -155,14 +169,14 @@ public class EventController extends FirebaseController {
             callback.onSuccess(data);
         }).addOnFailureListener(e -> Log.e("ModelGetAll", "Error fetching data", e));
     }
+
     /**
      * Gets all event information from events collection of database that were made by given user.
      * Once all data is retrieved, callback function is called.
      *
-     * @param callback
-     * The function to run after all data has been retrieved.
+     * @param deviceID The device ID of the user whose events to fetch
+     * @param callback The function to run after all data has been retrieved
      */
-
     public void getOrganizersEventsFromDB(String deviceID, OnSuccessListener<ArrayList<Event>> callback) {
         ArrayList<Event> data = new ArrayList<>();
         CollectionReference eventsCollection = db.collection("events");
@@ -227,45 +241,6 @@ public class EventController extends FirebaseController {
         });
     }
 
-//        eventsCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
-//            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-//                String id = doc.getId();
-//                String title = (String) doc.get("title");
-//                Long startDateLong = (Long) doc.get("startDateInMS");
-//                Long endDateLong = (Long) doc.get("endDateInMS");
-//                String cost = (String) doc.get("cost");
-//                Long entrantLimitLong = (Long) doc.get("entrantLimit");
-//                Integer entrantLimit = null;
-//                if (entrantLimitLong != null) {
-//                    entrantLimit = entrantLimitLong.intValue(); // Convert to Integer if not null
-//                }
-//                String duration = (String) doc.get("duration");
-//                String description = (String) doc.get("description");
-//                String location = (String) doc.get("location");
-//                String posterTemp = (String) doc.get("poster");
-//                long numParticipantsLong = (long) doc.get("numParticipants");
-//                Long selectionDateLong = (Long) doc.get("selectionDate");
-//                boolean geolocationOn = (boolean) doc.get("geolocation");
-//                boolean replacementDrawOn = (boolean) doc.get("replacementDrawAllowed");
-//                String posterURL = Objects.equals(posterTemp, "") ? null : posterTemp;
-//                boolean isLotteryDrawn = (boolean) doc.get("isLotteryDrawn");
-//
-//
-//                // Check if the required fields are null before creating the event object
-//                if (startDateLong != null && endDateLong != null && selectionDateLong != null) {
-//                    Event newEvent = new Event(title, cost, startDateLong, endDateLong, id,
-//                            description, (int) numParticipantsLong, location, posterURL,
-//                            selectionDateLong, entrantLimit, duration, geolocationOn,
-//                            replacementDrawOn, isLotteryDrawn);
-//                    data.add(newEvent);
-//                } else {
-//                    Log.d("EventController", "One of the required fields is null for event: " + id);
-//                }
-//            }
-//            // Notify the callback with the fetched data
-//            callback.onSuccess(data);
-//        }).addOnFailureListener(e -> Log.e("ModelGetAll", "Error fetching data", e));
-
     /**
      * Deletes a single event from the database with provided id. Handles the case in which the
      * document does not exist, or the deletion fails.
@@ -275,7 +250,7 @@ public class EventController extends FirebaseController {
      * @param callback
      * The callback function to call on either success or failure. Must have a Boolean parameter.
      */
- public void deleteSingleEventFromDB(String id, OnSuccessListener<Boolean> callback) {
+     public void deleteSingleEventFromDB(String id, OnSuccessListener<Boolean> callback) {
         CollectionReference eventsCollection = db.collection("events");
         // First, check if the document exists
         eventsCollection.document(id).get().addOnSuccessListener(documentSnapshot -> {
@@ -298,6 +273,12 @@ public class EventController extends FirebaseController {
         });
     }
 
+    /**
+     * Retrieves a single event from Firestore by its ID.
+     *
+     * @param id The ID of the event to retrieve
+     * @param listener Callback to handle the retrieved Event object
+     */
     public void getSingleEvent(String id, OnSuccessListener<Event> listener) {
         CollectionReference eventsCollection = db.collection("events");
 
@@ -308,6 +289,13 @@ public class EventController extends FirebaseController {
                 });
     }
 
+    /**
+     * Retrieves a specific field from an event document.
+     *
+     * @param id The ID of the event
+     * @param whichField The name of the field to retrieve
+     * @param listener Callback to handle the retrieved field value
+     */
     public void getField(String id, String whichField, OnSuccessListener<Object> listener) {
         CollectionReference eventsCollection = db.collection("events");
 
@@ -321,6 +309,12 @@ public class EventController extends FirebaseController {
         });
     }
 
+    /**
+     * Retrieves the invited list for an event.
+     *
+     * @param eventID The ID of the event
+     * @param listener Callback with a Pair containing success status and list of invited user IDs
+     */
     public void getInvitedList(String eventID, OnSuccessListener<Pair<Boolean, ArrayList<String>>> listener) {
         CollectionReference eventsCollection = db.collection("events");
 
@@ -341,6 +335,12 @@ public class EventController extends FirebaseController {
                 });
     }
 
+    /**
+     * Adds a list of invited users to an event and marks the lottery as drawn.
+     *
+     * @param eventID The ID of the event
+     * @param invited ArrayList of user IDs to add to the invited list
+     */
     public void addInvitedList(String eventID, ArrayList<String> invited) {
         CollectionReference eventsCollection = db.collection("events");
 
@@ -354,36 +354,12 @@ public class EventController extends FirebaseController {
         eventsCollection.document(eventID).update(data);
     }
 
-//    public void runLottery(Context context, String eventID, int maxWinners, ListController listController) {
-//        // Fetch the waiting list of entrants
-//        listController.getWaitingListUIDs(eventID, waitingList -> {
-//            if (waitingList == null || waitingList.isEmpty()) {
-//                Log.d("EventController", "Waiting list is empty for event: " + eventID);
-//                return;
-//            }
-//
-//            // Randomly select winners from the waiting list
-//            ArrayList<String> winners = listController.generateInvitedList(eventID, waitingList, maxWinners);
-//
-//            // Add the invited list to the event in Firestore
-//            addInvitedList(eventID, winners);
-//
-//            // Notify winners
-//            for (String winner : winners) {
-//                listController.notifyUserWin(context, winner);
-//            }
-//
-//            // Notify users who did not win
-//            for (String entrant : waitingList) {
-//                if (!winners.contains(entrant)) {
-//                    listController.notifyUserLose(context, entrant);
-//                }
-//            }
-//
-//            Log.d("EventController", "Lottery has been drawn for event: " + eventID);
-//        });
-//    }
-
+    /**
+     * Updates the waiting list for an event.
+     *
+     * @param eventID The ID of the event
+     * @param entrants ArrayList of user IDs to update in the waiting list
+     */
     public void updateWaitingList(String eventID, ArrayList<String> entrants) {
      db.collection("events").document(eventID).get().addOnSuccessListener(doc -> {
          String waitingListID = doc.getString("waiting-list-id");

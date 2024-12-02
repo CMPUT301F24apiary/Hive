@@ -53,13 +53,12 @@ public class Event implements Parcelable {
     @PropertyName("finallistID")
     private String finalListID;
 
-
-
-    // No-argument constructor for Firestore
+    /**
+     * No-argument constructor for Firestore.
+     */
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
-
 
     /**
      * Event constructor. Creates a new event object with provided parameters.
@@ -75,6 +74,12 @@ public class Event implements Parcelable {
      *                        instance of a Facility object in the future.
      * @param poster          String: Nullable: The download URL of the event poster related to this event that is stored
      *                        in Firebase cloud storage.
+     * @param selectionDate   long: The date when participant selection occurs.
+     * @param entrantLimit    Integer: Nullable: The maximum number of entrants allowed.
+     * @param duration        String: The duration of the event.
+     * @param geolocation     boolean: Whether geolocation is enabled for this event.
+     * @param replacementDrawAllowed boolean: Whether replacement draws are allowed.
+     * @param isLotteryDrawn  boolean: Whether the lottery has been drawn.
      */
     public Event(String title, String cost, long startDateInMS, long endDateInMS,
                  @Nullable String firebaseID, String description, int numParticipants,
@@ -98,7 +103,6 @@ public class Event implements Parcelable {
         this.waitingList = new HashMap<>();
         this.waitingListId = "";
         this.isLotteryDrawn = isLotteryDrawn;
-
     }
 
     /**
@@ -174,9 +178,20 @@ public class Event implements Parcelable {
         }
     };
 
+    /**
+     * Getter for event title.
+     *
+     * @return The title of the event.
+     */
     public String getTitle() {
         return title;
     }
+
+    /**
+     * Setter for event title.
+     *
+     * @param title String: The title to set for this event.
+     */
     public void setTitle(String title) {
         this.title = title;
     }
@@ -189,12 +204,21 @@ public class Event implements Parcelable {
     public String getStartDate() {
         return getDateAndTimeFromMS(this.startDateInMS)[0];
     }
+
+    /**
+     * Getter to get selection date in human readable format. Returns date as "mmm dd" i.e. "Jan 01"
+     *
+     * @return The date in human readable format
+     */
     public String getSelectionDate() {
         return getDateAndTimeFromMS(this.selectionDate)[0];
     }
 
-
-
+    /**
+     * Setter for start date.
+     *
+     * @param startDate long: The start date in milliseconds since epoch.
+     */
     public void setStartDate(long startDate) {
         this.startDateInMS = startDate;
     }
@@ -207,6 +231,12 @@ public class Event implements Parcelable {
     public String getEndDate() {
         return getDateAndTimeFromMS(this.endDateInMS)[0];
     }
+
+    /**
+     * Setter for end date.
+     *
+     * @param endDate long: The end date in milliseconds since epoch.
+     */
     public void setEndDate(long endDate) {
         this.endDateInMS = endDate;
     }
@@ -239,12 +269,24 @@ public class Event implements Parcelable {
     public String getCost() {
         return cost;
     }
+
+    /**
+     * Setter for event cost.
+     *
+     * @param cost String: The cost to set for this event.
+     */
     public void setCost(String cost) {
         this.cost = cost;
     }
 
-    public Integer getEntrantLimit(){
-        return entrantLimit; }
+    /**
+     * Getter for entrant limit.
+     *
+     * @return The maximum number of entrants allowed for this event, or null if unlimited.
+     */
+    public Integer getEntrantLimit() {
+        return entrantLimit;
+    }
 
     /**
      * Getter for start time, in MS since epoch.
@@ -264,7 +306,14 @@ public class Event implements Parcelable {
         return endDateInMS;
     }
 
-    public long getSelectionDateInMS() { return selectionDate; }
+    /**
+     * Getter for selection date in milliseconds.
+     *
+     * @return The selection date in milliseconds since epoch.
+     */
+    public long getSelectionDateInMS() {
+        return selectionDate;
+    }
 
     /**
      * Getter for firebase ID.
@@ -284,15 +333,30 @@ public class Event implements Parcelable {
         return description;
     }
 
-    public String getDuration(){
+    /**
+     * Getter for event duration.
+     *
+     * @return The duration of the event.
+     */
+    public String getDuration() {
         return duration;
     }
 
+    /**
+     * Getter for lottery drawn status.
+     *
+     * @return boolean: Whether the lottery has been drawn for this event.
+     */
     @PropertyName("isLotteryDrawn")
     public boolean isLotteryDrawn() {
         return isLotteryDrawn;
     }
 
+    /**
+     * Setter for lottery drawn status.
+     *
+     * @param lotteryDrawn boolean: The lottery drawn status to set.
+     */
     @PropertyName("isLotteryDrawn")
     public void setLotteryDrawn(boolean lotteryDrawn) {
         this.isLotteryDrawn = lotteryDrawn;
@@ -306,32 +370,67 @@ public class Event implements Parcelable {
     public String getLocation() {
         return location;
     }
+
+    /**
+     * Getter for waiting list.
+     *
+     * @return HashMap containing user IDs and names of users on the waiting list.
+     */
     public HashMap<String, String> getWaitingList() {
         return waitingList;
     }
+
+    /**
+     * Setter for waiting list.
+     *
+     * @param waitingList HashMap: The waiting list to set for this event.
+     */
     public void setWaitingList(HashMap<String, String> waitingList) {
         this.waitingList = waitingList;
     }
+
+    /**
+     * Adds a user to the waiting list.
+     *
+     * @param userId String: The ID of the user to add.
+     * @param userName String: The name of the user to add.
+     */
     public void addToWaitingList(String userId, String userName) {
         if (waitingList != null) {
             waitingList.put(userId, userName);
         }
     }
+
+    /**
+     * Removes a user from the waiting list.
+     *
+     * @param userId String: The ID of the user to remove.
+     */
     public void removeFromWaitingList(String userId) {
         if (waitingList != null) {
             waitingList.remove(userId);
         }
     }
+
+    /**
+     * Setter for waiting list ID.
+     *
+     * @param waitingListId String: The ID to set for the waiting list document.
+     */
     @PropertyName("waiting-list-id")
     public void setWaitingListId(String waitingListId) {
         this.waitingListId = waitingListId;
     }
 
+    /**
+     * Getter for waiting list ID.
+     *
+     * @return String: The ID of the waiting list document in Firestore.
+     */
     @PropertyName("waiting-list-id")
     public String getWaitingListId() {
         return waitingListId;
     }
-
 
     /**
      * Getter for this events poster download URL.
@@ -343,9 +442,20 @@ public class Event implements Parcelable {
         return poster;
     }
 
+    /**
+     * Getter for number of participants.
+     *
+     * @return The number of participants for this event.
+     */
     public int getNumParticipants() {
         return numParticipants;
     }
+
+    /**
+     * Setter for number of participants.
+     *
+     * @param numParticipants int: The number of participants to set for this event.
+     */
     public void setNumParticipants(int numParticipants) {
         this.numParticipants = numParticipants;
     }
@@ -370,66 +480,95 @@ public class Event implements Parcelable {
     }
 
     /**
-     * Getter for geolocation
+     * Getter for geolocation setting.
      *
-     * @return if geolocation is on or off
+     * @param geolocation Whether geolocation is enabled for this event.
      */
-    public boolean SetGeolocation() {
-        return geolocation;
+    public void SetGeolocation(boolean geolocation) {
+        this.geolocation = geolocation;
     }
 
     /**
-     * Setter for geolocation
+     * Getter for geolocation setting.
      *
+     * @return boolean: Whether geolocation is enabled for this event.
      */
     public boolean getGeolocation() {
-
         return geolocation;
     }
 
-
     /**
-     * Getter for replacement draw
+     * Getter for replacement draw setting.
      *
-     * @return if replacement draw is on or off
+     * @return boolean: Whether replacement draw is allowed for this event.
      */
     public boolean isReplacementDrawAllowed() {
         return replacementDrawAllowed;
     }
 
     /**
-     * Setter for replacement draw
+     * Setter for replacement draw setting.
      *
-     * @param replacementDrawAllowed boolean: sets the value for replacement draw
+     * @param replacementDrawAllowed boolean: Whether to allow replacement draws.
      */
     public void setReplacementDrawAllowed(boolean replacementDrawAllowed) {
         this.replacementDrawAllowed = replacementDrawAllowed;
     }
 
+    /**
+     * Getter for cancelled list ID.
+     *
+     * @return String: The ID of the cancelled list document in Firestore.
+     */
     @PropertyName("cancelledlistID")
     public String getCancelledListID() {
         return cancelledListID;
     }
 
+    /**
+     * Setter for cancelled list ID.
+     *
+     * @param cancelledListID String: The ID to set for the cancelled list document.
+     */
     @PropertyName("cancelledlistID")
     public void setCancelledListID(String cancelledListID) {
         this.cancelledListID = cancelledListID;
     }
 
+    /**
+     * Getter for final list ID.
+     *
+     * @return String: The ID of the final list document in Firestore.
+     */
     @PropertyName("finallistID")
     public String getFinalListID() {
         return finalListID;
     }
 
+    /**
+     * Setter for final list ID.
+     *
+     * @param finalListID String: The ID to set for the final list document.
+     */
     @PropertyName("finallistID")
     public void setFinalListID(String finalListID) {
         this.finalListID = finalListID;
     }
 
+    /**
+     * Getter for QR code.
+     *
+     * @return String: The QR code associated with this event.
+     */
     public String getQrCode() {
         return qrCode;
     }
 
+    /**
+     * Setter for QR code.
+     *
+     * @param qrCode String: The QR code to set for this event.
+     */
     public void setQrCode(String qrCode) {
         this.qrCode = qrCode;
     }
@@ -457,6 +596,12 @@ public class Event implements Parcelable {
         return data;
     }
 
+    /**
+     * Gets date in dash-separated format (dd-MM-yyyy).
+     *
+     * @param whichDate String: Which date to format ("start", "end", or "selection").
+     * @return The formatted date string, or empty string if invalid date type provided.
+     */
     public String getDateInDashFormat(String whichDate) {
         switch (whichDate) {
             case "start": {
@@ -493,5 +638,4 @@ public class Event implements Parcelable {
         String formatted = sdf.format(dateAsDate);
         return formatted.split("-");
     }
-
 }
