@@ -16,6 +16,12 @@ import com.example.hive.NotificationActivity;
 import com.example.hive.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+/**
+ * Controller class for managing notifications in the Hive application.
+ * This class handles the creation, display, and clearing of notifications.
+ *
+ * @author Aleena
+ */
 public class NotificationsController {
 
     public static final String CHANNEL_ID = "HiveNotifications";
@@ -27,6 +33,8 @@ public class NotificationsController {
     /**
      * Create the notification channel.
      * Should be called once during app initialization (e.g., in MainActivity or a custom Application class).
+     *
+     * @param context The application context.
      */
     public static void createNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -48,8 +56,8 @@ public class NotificationsController {
      * Show a notification with a title and message.
      * Includes a check for the `POST_NOTIFICATIONS` permission.
      *
-     * @param context        The application context.
-     * @param notification   Notification object to display.
+     * @param context      The application context.
+     * @param notification Notification object to display.
      */
     public static void showNotification(Context context, Notification notification) {
         // Check if the app has the required permission to post notifications
@@ -154,7 +162,6 @@ public class NotificationsController {
                 Log.e("NotificationsController", "Failed to post notification due to missing permissions", e);
             }
         });
-
     }
 
     /**
@@ -230,15 +237,21 @@ public class NotificationsController {
         }
     }
 
+    /**
+     * Clears a notification for a specified user and notification ID in Firebase.
+     *
+     * @param userID        The user ID associated with the notification.
+     * @param notificationID The notification ID to clear.
+     * @param listener      The listener to indicate success or failure.
+     */
     public static void clearNotification(String userID, String notificationID, OnSuccessListener<Boolean> listener) {
         new FirebaseController().getDb().collection("users").document(userID)
                 .collection("notifications").document(notificationID).delete()
                 .addOnSuccessListener(v -> {
-            listener.onSuccess(Boolean.TRUE);
-        }).addOnFailureListener(e -> {
-            Log.e("ClearNotification", "Failed", e);
+                    listener.onSuccess(Boolean.TRUE);
+                }).addOnFailureListener(e -> {
+                    Log.e("ClearNotification", "Failed", e);
                     listener.onSuccess(Boolean.FALSE);
-        });
+                });
     }
-
 }
