@@ -12,7 +12,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.hive.Models.Notification;
-import com.example.hive.NotificationActivity;
+import com.example.hive.Views.NotificationActivity;
 import com.example.hive.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 

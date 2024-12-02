@@ -51,7 +51,7 @@
             android:name=".AdminImage.AdminImageListActivity"
             android:exported="false" /> <!-- Set RoleSelectionActivity as the launcher activity for testing -->
         <activity
-            android:name=".RoleSelectionActivity"
+            android:name=".Views.RoleSelectionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,45 +59,45 @@
             </intent-filter>
         </activity> <!-- NotificationActivity and EventListActivity without launcher intent for now -->
         <activity
-            android:name=".NotificationActivity"
+            android:name=".Views.NotificationActivity"
             android:exported="true" />
         <activity
-            android:name=".EventListActivity"
+            android:name=".Events.EventListActivity"
             android:exported="true" />
         <activity
-            android:name=".OptionsPageActivity"
+            android:name=".Views.OptionsPageActivity"
             android:exported="true" />
-        <activity android:name=".WaitingListActivity" />
+        <activity android:name=".Views.WaitingListActivity" />
         <activity android:name="com.journeyapps.barcodescanner.CaptureActivity" />
         <!--
  Keep MainActivity for navigation, but no launcher intent
         <activity android:name=".MainActivity" />
         -->
         <!-- Profile Activities -->
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".ProfileEditActivity" />
-        <activity android:name=".FacilityActivity"
+        <activity android:name=".Views.ProfileActivity" />
+        <activity android:name=".Views.ProfileEditActivity" />
+        <activity android:name=".Views.FacilityActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".EditFacilityProfileActivity"
+        <activity android:name=".Views.EditFacilityProfileActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity><activity android:name=".Views.InvitedEntrantsActivity" />
-        <activity android:name=".EditEventActivity" />
-        <activity android:name=".CancelledListActivity" />
-        <activity android:name=".FinalListActivity" />
-        <activity android:name=".OrganizerEventListActivity"
+        <activity android:name=".Events.EditEventActivity" />
+        <activity android:name=".Views.CancelledListActivity" />
+        <activity android:name=".Views.FinalListActivity" />
+        <activity android:name=".Views.OrganizerEventListActivity"
             android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
         </intent-filter>
          </activity>
-        <activity android:name=".AddEventActivity" />
+        <activity android:name=".Events.AddEventActivity" />
         <activity android:name=".Views.QRCodeActivity" />
         <activity android:name=".Views.UserEventPageActivity" /> <!-- Admin Event Activities -->
         <activity
@@ -118,7 +118,7 @@
             android:name=".Views.FirstTimeActivity"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Views.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

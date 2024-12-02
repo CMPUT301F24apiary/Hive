@@ -1,4 +1,4 @@
-package com.example.hive;
+package com.example.hive.Events;
 
 
 import android.app.DatePickerDialog;
@@ -26,7 +26,7 @@ import com.example.hive.Controllers.FacilityController;
 import com.example.hive.Controllers.ImageController;
 import com.example.hive.DateAndTimePickers.DatePickerFragment;
 import com.example.hive.DateAndTimePickers.TimePickerFragment;
-import com.example.hive.Events.Event;
+import com.example.hive.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

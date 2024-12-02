@@ -1,4 +1,4 @@
-package com.example.hive;
+package com.example.hive.Views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,11 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Models.User;
-import com.google.firebase.firestore.CollectionReference;
+import com.example.hive.R;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;

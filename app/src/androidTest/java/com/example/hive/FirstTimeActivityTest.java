@@ -7,6 +7,7 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.intent.Intents;
 
 import com.example.hive.Views.FirstTimeActivity;
+import com.example.hive.Views.RoleSelectionActivity;
 
 import org.junit.After;
 import org.junit.Before;

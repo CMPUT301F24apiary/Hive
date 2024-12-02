@@ -1,4 +1,4 @@
-package com.example.hive;
+package com.example.hive.Views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,9 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.AdminEvent.AdminEventListActivity;
 import com.example.hive.Controllers.FirebaseController;
+import com.example.hive.Events.EventListActivity;
 import com.example.hive.Models.User;
-
-import java.util.Set;
+import com.example.hive.R;
 
 /**
  * RoleSelectionActivity.java

@@ -2,19 +2,15 @@ package com.example.hive.Controllers;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
-import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
-import com.example.hive.Facility;
+import com.example.hive.Models.Facility;
 import com.example.hive.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 

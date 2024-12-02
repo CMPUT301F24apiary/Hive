@@ -11,16 +11,13 @@
  * @author Dina
  * @version 1.0
  */
-package com.example.hive;
+package com.example.hive.Views;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -38,9 +35,9 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Controllers.ImageController;
 import com.example.hive.Models.User;
+import com.example.hive.R;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 //import java.util.Base64;
 
@@ -50,7 +47,7 @@ import java.util.HashMap;
 public class ProfileEditActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
 
-    ImageView profilePicture;
+    public ImageView profilePicture;
     public EditText personNameInput;
     public EditText emailInput;
     public EditText phoneInput;
@@ -177,7 +174,7 @@ public class ProfileEditActivity extends AppCompatActivity {
      * and disabled (white bell) states. Saves the state in SharedPreferences.
      */
 
-    void setupNotificationButtons() {
+    public void setupNotificationButtons() {
         // Listener to toggle icon and save state
         View.OnClickListener toggleNotificationListener = v -> {
             ImageButton button = (ImageButton) v;
@@ -309,7 +306,7 @@ public class ProfileEditActivity extends AppCompatActivity {
      * @param bitmap The Bitmap to convert.
      * @return The Base64 encoded string of the bitmap.
      */
-    String bitmapToBase64(Bitmap bitmap) {
+    public String bitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();

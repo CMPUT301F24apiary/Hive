@@ -7,13 +7,14 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import android.content.Intent;
-import android.widget.LinearLayout;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.example.hive.Events.EventListActivity;
 import com.example.hive.Models.Notification;
+import com.example.hive.Views.NotificationActivity;
 
 import org.junit.Rule;
 import org.junit.Test;

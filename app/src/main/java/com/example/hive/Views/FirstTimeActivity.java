@@ -18,14 +18,10 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Models.User;
 import com.example.hive.R;
-import com.example.hive.RoleSelectionActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * The first time a user uses the app, their device id is stored in db

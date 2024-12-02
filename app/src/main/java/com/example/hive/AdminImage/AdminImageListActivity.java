@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hive.AdminEvent.AdminEventListActivity;
 import com.example.hive.Controllers.ImageController;
 import com.example.hive.R;
-import com.example.hive.RoleSelectionActivity;
+import com.example.hive.Views.RoleSelectionActivity;
 import com.example.hive.Views.AdminProfileListActivity;
 
 import java.util.ArrayList;

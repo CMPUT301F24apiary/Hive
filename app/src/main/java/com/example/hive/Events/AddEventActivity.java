@@ -1,11 +1,10 @@
-package com.example.hive;
+package com.example.hive.Events;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.net.http.QuicException;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -26,14 +25,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hive.Controllers.EventController;
 import com.example.hive.Controllers.FacilityController;
-import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Controllers.ImageController;
 import com.example.hive.DateAndTimePickers.DatePickerFragment;
 import com.example.hive.DateAndTimePickers.TimePickerFragment;
-import com.example.hive.Events.Event;
 import com.example.hive.Models.QRCode;
-import com.example.hive.Models.User;
-import com.example.hive.OrganizerEventListActivity;
+import com.example.hive.Views.OrganizerEventListActivity;
 import com.example.hive.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.WriterException;

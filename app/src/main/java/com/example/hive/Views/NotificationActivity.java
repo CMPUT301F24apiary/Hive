@@ -1,9 +1,7 @@
-package com.example.hive;
+package com.example.hive.Views;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -16,19 +14,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import com.example.hive.Controllers.EventController;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Controllers.ListController;
 import com.example.hive.Controllers.NotificationsController;
+import com.example.hive.Events.EventListActivity;
 import com.example.hive.Models.Notification;
-import com.example.hive.Models.User;
+import com.example.hive.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.HashMap;

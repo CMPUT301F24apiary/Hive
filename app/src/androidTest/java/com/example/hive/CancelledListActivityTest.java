@@ -11,20 +11,19 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import android.content.Intent;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.example.hive.Views.CancelledListActivity;
+import com.example.hive.Views.OptionsPageActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)

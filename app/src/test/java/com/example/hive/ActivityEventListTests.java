@@ -3,10 +3,10 @@ package com.example.hive;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertNotNull;
 
-import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+
+import com.example.hive.Events.EventListActivity;
 
 import org.junit.Before;
 import org.junit.Test;

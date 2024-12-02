@@ -9,15 +9,11 @@
  * @author Dina
  * @version 1.2
  */
-package com.example.hive;
+package com.example.hive.Events;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -30,10 +26,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.Models.User;
+import com.example.hive.Views.NotificationActivity;
+import com.example.hive.Views.ProfileActivity;
+import com.example.hive.R;
+import com.example.hive.Views.RoleSelectionActivity;
 import com.example.hive.Views.CustomQrScannerActivity;
 import com.example.hive.Views.UserEventPageActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 public class EventListActivity extends AppCompatActivity {
 

@@ -6,8 +6,11 @@ import android.content.Intent;
 import androidx.test.core.app.ApplicationProvider;
 
 import com.example.hive.Events.EventDetailActivity;
+import com.example.hive.Views.CancelledListActivity;
 import com.example.hive.Views.EntrantMapActivity;
+import com.example.hive.Views.FinalListActivity;
 import com.example.hive.Views.InvitedEntrantsActivity;
+import com.example.hive.Views.WaitingListActivity;
 
 import org.junit.Test;
 
