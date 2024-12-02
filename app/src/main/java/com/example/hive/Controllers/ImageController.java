@@ -224,6 +224,12 @@ public class ImageController extends FirebaseController {
 
     }
 
+    /**
+     * Retrieved the document id of the image with the provided download URL.
+     *
+     * @param url The URL of the requested photo
+     * @param listener Callback to call once operation is complete
+     */
     public void getImageDocIdByUrl(String url, OnSuccessListener<String> listener) {
         db.collection("images").whereEqualTo("url", url).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -330,7 +336,11 @@ public class ImageController extends FirebaseController {
     }
 
     /**
-     * Checks if document exists in facilities collection and updates if found
+     * Checks if document exists in facilities collection and updates if found.
+     * If document is not found in facilities collection, tries the users collection.
+     *
+     * @param docID The document ID to check for
+     * @param callback Callback to handle the success/failure of the operation
      */
     private void checkFacilitiesCollection(String docID, OnSuccessListener<Boolean> callback) {
         CollectionReference facilitiesCollection = db.collection("facilities");

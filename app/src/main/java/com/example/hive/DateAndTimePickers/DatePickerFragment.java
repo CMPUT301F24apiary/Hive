@@ -11,11 +11,25 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Calendar;
 
+/**
+ * DialogFragment for displaying a date picker.
+ * The activity using this fragment must implement DatePickerDialog.OnDateSetListener
+ * to handle the date selection event.
+ *
+ * @author Zach
+ */
 public class DatePickerFragment extends DialogFragment {
 
+    /** Listener that will handle the date selection event */
     private DatePickerDialog.OnDateSetListener listener;
 
-    // Ensure that the calling context implements the methods in our listener interface
+    /**
+     * Called when fragment is attached to a context. Verifies that the context
+     * implements the required listener interface.
+     *
+     * @param context The context to which the fragment is attached
+     * @throws RuntimeException if context does not implement DatePickerDialog.OnDateSetListener
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -28,6 +42,17 @@ public class DatePickerFragment extends DialogFragment {
 
     }
 
+    /**
+     * Creates the date picker dialog.
+     * Uses either the date provided in arguments bundle or the current date as default.
+     * Arguments bundle can contain:
+     * - "year": int - The year to display
+     * - "month": int - The month to display (0-11)
+     * - "day": int - The day of month to display
+     *
+     * @param savedInstanceState Bundle containing the saved state
+     * @return A new DatePickerDialog instance
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

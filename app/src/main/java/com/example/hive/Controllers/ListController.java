@@ -16,16 +16,31 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Controller to handle list-related operations including waiting lists, invited lists,
+ * cancelled lists, and final lists. Extends FirebaseController for database access.
+ *
+ * @author Zach
+ */
 public class ListController extends FirebaseController {
 
-    private FirebaseFirestore db;
+    /** Database reference to Firestore */
+    private final FirebaseFirestore db;
 
+    /**
+     * Constructor - initializes the controller with a database reference from parent class
+     */
     public ListController() {
         super();
         this.db = getDb();
     }
 
-    // Method to get waiting list user IDs
+    /**
+     * Retrieves the list of user IDs from an event's waiting list.
+     *
+     * @param eventID The ID of the event
+     * @param listener Callback to handle the retrieved list of user IDs
+     */
     public void getWaitingListUIDs(String eventID, OnSuccessListener<ArrayList<String>> listener) {
         new EventController().getSingleEvent(eventID, event -> {
             if (event == null) {
@@ -45,16 +60,15 @@ public class ListController extends FirebaseController {
     }
 
     /**
-     * Draw the lottery and store results in firebase
+     * Draw the lottery and store results in firebase.
      *
-     * @param eventID
-     * @param entrants
-     * @param numParticipants
-     * @return
+     * @param eventID The ID of the event
+     * @param entrants List of user IDs eligible for the lottery
+     * @param numParticipants Number of participants to select
+     * @return ArrayList of selected user IDs
      */
     public ArrayList<String> generateInvitedList(String eventID, ArrayList<String> entrants,
                                                  int numParticipants) {
-        CollectionReference eventsCollection = db.collection("events");
 
         EventController eventController = new EventController();
 
@@ -87,10 +101,10 @@ public class ListController extends FirebaseController {
     }
 
     /**
-     * Create array of users to be displayed in the activity
+     * Create array of users to be displayed in the activity.
      *
-     * @param invited
-     * @param listener
+     * @param invited List of user IDs that were invited
+     * @param listener Callback to handle the list of User objects
      */
     public void createInvitedUserList(ArrayList<String> invited, OnSuccessListener<ArrayList<User>> listener) {
         ArrayList<User> userList = new ArrayList<>();
@@ -125,68 +139,14 @@ public class ListController extends FirebaseController {
         }
     }
 
-    // Notify a user that they have won the lottery
-//    public void notifyUserWin(Context context, String userId) {
-//        fetchUserByDeviceId(userId, new OnUserFetchedListener() {
-//            @Override
-//            public void onUserFetched(User user) {
-//                NotificationsController.showNotification(
-//                        context,
-//                        user.hashCode(), // Unique ID based on user
-//                        "Congratulations!",
-//                        "You have been chosen for the event!"
-//                );
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                Log.e("ListController", "Failed to fetch user for winning notification", e);
-//            }
-//        });
-//    }
-
-
-    // Notify a user that they have not been selected in the lottery
-//    public void notifyUserLose(Context context, String userId) {
-//        fetchUserByDeviceId(userId, new OnUserFetchedListener() {
-//            @Override
-//            public void onUserFetched(User user) {
-//                NotificationsController.showNotification(
-//                        context,
-//                        user.hashCode(), // Unique ID based on user
-//                        "Thank you for participating",
-//                        "Unfortunately, you were not chosen this time."
-//                );
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                Log.e("ListController", "Failed to fetch user for losing notification", e);
-//            }
-//        });
-//    }
-
-    // Notify a user that they have another chance to join due to declined invitations
-//    public void notifyUserReRegister(Context context, String userId) {
-//        fetchUserByDeviceId(userId, new OnUserFetchedListener() {
-//            @Override
-//            public void onUserFetched(User user) {
-//                NotificationsController.showNotification(
-//                        context,
-//                        user.hashCode(), // Unique ID based on user
-//                        "Another Chance!",
-//                        "A spot has opened up. Re-register now!"
-//                );
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                Log.e("ListController", "Failed to fetch user for re-registration notification", e);
-//            }
-//        });
-//    }
-
-    // Run the lottery to select the winners
+    /**
+     * Runs the lottery process for an event, selecting winners and sending notifications.
+     *
+     * @param context Application context for notifications
+     * @param eventID The ID of the event
+     * @param maxWinners Maximum number of winners to select
+     * @param listener Callback to handle the list of selected Users
+     */
     public void runLottery(Context context, String eventID, int maxWinners, OnSuccessListener<ArrayList<User>> listener) {
         // Fetch the waiting list of entrants
         getWaitingListUIDs(eventID, waitingList -> {
@@ -210,8 +170,14 @@ public class ListController extends FirebaseController {
         });
     }
 
-
-    // Notify users after lottery results
+    /**
+     * Sends notifications to users about lottery results.
+     *
+     * @param context Application context for notifications
+     * @param eventID The ID of the event
+     * @param invited List of selected user IDs
+     * @param allEntrants List of all user IDs that entered
+     */
     public void notifyLotteryResults(Context context, String eventID, ArrayList<String> invited, ArrayList<String> allEntrants) {
         // Notify the users who have won
         for (String userId : invited) {
@@ -230,8 +196,13 @@ public class ListController extends FirebaseController {
         Log.d("ListController", "Notifications sent for lottery results of event: " + eventID);
     }
 
-
-    // Check if a specific user is on the invited list for the event
+    /**
+     * Checks if a user is on the invited list for an event.
+     *
+     * @param eventID The ID of the event
+     * @param userID The ID of the user to check
+     * @param listener Callback with boolean result
+     */
     public void checkIfUserIsInvited(String eventID, String userID, OnSuccessListener<Boolean> listener) {
         db.collection("events").document(eventID).collection("invited-list").document(userID)
                 .get().addOnSuccessListener(documentSnapshot -> {
@@ -246,6 +217,14 @@ public class ListController extends FirebaseController {
                 });
     }
 
+    /**
+     * Adds a notification for a user.
+     *
+     * @param userID The ID of the user to notify
+     * @param eventID The ID of the related event
+     * @param type Type of notification ("win", "lose", etc.)
+     * @param message The notification message
+     */
     public void addNotification(String userID, String eventID, String type, String message) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("type", type);
@@ -277,6 +256,12 @@ public class ListController extends FirebaseController {
         });
     }
 
+    /**
+     * Retrieves the cancelled list for an event.
+     *
+     * @param eventId The ID of the event
+     * @param listener Callback to handle the list of cancelled user IDs
+     */
     public void fetchCancelledList(String eventId, OnSuccessListener<ArrayList<String>> listener) {
         Log.d("CancelledListActivity", "Fetching cancelled list for eventId: " + eventId);
 
@@ -342,6 +327,12 @@ public class ListController extends FirebaseController {
         });
     }
 
+    /**
+     * Retrieves notifications for a user.
+     *
+     * @param deviceID The device ID of the user
+     * @param listener Callback to handle the list of notifications
+     */
     public void fetchNotifications(String deviceID, OnSuccessListener<ArrayList<Notification>> listener) {
         ArrayList<Notification> notifs = new ArrayList<>();
         db.collection("users").document(deviceID)
@@ -367,6 +358,13 @@ public class ListController extends FirebaseController {
         });
     }
 
+    /**
+     * Adds a user to the final list of an event.
+     *
+     * @param eventID The ID of the event
+     * @param userID The ID of the user to add
+     * @param listener Callback to handle success/failure
+     */
     public void addUserToFinalList(String eventID, String userID, OnSuccessListener<Boolean> listener) {
         new EventController().getSingleEvent(eventID, event -> {
             String finalListID = event.getFinalListID();
@@ -410,6 +408,13 @@ public class ListController extends FirebaseController {
         });
     }
 
+    /**
+     * Adds a user to the cancelled list of an event.
+     *
+     * @param eventID The ID of the event
+     * @param userID The ID of the user to add
+     * @param listener Callback to handle success/failure
+     */
     public void addUserToCancelledList(String eventID, String userID, OnSuccessListener<Boolean> listener) {
         new EventController().getSingleEvent(eventID, event -> {
             String cancelledListID = event.getCancelledListID();
@@ -456,6 +461,12 @@ public class ListController extends FirebaseController {
         });
     }
 
+    /**
+     * Selects a new entrant from the waiting list when a spot becomes available.
+     *
+     * @param eventId The ID of the event
+     * @param event The Event object
+     */
     public void pickNewEntrant(String eventId, Event event) {
         getWaitingListUIDs(eventId, users -> {
             if (!users.isEmpty()) {
@@ -474,10 +485,15 @@ public class ListController extends FirebaseController {
 
     }
 
+    /**
+     * Removes a user from the invited list of an event.
+     *
+     * @param eventID The ID of the event
+     * @param userID The ID of the user to remove
+     */
     public void removeUserFromInvited(String eventID, String userID) {
         db.collection("events").document(eventID)
                 .collection("invited-list").document(userID).delete();
     }
-
 
 }

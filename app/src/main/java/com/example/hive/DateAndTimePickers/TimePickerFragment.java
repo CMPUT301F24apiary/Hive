@@ -15,12 +15,25 @@ import com.example.hive.Events.DeleteEventListener;
 import java.text.DateFormat;
 import java.util.Calendar;
 
+/**
+ * DialogFragment for displaying a time picker in 24-hour format.
+ * The activity using this fragment must implement TimePickerDialog.OnTimeSetListener
+ * to handle the time selection event.
+ *
+ * @author Zach
+ */
 public class TimePickerFragment extends DialogFragment {
 
-    // Declare our listener, which is an interface implemented in DeleteEventListener.java
+    /** Listener that will handle the time selection event */
     private TimePickerDialog.OnTimeSetListener listener;
 
-    // Ensure that the calling context implements the methods in our listener interface
+    /**
+     * Called when fragment is attached to a context. Verifies that the context
+     * implements the required listener interface.
+     *
+     * @param context The context to which the fragment is attached
+     * @throws RuntimeException if context does not implement TimePickerDialog.OnTimeSetListener
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -33,6 +46,18 @@ public class TimePickerFragment extends DialogFragment {
 
     }
 
+    /**
+     * Creates the time picker dialog.
+     * Uses either the time provided in arguments bundle or the current time as default.
+     * Arguments bundle can contain:
+     * <ul>
+     * <li>"hr": int - The hour to display (0-23)</li>
+     * <li>"min": int - The minute to display (0-59)</li>
+     * </ul>
+     *
+     * @param savedInstanceState Bundle containing the saved state
+     * @return A new TimePickerDialog instance in 24-hour format
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

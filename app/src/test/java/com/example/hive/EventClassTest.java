@@ -108,10 +108,10 @@ public class EventClassTest {
         testEventWithNullID.setFirebaseID("NewFirebaseID");
         assertEquals("NewFirebaseID", testEventWithNullID.getFirebaseID());
 
-        testEventWithNullURL.setPosterURL("NewPosterURL");
+        testEventWithNullURL.setPoster("NewPosterURL");
         assertEquals("NewPosterURL", testEventWithNullURL.getPosterURL());
 
-        testEventWithNullID.setGeolocation(true);
+        testEventWithNullID.SetGeolocation(true);
         assertEquals(true, testEventWithNullID.getGeolocation());
 
         testEvent.setLotteryDrawn(true);
