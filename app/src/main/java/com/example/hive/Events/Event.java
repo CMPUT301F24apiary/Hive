@@ -626,7 +626,7 @@ public class Event implements Parcelable {
     }
 
     /**
-     * Converts a date & time in MS since epoch to a human readable format. Constructed as
+     * Converts a date and time in MS since epoch to a human readable format. Constructed as
      * "mmm dd-hh:mm". Returned as an array whose first element is date, second is time.
      *
      * @param dateInMS The date in MS since epoch to convert.
