@@ -200,6 +200,9 @@ public class FirebaseController {
                         user.setUserName(document.getString("username"));
                         List<String> roleList = (List<String>) document.get("roleSet");
                         user.setRoleList(roleList);
+                        user.setEmail(document.getString("email"));
+                        user.setPhoneNumber(document.getString("phoneNumber"));
+                        user.setProfileImageUrl(document.getString("profileImageUrl"));
                         listener.onUserFetched(user);
                     } else {
                         listener.onUserFetched(null);

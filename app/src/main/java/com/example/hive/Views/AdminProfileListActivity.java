@@ -56,13 +56,14 @@ public class AdminProfileListActivity extends AppCompatActivity {
         fetchAllUsers();
 
         searchView = findViewById(R.id.adminProfileSearchView);
-        backArrow = findViewById(R.id.backButton);
+//        backArrow = findViewById(R.id.backButton);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 profileAdapter.filter(query);
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 profileAdapter.filter(newText);
@@ -100,19 +101,7 @@ public class AdminProfileListActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
-//        backArrow.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Notify the user when the back arrow is clicked
-//                Intent i = new Intent(AdminProfileListActivity.this, AdminEventListActivity.class);
-//                Toast.makeText(AdminProfileListActivity.this, "Back arrow clicked", Toast.LENGTH_SHORT).show();
-//                finish();
-//                startActivity(i);
-//            }
-//        });
     }
-
 
     /**
      * refresh the profile view page at all times.
@@ -138,21 +127,6 @@ public class AdminProfileListActivity extends AppCompatActivity {
                 Log.d("AdminProfileListActivity", "Device ID received: " + deletedDeviceId);
                 //removeUserFromList(deletedDeviceId);  // made into a reusable function to refresh users list
                 fetchAllUsers();
-            }
-        }
-    }
-
-    /**
-     * Used to remove a user from the list. I've replaced this method with
-     * fetchAllUsers()
-     * @param deviceId
-     */
-    private void removeUserFromList(String deviceId) {
-        for (int i = 0; i < userList.size(); i++) {  // constraint
-            if (userList.get(i).getDeviceId().equals(deviceId)) {
-                userList.remove(i);
-                profileAdapter.notifyItemRemoved(i);
-                break;
             }
         }
     }

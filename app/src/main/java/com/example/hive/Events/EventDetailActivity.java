@@ -19,7 +19,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.hive.Controllers.EventController;
-import com.example.hive.Controllers.FirebaseController;
 import com.example.hive.EditEventActivity;
 import com.example.hive.Models.User;
 import com.example.hive.OptionsPageActivity;
@@ -27,7 +26,6 @@ import com.example.hive.R;
 import com.example.hive.Views.OrganizerNotificationActivity;
 import com.example.hive.Views.QRCodeActivity;
 import com.example.hive.Models.QRCode;
-import com.google.firebase.firestore.CollectionReference;
 
 
 /**
@@ -250,7 +248,7 @@ public class EventDetailActivity extends AppCompatActivity implements DeleteEven
                     return;
                 }
                 String eventId = event.getFirebaseID();
-                QRCode.retriveQRCodeFromDb(eventId, new QRCode.QRCodeCallback() {
+                QRCode.retrieveQRCodeFromDb(eventId, new QRCode.QRCodeCallback() {
                     @Override
                     public void onQRCodeRetrieved(String qrCodeBase64) {
                         if (qrCodeBase64 == null || qrCodeBase64.isEmpty()) {

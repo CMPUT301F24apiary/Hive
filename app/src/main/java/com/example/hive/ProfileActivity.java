@@ -12,6 +12,8 @@
  */
 package com.example.hive;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -35,10 +37,12 @@ import com.example.hive.Views.AdminProfileViewActivity;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    FirebaseController firebaseController;
+
     private Button editProfileButton;
     private ImageView backArrow;
     private ImageView profilePicture;  // You missed initializing the profile picture in your earlier code.
-    private TextView personNameText, userNameText, emailText, phoneText;
+    private TextView personNameText, emailText, phoneText;
     private String deviceId;
 
     /**
@@ -49,6 +53,7 @@ public class ProfileActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        firebaseController = new FirebaseController();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
@@ -57,7 +62,6 @@ public class ProfileActivity extends AppCompatActivity {
         backArrow = findViewById(R.id.backArrow);
         profilePicture = findViewById(R.id.imageViewProfileImage); // Make sure you have this defined in your layout XML file
         personNameText = findViewById(R.id.personName);
-        userNameText = findViewById(R.id.userName);
         emailText = findViewById(R.id.emailLabel);
         phoneText = findViewById(R.id.phoneLabel);
 
@@ -80,38 +84,34 @@ public class ProfileActivity extends AppCompatActivity {
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Notify the user when the back arrow is clicked
-                Toast.makeText(ProfileActivity.this, "Back arrow clicked", Toast.LENGTH_SHORT).show();
-
+//                Toast.makeText(ProfileActivity.this, "Back arrow clicked", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
     }
 
     /**
-     * Converts a Base64 encoded string back to a Bitmap.
-     *
-     * @param base64Str The Base64 encoded string.
-     * @return The decoded Bitmap.
+     * refresh the profile activity when user edits profile.
      */
-    private Bitmap base64ToBitmap(String base64Str) {
-        byte[] decodedBytes = Base64.decode(base64Str, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadProfileData(deviceId);
     }
 
     /**
      * Loads profile data from Firebase and displays it in the corresponding TextViews.
      */
     public void loadProfileData(String deviceId) {
-        FirebaseController controller = new FirebaseController();
-        controller.fetchUserByDeviceId(deviceId, new FirebaseController.OnUserFetchedListener() {
+        firebaseController.fetchUserByDeviceId(deviceId, new FirebaseController.OnUserFetchedListener() {
             @Override
             public void onUserFetched(User user) {
                 if (user != null) {
                     personNameText.setText(user.getUserName());
-                    userNameText.setText(user.getUserName());
-                    emailText.setText(user.getEmail());
-                    phoneText.setText(user.getPhoneNumber());
+                    String emailTextVal = "Email: " + user.getEmail();
+                    emailText.setText(emailTextVal);
+                    String phoneTextVal = "Phone: " + user.getPhoneNumber();
+                    phoneText.setText(phoneTextVal);
 
                     String pfpUrl = user.getProfileImageUrl();
 
@@ -134,23 +134,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
         });
-//        SharedPreferences sharedPreferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
-//        String personName = sharedPreferences.getString("personName", "Person Name");
-//        String userName = sharedPreferences.getString("userName", "User Name");
-//        String email = sharedPreferences.getString("email", "user@google.com");
-//        String phone = sharedPreferences.getString("phone", "(780) xxx - xxxx");
-//        String profilePictureBase64 = sharedPreferences.getString("profilePicture", "");
-
-        // Load profile picture if available
-//        if (!profilePictureBase64.isEmpty()) {
-//            Bitmap profileBitmap = base64ToBitmap(profilePictureBase64);
-//            profilePicture.setImageBitmap(profileBitmap);
-//        } else {
-//            // Set default profile picture
-//            profilePicture.setImageResource(R.drawable.ic_profile);
-//        }
     }
-    
 
     /**
      * Called when returning from the ProfileEditActivity.
